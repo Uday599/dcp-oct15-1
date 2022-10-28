@@ -45,6 +45,11 @@ systemctl enable jenkins
 
 systemctl start jenkins
 
+# Path at which jenkins will be saved in linux machine :
+#  /var/lib/jenkins/
+#  /var/lib/jenkins/secrets -> will have secrets
+#  /var/lib/jenkins/plugins -> will have plugins installed for jenkins
+
 #systemctl enable tomcat
 #systemctl start tomcat
 
