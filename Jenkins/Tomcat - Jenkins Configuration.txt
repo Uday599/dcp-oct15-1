@@ -1,7 +1,7 @@
 #Install & configure Tomcat server :
 
 #Check out Official WebPage:
-#https://tomcat.apache.org/
+#https://tomcat.apache.org/    -- runs on port 8080
 
 #Launch AWS EC2 Linux Instance:
 
