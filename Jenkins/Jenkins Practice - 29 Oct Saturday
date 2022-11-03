@@ -1,7 +1,7 @@
 On 29 Oct Saturday
 ------------------------------------
 We created Master and Slave machine
-Master -JDK
+Master -JDK, Jenkin software
 Slave -Maven, Git,JDK
 then we connected Slave with Master using SSH Private connection
 
@@ -11,6 +11,9 @@ Pipeline job is scheduled to
 > creating artifact .war/.jar file
 -------------------------------------
 
+
+Password for Jenkin Master : Uday
+Rocky@2022
 
 
 # Pipeline code
