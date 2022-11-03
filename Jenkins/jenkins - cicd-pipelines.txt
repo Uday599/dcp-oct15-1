@@ -20,8 +20,8 @@ pipeline {
         stage('Build') {
             steps {
                 // Run Maven on a Unix agent.
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
-            }
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"   -- this is because if there is any error in the test cases while building , we are
+            }								-- neglecting it .
 			}
 			
         stage('Deploy to QA AppServer') {
