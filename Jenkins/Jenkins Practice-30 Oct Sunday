@@ -59,3 +59,68 @@ pipeline {
 =========================================================
 EMAIL Notification 
 ---------------------
+ SMPT Server :smtp.gmail.com
+ port :463
+
+Pipeline code :
+
+pipeline {
+    
+    agent {
+        label 'javanodenov3'
+    }
+
+    tools 
+    {
+        maven 'Maven'
+    }
+    
+    stages {
+        stage('SCM-Checkout') {
+            steps {
+			echo " JAVA SRC"
+                // Get some code from a GitHub repository
+                git 'https://github.com/Uday599/Java-mvn-app2.git'
+
+            }
+			}
+        stage('Build') {
+            steps {
+			echo "Build start"
+                // Run Maven on a Unix agent.
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+			}
+		stage('Deploy to QA Environment') {
+			steps {
+				script {
+					sshPublisher(publishers: [sshPublisherDesc(configName: 'QA- Server', transfers: 
+					[sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 
+					120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, 
+					patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, 
+					removePrefix: 'target/', sourceFiles: 'target/mvn-hello-world.war')], 
+					usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+					}
+				}
+			}
+		post
+		{
+			always
+			{ 
+			 mail bcc: '', body: 'Test Email', cc: 'udayp081199@gmail.com', 
+			 from: '', replyTo: '', subject: 'Test Email', to: 'udayp081199@gmail.com'
+			 -- we will add environment variables here to convey info much better!
+			 }
+		}
+		}
+			
+        
+   
+}
+
+=======================================================================================
+JOB TRIGGERS
+-----------------------------
+
+
+
