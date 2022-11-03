@@ -122,5 +122,15 @@ pipeline {
 JOB TRIGGERS
 -----------------------------
 
+Website : Crontab guru
+
+Github Webhook:
+want to trigger when there is commit in repo
+
+Poll SCM:
+will trigger a build for every one hour if there is any commit happend in the Source Repo
+
+Build Periodic:
+want to trigger a build for every one hour daily.
 
 
