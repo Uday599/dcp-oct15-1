@@ -1,0 +1,59 @@
+------------------------------------------------
+Stage 3: Deplying artifact into QA enviroment
+Managing artifact from slave machine and deploying it in Appserver
+
+Slave Machine - Path where artifact is stored : /home/jenkins/workspace/test-pipeline-project/target
+APP Server - Path where file will be stored : /opt/tomcat/webapps
+
+---------------------------------------------------
+
+
+
+
+
+fully staged pipeline script
+
+pipeline {
+    
+    agent {
+        label 'javanodenov3'
+    }
+
+    tools 
+    {
+        maven 'Maven'
+    }
+    
+    stages {
+        stage('SCM-Checkout') {
+            steps {
+			echo " JAVA SRC"
+                // Get some code from a GitHub repository
+                git 'https://github.com/Uday599/Java-mvn-app2.git'
+
+            }
+			}
+        stage('Build') {
+            steps {
+			echo "Build start"
+                // Run Maven on a Unix agent.
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+			}
+		stage('Deploy to QA Environment') {
+			steps {
+				script {
+					sshPublisher(publishers: [sshPublisherDesc(configName: 'QA- Server', transfers: 
+					[sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 
+					120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, 
+					patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, 
+					removePrefix: 'target/', sourceFiles: 'target/mvn-hello-world.war')], 
+					usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+					}
+				}
+			}
+		}
+			
+        
+   
+}
