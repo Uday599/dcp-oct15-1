@@ -114,3 +114,17 @@ cat id_rsa.pub > authorized_keys
 chown -R jenkin /home/jenkins/.ssh
 chmod 600 /home/jenkins/.ssh/authorized_keys
 chmod 700 /home/jenkins/.ssh
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#Jenkins-Master <---> Jenkins Slave 
+
+#How the connection is established? SSH Keys
+#Create a New User - Create SSH Key for the user. 
+
+
+#Login to Jenkins thru browser, Go to Manage Jenkins --> Config Nodes -- > Add New Node 
+
+#Config the Node Name, Label, Access thru SSH Parm - user Name, with private key
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
