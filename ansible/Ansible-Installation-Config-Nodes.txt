@@ -43,7 +43,7 @@ ansibleadmin ALL=(ALL) NOPASSWD: ALL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #Login to Ansible Controller:
-
+yum install update -y
 #Install epel Package :
 #Install Ansible 
 
