@@ -215,3 +215,134 @@ Become :
           state: latest 
 
 ## state ::::  present | absent | latest 
+
+Handlers :
+
+---
+  - hosts: samplenode1
+    #gather_facts: false
+    become: yes
+    tasks:
+      - name: Install httpd
+        yum:
+          name: httpd
+          state: present
+		register: resultt
+      - debug: var=resultt.changed		
+      - name: start httpd
+        service:
+          name: httpd
+          state: started
+		when: resultt.changed == True
+
+  - hosts: samplenode1
+    #gather_facts: false
+    become: yes
+    tasks:
+      - name: Install httpd
+        yum:
+          name: httpd
+          state: present
+		register: resultt
+      - debug: var=resultt.changed		
+      - name: start httpd
+        service:
+          name: httpd
+          state: started
+		when: resultt.changed == True
+		
+---
+  - hosts: samplenode1
+    gather_facts: false
+    become: yes
+    tasks:
+      - name: Install httpd
+        yum:
+          name: httpd
+          state: present
+    notify:
+      - start httpd
+    handlers:
+    - name: start httpd
+      service:
+          name: httpd
+          state: started
+		  
+---
+  - hosts: samplenode1
+    become: yes
+    tasks:
+      - name: Install httpd
+        yum:
+          name: httpd
+          state: present			# CHANGE=0		
+      - name: start httpd
+        service:
+          name: httpd
+          name: httpd
+          state: started			# CHANGE=0
+
+state ::: started | stopped | reester
+
+---
+  - hosts: samplenode1
+    gather_facts: false
+    become: yes
+    tasks:
+      - name: Install httpd
+        yum:
+          name: httpd
+          state: present
+    notify:
+      - start httpd2
+    handlers:
+    - name: start httpd1
+      service:
+          name: httpd
+          state: started
+		  
+#Eg.: Labels & Selectors :::  
+
+
+
+
+Loops :
+
+---
+  - hosts: samplenode1
+    become: yes
+    tasks:
+      - yum:
+         name: git
+         state: present
+      - yum:
+         name: httpd
+         state: present
+      - yum:
+         name: vim
+         state: present
+
+---
+  - hosts: samplenode1
+    gather_facts: false
+    become: yes
+    tasks:
+      - yum:
+         name: "{{item}}"
+         state: absent
+        loop:
+          - git
+          - httpd
+          - vim
+          
+   
+#~~~~~~~~~~~~~~~~~~~~~~~~~
+Ansible Roles
+
+Intranet: Repositories for Managing the Playbooks 
+Ansible Playbooks --- > Repository
+Internet : Access the playbooks 
+
+Ansible-galaxy 
+
+Roles! are the packages of Ansible components / Templates
