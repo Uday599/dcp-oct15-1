@@ -260,6 +260,11 @@ To install httpd in sample node 1
  
 ansible-playbook -i inventoryfile.txt httpdinstall.yaml
 
+=============================================
+ansible-playbook -i inventoryfile.txt httpdinstall.yaml C   -- this will run the syntax to check(dummy run), but wont effect target machine
+
+
+
 *************************************************************************************************************************
 #create a dir in /ect/ansible/ for playbooks
 #and create the playbook .yaml files as mentioned below:
