@@ -1,8 +1,12 @@
 #**************************************************************************************************************************
 ###Ansible - Demo.
 
+================
 ##Adhoc Commands:
+================
 
+
+ 
 ###test ssh connection from ansible host/controller to remote hosts
 
 ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode1.key ansibleadmin@172.31.1.175
@@ -18,7 +22,7 @@ samplenode1 ansible_ssh_host=172.31.1.175 ansible_ssh_user=ansibleadmin ansible_
 samplenode2 ansible_ssh_host=172.31.0.194 ansible_ssh_user=ansibleadmin ansible_ssh_private_key_file=/etc/ansible/ansiblenodekeys/ansiblenode2.key
 
 #**************************************************************************************************************************
-#Access thru Ansible Controller :
+#Access through Ansible Controller :
 #**************************************************************************************************************************
 Ansible Modules: Eg.: 
 
@@ -27,15 +31,114 @@ setup,copy,fetch,user,command,shell,ping,service,
 ansible testnodes -m ping
 
 ansible all -m ping ### will ping all hosts from /etc/ansible/hosts file
+ansible -m ping all --works similar
 
 ansible samplenode1 -m ping
 ansible samplenode2 -m ping
 
-#or using user defined Inventory file
+*******************************************************************
+
+if we have defined inventory file separatly
+then
+#for using user defined Inventory file
+
+> cat cd /etc/ansible/hosts > inventoryfile.txt
+> we have to define the host file now, like
+ansible -i inventoryfile.txt -m ping all
+
+ansible -i inventoryfile.txt -m ping samplenode1
+# ansible -i <hostfilename) -m <module name> <any node/all>
 
 #ansible ansible-node1 -m ping -i myinventoryfile.txt
 
 #**************************************************************************************************************************
+> to install HTTPD package on sample node1 
+> --become is to escalate the privilage and then execute because in inventory file we gavae ansibleadmin as user so it cant install
+ ansible]$ ansible -i inventoryfile.txt -m yum -a "name=httpd state=present" samplenode1 --become
+ 
+ samplenode1 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": true,
+    "changes": {
+        "installed": [
+            "httpd"
+        ]
+    },
+
+
+===== if we ran command again
+
+
+samplenode1 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": false,   -- as there is no change it is False
+    "msg": "",
+    "rc": 0,
+    "results": [
+        "httpd-2.4.54-1.amzn2.x86_64 providing httpd is already installed"
+    ]
+}
+
+**********************************************************************************************************************
+> IDEMPOTENT -  property of some operations such that no matter how many times you execute them, you achieve the same result.
+it means it will work only if there is change else same state
+ **********************************************************************************************************************
+> to enable the above installed httpd, 
+
+ ansible -i inventoryfile.txt -m service -a "name=httpd state=started enabled=yes" samplenode1 --become
+
+-------- this is causing error need to check.
+
+[WARNING]: Platform linux on host samplenode1 is using the discovered Python interpreter at
+/usr/bin/python, but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more
+information.
+samplenode1 | FAILED! => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": false,
+    "msg": "Unable to start service httpd: Job for httpd.service failed. See \"systemctl status httpd.service\" and \"journalctl -xe\" for details.\n"
+
+
+
+***********************************************************************************************************************
+> to deploy a web page index.html from controller to node
+
+ansible -i inventoryfile.txt -m copy -a "src=index.html dest=/var/www/html/index.html" samplenode1 --become
+
+
+[WARNING]: Platform linux on host samplenode1 is using the discovered Python interpreter at
+/usr/bin/python, but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more
+information.
+samplenode1 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": true,
+    "checksum": "4bcff6b790c430561af148937a9661c25b17e121",
+    "dest": "/var/www/html/index.html",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "d7cbc2f4f5381e39cd4b1e13ee4d05cf",
+    "mode": "0644",
+    "owner": "root",
+    "size": 34,
+    "src": "/home/ansibleadmin/.ansible/tmp/ansible-tmp-1667825333.1-5028-261556534765134/source",
+    "state": "file",
+    "uid": 0
+}
+
+
+> you can check web page in target machine
+> enable port 80 - for web access - you can check the file too.
+
+**********************************************************************************************************************
 
 ansible testnodes -m shell -a "sleep 5 ; echo 'hi'"
 
@@ -101,15 +204,63 @@ ansible-doc -l | wc -l
 ansible-doc -l | grep shel
 ### To know about any specific modules:
 ansible-doc shell
+*********************************************************************************************
+[devopsadmin@ip-172-31-47-91 ansible]$ ansible -i inventoryfile.txt -m yum -a "name=httpd state=absent" --become samplenode1
+[WARNING]: Platform linux on host samplenode1 is using the discovered Python interpreter at
+/usr/bin/python, but future installation of another Python interpreter could change this. See
+https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more
+information.
+samplenode1 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "changed": true,
+    "changes": {
+        "removed": [
+            "httpd"
+        ]
+    },
 
+**************************************************************************************************************
 ===========================
-====== YAML SYNTAX =========
+====== PLAYBOOK/YAML SYNTAX =========
 ===========================
 
 Source : https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
 
+To check the syntax of the playbook file 
+Command :
+ansible-playbook -i <host file> <yaml file> --syntax-check
+
+============ to check the module syntax and how to use ====================
+-- ansible-doc <module_name>
+ansible-doc yum
+
+=====================
+Documentation about Modules :
+
+https://docs.ansible.com/ansible/2.9/modules/modules_by_category.html
 
 **************************************************************************************************************************
+
+To install httpd in sample node 1
+> file name : httpdinstall.yaml
+
+- name: Setup webserver
+  hosts: samplenode1
+  become: yes
+  tasks:
+   - name: Installing an httpd server
+     yum:
+        name: httpd
+        state: present
+
+~
+ COmmand:
+ 
+ansible-playbook -i inventoryfile.txt httpdinstall.yaml
+
+*************************************************************************************************************************
 #create a dir in /ect/ansible/ for playbooks
 #and create the playbook .yaml files as mentioned below:
 #sample playbooks:
