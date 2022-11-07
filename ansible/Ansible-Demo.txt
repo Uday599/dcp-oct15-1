@@ -102,6 +102,12 @@ ansible-doc -l | grep shel
 ### To know about any specific modules:
 ansible-doc shell
 
+===========================
+====== YAML SYNTAX =========
+===========================
+
+Source : https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+
 
 **************************************************************************************************************************
 #create a dir in /ect/ansible/ for playbooks
