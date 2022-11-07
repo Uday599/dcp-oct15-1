@@ -115,6 +115,20 @@ samplenode2 ansible_ssh_host=172.31.41.222 ansible_ssh_user=ansibleadmin ansible
 #Access thru Ansible Controller :
 **************************************************************************************************************************
 ansible testnodes -m ping
+=== other ways to call nodes ====
+
+   74  ansible testnodes -m ping
+   75  ansible -m ping samplenode1
+   76  pwd
+   77  ansible -m ping testnodes  -- adhoc commands
+   78  ansible -m ping all
+   79  ansible -m ping '*'
+   80  clear
+   81  history
+ syntax : ansible <file_name if not hosts> -m ping <node_name>
+ > here we can create an inventoy file which we can use as Hosts and can call in syntax
+> we can declare group inside group , group variables so on...
+
 
 host machines can be idenfified using :
 
