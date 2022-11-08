@@ -5,8 +5,9 @@
 ##Adhoc Commands:
 ================
 
+ansible controller
+> /etc/ansible  == will have all files in this directory
 
- 
 ###test ssh connection from ansible host/controller to remote hosts
 
 ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode1.key ansibleadmin@172.31.1.175
@@ -42,7 +43,7 @@ if we have defined inventory file separatly
 then
 #for using user defined Inventory file
 
-> cat cd /etc/ansible/hosts > inventoryfile.txt
+> cat cd /etc/ansible/hosts > inventoryfile.txt   -- if file is present in same path else complete path should be mentioned
 > we have to define the host file now, like
 ansible -i inventoryfile.txt -m ping all
 
@@ -160,16 +161,20 @@ ansible samplenode1 -m copy -a "src=/etc/ansible/testfile1.txt dest=/home/ansibl
 
 ###idempotent
 
+ansible -i inventoryfile.txt samplenode1 -m copy -a "content='Hello from Controller\n' dest=/home/ansibleadmin/hello.txt"
+ansible -i <host> <node> -m <module> -a <parameter>  = destination file should exit else it will throw error
+
+
 ansible testnodes -m copy -a "content='hello from Ansible Controller\n' dest=/dest/path/hello.txt"
 
-ansible testnodes -m copy -a "content='hello from Ansible Controller\n' dest=/dest/path/hello.txt backup=yes"
+ansible testnodes -m copy -a "content='hello from Ansible Controller\n' dest=/dest/path/hello.txt backup=yes"    ---> -a is for arguments
 
 ansible testnodes -m copy -a "content='hello from Ansible Controller\n' dest=/dest/path/hello.txt backup=yes"
 
 
 ##Transfer a file from Ansible Nodes to Ansible Controller using fetch Module
 
-ansible testnodes -m fetch -a "src=/home/ansibleadmin/file1.txt dest=/etc/ansible/"
+ansible testnodes -m fetch -a "src=/home/ansibleadmin/file1.txt dest=/etc/ansible/"   
 
 ansible testnodes -m fetch -a "src=/srcfile/path/nodefile1.txt dest=/dest/path/"
 
@@ -198,12 +203,16 @@ ansible -i inventory_file_name prodnodes -m shell -a "uptime"
 
 ### List all modules:
 ansible-doc -l
+
 ### No. of modules:
 ansible-doc -l | wc -l
+
 ### Search for specific modules:
 ansible-doc -l | grep shel
+
 ### To know about any specific modules:
 ansible-doc shell
+
 *********************************************************************************************
 [devopsadmin@ip-172-31-47-91 ansible]$ ansible -i inventoryfile.txt -m yum -a "name=httpd state=absent" --become samplenode1
 [WARNING]: Platform linux on host samplenode1 is using the discovered Python interpreter at
@@ -309,9 +318,16 @@ ansible-playbook -i inventoryfile.txt httpdinstall.yaml C   -- this will run the
        - "THe os name is: {{ansible_system}}"
        - "The os family is: {{ansible_os_family}}"
        - "THe mount points are :{{ansible_mounts}}"
+   
+   
+ ansible-playbook -i /etc/ansible/inventoryfile.txt debug.yaml   
        
 # How to jus verify playbook syntax:
 ansible-playbook testfile.yaml --syntax-check
+
+========================================
+
+ansible-playbook -i /etc/ansible/inventoryfile.txt debug.yaml
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~ test_var-datatype.yaml
@@ -377,6 +393,10 @@ Become :
           state: latest 
 
 ## state ::::  present | absent | latest 
+	       to install | to uninstall | to update
+
+==============================================================================================================================
+> task which needs to be executed only when previous task executed/ based on previous task result 
 
 Handlers :
 
@@ -423,9 +443,9 @@ Handlers :
           name: httpd
           state: present
     notify:
-      - start httpd
+      - start httpd     --- handler name
     handlers:
-    - name: start httpd
+    - name: start httpd         -- "Start httpd" handler block
       service:
           name: httpd
           state: started
@@ -505,6 +525,22 @@ Intranet: Repositories for Managing the Playbooks
 Ansible Playbooks --- > Repository
 Internet : Access the playbooks 
 
-Ansible-galaxy 
+Ansible-galaxy : 
+ansibl-galaxy init <role_name>
+link: https://galaxy.ansible.com/
 
 Roles! are the packages of Ansible components / Templates
+
+
+
+Roles 
+organise and reuse
+> like comman logic , we call it multiple times using function call thats the logix here
+> we declare task , then we call using role
+this is used to manage playbook task and ansible components
+
+Like declaring a task in one file 
+intalling and configuring mysql db
+
+
+then we can create an another file with Role keyword calling above file
