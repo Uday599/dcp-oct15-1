@@ -341,13 +341,15 @@ ansible-playbook -i /etc/ansible/inventoryfile.txt debug.yaml
     my_name: Loksai
     my_b: YES   
    tasks:
-   - debug:
+   - debug:    -- debug is for printing
       msg:
-       - "The value of x is: {{x}} and type: {{x|type_debug}}"
+       - "The value of x is: {{x}} and type: {{x|type_debug}}"  --jinja 2 templating
        - "THe value of my_num: {{my_num}} and type : {{my_num|type_debug}}"
        - "The value of my_name : {{my_name}} and type: {{my_name|type_debug}}"
        - "THe value of my_b is: {{my_b}} and type : {{my_b|type_debug}}"
 
+
+# is for comment in yaml
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~ register and set-facts
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -519,6 +521,199 @@ Loops :
           
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~
+file_name : var_precedence.yaml
+
+- name: Understanding precedence of variables
+  hosts: all
+  become: yes
+  gather_facts: False
+  vars:
+    USRNM: playuser
+    COMM: variable from playbook
+  tasks:
+    - name: create a user
+      user:
+        name: "{{USRNM}}"
+        comment: "{{COMM}}"
+      register: USROUT
+
+    - debug:
+        var: USROUT.name
+
+    - debug:
+        var: USROUT.comment
+
+ansible-playbook -i  /etc/ansible/inventoryfile.txt var_precedence.yaml
+
+
+Precedence of Variables: 
+
+Playbook => host_vars/hostname => group_vars/grpname => all
+
+Website : https://docs.ansible.com/ansible/latest/reference_appendices/general_precedence.html
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Fact Variables : Setup Module
+
+Ansible Facts!
+
+ansible samplenode1 -m setup
+ansible samplenode2 -m setup -a "filter=ansible_mounts"
+
+I belive , when we are mentioning host file in syntax (adhoc) we should give -i 
+
+
+
+
+---
+- name: Learning fact variables
+  hosts: all
+  tasks:
+    - name: Print OS names
+      debug:
+        var: ansible_distribution
+
+    - name: Print Memory details
+      debug:
+        var: ansible_memory_mb
+
+    - name: Print Real Memory details
+      debug:
+        var: ansible_memory_mb.real.free    -- since its memory in setup is dictionary so we are fetching proper need value.
+
+    - name: Print Processor name
+      debug:
+        var: ansible_processor[2]       -- processor is list so [] is used to fetch required value with index
+
+ansible-playbook -i /etc/ansible/inventoryfile.txt facts.yaml
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Decision Making : loops
+
+website : https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html
+
+---
+- name: Provisioning Server 
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install NTP on Centos 
+      yum:
+        name: "{{item}}"
+        state: present
+      when: ansible_distribution == "CentOS"
+      loop:
+        - ntp
+        - wget
+        - git
+        - zip
+        - unzip
+
+    - name: Install NTP on Ubuntu
+      apt:
+         name: "{{item}}"
+         state: present
+         update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+      loop:
+        - ntp
+        - wget
+        - git
+        - zip
+        - unzip
+
+    - name: Start & enable NTP on Redhat
+      service:
+        name: ntpd
+        state: started
+        enabled: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Start & enable NTP on Debian
+      service:
+        name: ntp
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Add group
+      group:
+         name: devops
+         state: present
+
+    - name: Add users
+      user:
+          name: "{{item}}"
+          state: present
+          groups: devops
+      loop: "{{usernames}}"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Ansible Roles
 
 Intranet: Repositories for Managing the Playbooks 
