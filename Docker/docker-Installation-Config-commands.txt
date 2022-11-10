@@ -1,4 +1,22 @@
+VM -> will have os -> hypervisor -> each differecnt os -> application
+
+Containers 
+
+we dont have different OS's here , only underlying main OS will be used to run application 
+Here we have entity called 'Docker' like hypervisor in VMs
+
+
+
+
 #Docker Installation | Configuration | Commands & Concepts:
+
+
+image = class
+
+containers  = objects to call class(image)
+dependencies and all will be there in containers
+Registry - place where you store docker images
+you can host your own registry / docker hub
 
 sudo yum install docker
 
@@ -20,6 +38,8 @@ systemctl enable docker
 
 #Test Docker with basic hello-world image from docker hub.
 
+
+ # by default lates tag will be pulled if not you can mention the required tag to download
 docker pull centos 
 
 docker run centos 
@@ -35,14 +55,24 @@ docker images
 
 docker run centos
 
-docker ps
-docker ps -a
+docker ps     --> this is used to get running containers
+docker ps -a    --> this is used to get list of containes - running/stopped/exited etc...
 
 ### Run Container in Interactive Mode:
 ###docker run -it --name=testvol1 centos bash
 docker run -it centos bash
 
+i -> interactive mode
+t -> in termainal
 
+docker run -it <images> bash
+
+root@a0303e44cb9e:/usr/local/tomcat#
+
+root@<container_id): interactive mode
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker pull loksaieta/loksaimvndevops:v1.0
 
 cat /etc/*release*
@@ -77,6 +107,9 @@ docker pull centos:centos7.9.2009
 docker run centos sleep 1100
 
 docker stop <container_id>
+docker rm <contained_ip>
+
+docket rmi <imaged_id>  - to remove the image from local machine
 
 ### Detached Mode
 docker run -d centos sleep 2000
