@@ -81,7 +81,7 @@ cat /etc/*release*
 dockerpath# cat /etc/*release*
 dockerpath# exit
 
-###Run Docker Container in DETACHED MODE :
+###Run Docker Container in DETACHED MODE : we can gain access to terminal
 docker run -d centos sleep 20 
 docker ps -a
 
@@ -114,7 +114,7 @@ docket rmi <imaged_id>  - to remove the image from local machine
 ### Detached Mode
 docker run -d centos sleep 2000
 
-docker attach <running_container_id>
+docker attach <running_container_id>  -- to attach , default
 docker stop <container_id>
 
 ###docker pull timer
@@ -123,7 +123,7 @@ docker stop <container_id>
 
 #docker run jenkins
 
-docker inspect <container_id>
+docker inspect <container_id>   -- to get details of containers
 
 docker history <imagename>
 
@@ -143,10 +143,13 @@ Once you install tomcat on ur vm :
 
 
 ###Docker Logs
+~~~~~~~~~~~~~~~~~~~~~~~
 
 docker logs <container_id>
 
 #Access Docker contents using exec - Non-Interactive Mode: 
+
+docker exec < container_id> <bash_command>
 
 docker exec e8553a4721d5 cat /etc/hosts
 
