@@ -86,6 +86,92 @@ For more examples and ideas, visit:
 
 Docker hub - registry for docker images
 
+docker pull nginx:<tag_id>
+
+    1  yum install docker
+    2  systemctl status docker
+    3  systemctl start docker
+    4  systemctl enable docker
+    5  systemctl status docker
+    6  clear
+    7  docket ps
+    8  docker ps
+    9  which docker
+   10  cd container_id
+   11  clear
+   12  docker ps
+   13  docker images
+   14  docker pull centos
+   15  docker images
+   16  docker ps
+   17  dockerclear
+   18  clear
+   19  docker inmages
+   20  docker inmage
+   21  docker images
+   22  docker run centos
+   23  docker ps
+   24  docker ps -a
+   25  docker run nginx
+   26  docker pull loksaieta/loksaimvndevops:v1.0
+   27  docker images
+   28  docker run -it loksaieta/loksaimvndevops bash
+   29  docker --version
+   30  docker run hello-world
+   31  clear
+   32  docker images
+   33  docker ps
+   34  docker ps -a
+   35  history
+   36  docker pull nginx
+   37  docker images
+   38  docket rmi loksaieta/loksaimvndevops
+   39  docker rmi loksaieta/loksaimvndevops
+   40  docker ps -a
+   41  docker rm a0303e44cb9e
+   42  docker rmi loksaieta/loksaimvndevops
+   43  docker images
+   44  docker rmi loksaieta/loksaimvndevops
+   45  docker ps -a
+   46  docker rm
+   47  docker rm b818a67fcc12
+   48  docker ps -a
+   49  docker iamges
+   50  docker images
+   51  docker rm nginx
+   52  docker rmi nginx
+   53  clear
+   54  docker images
+   55  docker pull nginx
+   56  nginx -- version
+   57  nginx --version
+   58  docker run nginx
+   59  docker images
+   60  nginx --version
+   61  docker run  --name myweb -p 7090:80 -d nginx   
+   -- what above command does is : 
+   > it will run container NGINX on port 80 (we need to know which service runs on which port , for Nginx it is 80)
+   > consider nginx is runnning in private subnet , so do access this service from internet, we have to link internet -> public Ip host -> map to port 80 in private subnet.
+   > here 7090 is the host ip (any port)
+   > -d is detach , that means , when running this service , our terminal will not be freezed , that means we will have control on our terminal.
+   > --name myweb is like giving name for this particular container process.
+   > by defualt run command runs in foreground causing not to have access to terminal
+      
+      docker run --name myweb -d -P nginx  -> capital P is for automatically doing port mapping
+      docker ps -a to see port
+   
+   62  docker ps
+   63  docker stop 579d293a4641
+       dockar start <image>
+   64  docker ps -a
+   65  history
+   
+   COntainers are stored in below path :
+   /var/lib/docker/containers
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 
 #Docker Installation | Configuration | Commands & Concepts:
@@ -227,7 +313,38 @@ Once you install tomcat on ur vm :
 
 docker logs <container_id>
 
-#Access Docker contents using exec - Non-Interactive Mode: 
+#Access Docker contents using 
+
+- Non-Interactive Mode: 
+
+docker exec <container_id/container_name> <any bash command>
+
+docker exec myweb ls / 
+
+bin
+boot
+dev
+docker-entrypoint.d
+docker-entrypoint.sh
+etc
+home
+lib
+lib64
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+
+
+>  see we have our own container directory structure
 
 docker exec < container_id> <bash_command>
 
@@ -242,3 +359,88 @@ docker exec -it <container_name-gallant_blackburn> bash
 docker run -it centos bash
 dockerpath# cat /etc/*release*
 dockerpath# exit
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+to get into containers and execute some command to do some changes (not recommended)
+
+we do :
+
+docker exec -it <container_id/container_name> /bin/bash
+
+> what we are doing here is
+i -> interactive
+t -> terminal
+
+so we are allowing bash script to execute in specified container
+> we can install , run do whatever we want inside the container
+
+exit
+> it will throws us out from containers and we will return back to host machine
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+DOCKER LOGS
+------------
+ALways run inspect command first to know , how containers installation happens and condition it checks!
+ 
+ docker inspect <image_id>
+ docker inspect 76c69feac34e
+
+  141  docker run --name Mysql -d -P mysql:5.7.40   -> this will run and intall mysql:5.7.40
+  142  docker ps   -> will give list of running process
+  143  docker ps -a  -> all process list
+  144  docker images -> will give list of images installed
+  145  docker logs Mysql -> this will give logs about Mysql process
+  146  docker run --name Mysql1 -d -P -e MYSQL_ROOT_PASSWORD=mypass mysql:5.7.40  -> -e is for providing export variables
+  147  docker ps
+  148  docker logs Mysql1
+  149  history
+  
+  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+DOCKER VOLUMES
+---------------
+
+> Persistant storage for volatile containers
+
+Bind:
+-----
+
+docker run --name db2 -d -e MYSQL_ROOT_PASSWORD=passwd -p 3030:3306 -v /root/vproddata:/var/lib/mysql mysql 
+
+> we are attaching prodata directory from host sysem to containers directory
+
+
+docker volumes:
+---------------
+
+docker volume
+
+docker volume create <volume_name>
+docker volume ls
+
+docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd =p 3031:3306 -v <volume_name_created>:/var/lib/mysql <image_name/mysql>
+
+docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql 
+
+volume directory in host :
+
+cd /var/lib/docker/volumes/mydbdata/_data -> this will create data from containers to host machine
+
+> we can re- attach it to other containers aswll in docker volume
+
+ "HostConfig": {
+            "Binds": [ 
+                "mydbdata:/var/lib/mysql"    --> gives bind info
+
+
+"NetworkMode": "default",
+            "PortBindings": {
+                "3306/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "3031"    -> gives port info
+
+
+
+
+
