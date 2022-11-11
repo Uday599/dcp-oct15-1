@@ -1,0 +1,207 @@
+from - base image
+labels - adds metadata to an image
+run- execute command in a new layer and commit the results
+Add/Copy
+CMD
+EntryPoint
+Volume
+Expose
+ENV
+USER
+WORKDIR
+ARG
+ONBUILD
+
+website : https://docs.docker.com/engine/reference/builder/
+
+
+
+  248  mkdir images
+  250  cd images
+  251  ls
+  252  clear
+  253  mkdir nano
+  254  cd nano
+  257  wget https://www.tooplate.com/zip-templates/2131_wedding_lite.zip   -- get link from tooplate sample websitr
+  259  ls
+  260  yum install unzip  -- install unzip
+  261  unzip --version
+  265  cd nano
+  266  ls
+  267  mv 2131_wedding_lite.zip /root/images  -- move zip to image directory
+  279  unzip 2131_wedding_lite.zip  -- in image direcotory
+  280  ls
+  281  cd 2131_wedding_lite
+  282  ls
+  283  tar czvf nano.tar.gx *
+  284  ls
+  285  move nano.tar.gz ../
+  286  mv nano.tar.gz ../
+  287  mv nano.tar.gx ../
+  288  ls
+  289  cd ..
+  290  ;s
+  291  ls
+  292  rm -rf 2131_wedding_lite 2131_wedding_lite.zip
+  293  ls
+  294  mv nano.tar.gx nano.tar.gz
+  295  ls
+  296  l
+  297  ls
+  298  mv nano.tar.gz nano/
+  299  cd nano
+  300  ls
+  301  vim Dockerfile
+
+
+
+DockerFile 
+----------
+vim Dockerfile
+
+
+FROM CentOS:latest
+LABEL "Author"="Uday"
+LABEL "Project"="nano"
+RUN yum update && yum install git -y
+RUN yum install apache2 -y
+CMD ["/usr/sbin/apache2ctl","-D","FOREGROUND"]  -- [command,argument]
+EXPOSE 80
+WORKDIR /var/www/html
+VOLUME /var/log/apache2
+ADD nano.tar.gz /var/www/html  -- here we are adding mean - untar ing nano.tar.gz file into web directory
+
+
+
+
+docker build -t nanoimg .    -- nanoimg is the image name we created ,
+ > . mean work in current directory , that is nano directory
+ 
+ 
+ 
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ Command CMD & EntryPoint
+ -----------------------
+ 
+ 1.
+ vi Dockerfile
+ 
+FROM centos:latest
+CMD ["echo","hello"]
+
+ 
+docker build -t printer:v1 .    -> this will build printer:v1 image
+
+docker run printer:v1   -> run command + argument
+
+
+[root@ip-172-31-1-219 cmd]# docker run printer:v1
+hello
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+ 2. 
+ Docker file has to be created first
+ 
+ vim Dockerfile
+ 
+FROM centos:latest
+ENTRYPOINT ["echo"]   -- this means this dockerfile has only entrypoint and it is expecting user input to execute echo command
+
+> whenever we use ENTRYPOINT it means we have to give arguments
+ 
+docker build -t printer:v2 .    -> we are creating a dockeimage named: printer:v2 , having dockerfile in the same working directory so ". is used if not mention the path"
+ 
+ docker images -> you will be able to find the image
+ 
+ REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+printer      v2        64676b7d746b   4 seconds ago    231MB   -- this one
+nanoimg      v1        7933e8527889   5 minutes ago    403MB
+printer      v1        230eb5d5a6e9   15 minutes ago   231MB
+centos       latest    5d0da3dc9764   14 months ago    231MB
+
+to run this docker image
+
+we do
+docker run printer:v2 <input to display>
+
+docker run printer:ve hello
+this will print Hello in the console
+
+[root@ip-172-31-1-219 entry]# docker run printer:v2 hello uday
+hello uday
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+3.
+Dockerfile
+
+FROM centos:latest
+ENTRYPOINT ["echo"]
+cmd ["hello"]
+
+[root@ip-172-31-1-219 ~]# ls
+entrycmd  images  vproddata
+
+[root@ip-172-31-1-219 ~]# cd entrycmd
+[root@ip-172-31-1-219 entrycmd]# ls
+cmd  entry  entryCMD
+
+[root@ip-172-31-1-219 entrycmd]# cd entryCMD
+[root@ip-172-31-1-219 entryCMD]# vi Dockerfile
+
+[root@ip-172-31-1-219 entryCMD]# docker build -t printer:v3 .
+
+Sending build context to Docker daemon  2.048kB
+Step 1/3 : FROM centos:latest
+ ---> 5d0da3dc9764
+Step 2/3 : ENTRYPOINT ["echo"]
+ ---> Using cache
+ ---> 64676b7d746b
+Step 3/3 : cmd ["hello"]
+ ---> Running in ff0479475993
+Removing intermediate container ff0479475993
+ ---> a9ac4e1ad6cc
+Successfully built a9ac4e1ad6cc
+Successfully tagged printer:v3
+
+[root@ip-172-31-1-219 entryCMD]# docker images
+
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+printer      v3        a9ac4e1ad6cc   23 seconds ago   231MB
+printer      v2        64676b7d746b   12 minutes ago   231MB
+nanoimg      v1        7933e8527889   18 minutes ago   403MB
+printer      v1        230eb5d5a6e9   28 minutes ago   231MB
+centos       latest    5d0da3dc9764   14 months ago    231MB
+
+[root@ip-172-31-1-219 entryCMD]# docker run printer:v3
+hello
+
+--- Now comes the difference,
+here we can overwrite the command argument with our own value.
+
+REMEMBER : ENTRYPOINT will have more prority than Command
+
+[root@ip-172-31-1-219 entryCMD]# docker run printer:v3 Hello Uday
+Hello Uday
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+ 
