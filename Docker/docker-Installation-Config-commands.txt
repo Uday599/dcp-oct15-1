@@ -5,6 +5,86 @@ Containers
 we dont have different OS's here , only underlying main OS will be used to run application 
 Here we have entity called 'Docker' like hypervisor in VMs
 
+*  Container runtime environment -> docker
+
+each service in docker will have its own tree directory structure , hence making sure that it is isolated from other servcies
+
+Hypervisor is for physical hardware virtualization.
+
+Docker Daemon 
+docker group   - /etc/group  = to add user , by default only root can run docker
+
+
+[root@ip-172-31-1-219 ~]# docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+2db29710123e: Pull complete
+Digest: sha256:faa03e786c97f07ef34423fccceeec2398ec8a5759259f94d99078f264e9d7af
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    1  yum install docker
+    2  systemctl status docker
+    3  systemctl start docker
+    4  systemctl enable docker
+    5  systemctl status docker
+    6  clear
+    7  docket ps
+    8  docker ps
+    9  which docker
+   10  cd container_id
+   11  clear
+   12  docker ps
+   13  docker images
+   14  docker pull centos
+   15  docker images
+   16  docker ps
+   17  dockerclear
+   18  clear
+   19  docker inmages
+   20  docker inmage
+   21  docker images
+   22  docker run centos
+   23  docker ps
+   24  docker ps -a
+   25  docker run nginx
+   26  docker pull loksaieta/loksaimvndevops:v1.0
+   27  docker images
+   28  docker run -it loksaieta/loksaimvndevops bash
+   29  docker --version
+   30  docker run hello-world
+   31  clear
+   32  docker images
+   33  docker ps
+   34  docker ps -a
+   35  history
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Docker hub - registry for docker images
 
 
 
