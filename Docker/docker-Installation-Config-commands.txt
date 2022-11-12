@@ -409,14 +409,32 @@ docker run --name db2 -d -e MYSQL_ROOT_PASSWORD=passwd -p 3030:3306 -v /root/vpr
 
 > we are attaching prodata directory from host sysem to containers directory
 
+Mounting volume:
+----------------
+
+> Though both methods are similar, there is a slight difference. Docker manages Volumes and is usually not affected by other processes running on the same host. In contrast, Bind Mounts are just directories on the host file system and may be modified by other processes other than docker.
+
+> Binding host volume to container
+
+>>>   docker run -it --mount source=<volume_name>,destination=</container_volume_path> <image>
 
 docker volumes:
 ---------------
+
+
+> Stateless application
+> statefull application
+
+> image --> appl .war  = spl-db - credentials /config parameter
+   * so secrets from host will be send to containers to access db
+
 
 docker volume
 
 docker volume create <volume_name>
 docker volume ls
+
+docker volume inspect <volume_name>  --- to check the mount point of volume
 
 docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd =p 3031:3306 -v <volume_name_created>:/var/lib/mysql <image_name/mysql>
 
