@@ -11,6 +11,16 @@ each service in docker will have its own tree directory structure , hence making
 
 Hypervisor is for physical hardware virtualization.
 
+
+LXC AND DOCKER :
+---------------
+
+Linux Containers (LXC) is an OS-level virtualization technology that enables you to create and run multiple Linux operating systems (OS) simultaneously on a single Linux machine (LXC host). LXC provides a set of tools to manage your container as well as templates to create a virtual environment of the most common Linux OS.
+
+Docker is an open-source containerization technology that focuses on running a single application in an isolated environment. Its Docker Engine enables you to create, run, or distribute containers. You can also share applications and collaborate with other developers using Docker Hub.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+
 Docker Daemon 
 docker group   - /etc/group  = to add user , by default only root can run docker
 
