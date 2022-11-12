@@ -12,6 +12,124 @@ Image is a read-only template used to create container
   
 > By creating Dockerfile
 
+--------------
+-----Demo-----
+--------------
+
+###Build Docker Image :::
+
+#Dockerfile 
+
+###Using commit: 
+
+	docker run -it debian
+
+	ls
+
+	git
+
+	apt-get update && apt-get install -y git 
+
+	clear
+
+	git 
+
+	docker ps -a 
+
+	docker commit <container_id> loksaieta/deb-git:v1.0
+
+	docker images
+
+	docker run -it loksaieta/debian-git:s1.1
+	
+	###Login to Container:
+	docker exec -it <container_name-wizardly_shannon> bash
+	
+###Using Docker file:
+
+mkdir docker-contents
+cd docker-contents
+
+vi Dockerfile
+
+FROM debian
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y vim
+
+### Best Practice:
+
+FROM debian
+RUN apt-get update && apt-get install -y \
+	git \
+	vim
+
+###
+
+###save this Dockerfile
+
+docker build -t loksaieta/deb-git-vim .
+
+docker images
+
+#Dockerfile 
+
+FROM tomcat:latest
+WORKDIR /home/devopsadmin
+COPY ./mvn-hello-world.war /usr/local/tomcat/webapps
+RUN cp -r /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps
+
+docker build -t loksaieta/javawebapp .
+
+#QA Environment ---> OS, appln, appln server, mysql, Testing tool, Monitoring tools 
+
+#docker-compose.yaml 
+
+#While running multiple containers ----> we shd establish links between the containers... for data trans
+ 
+#### Docker Push images to Docker Registry:
+
+docker images
+
+docker tag <image_id> loksaieta/debian-git1:1.0
+
+docker tag 33e83a2fdb90 loksaieta/debian-git2:v1.0
+
+docker images 
+
+## Push to docker registry
+
+docker login --username=loksaieta
+dckr_pat_xG5pnARsdVF_nmgQsUgKVHuJshZoQ
+
+
+password: dckr_pat_lu71sdfvhQjN0UYt7wDiSwySTovVy3ikWf8
+
+#docker push loksaieta/debian-git2:v1.0
+
+docker push loksaieta/mywebappln:v1.1
+
+#docker push loksaieta/debian-git:v1.1
+
+##Docker File
+
+###Storage
+### Volumes:
+
+docker run centos sleep 30
+
+docker volume list
+
+docker volume create v1 
+
+docker volume inspect v1
+
+docker run -it --name=testvol1 --mount source=v1,destination=/v1 bash 
+
+docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
+
+#stateless & Stateful Appln.
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 >  Best Practice : try eliminating as many layes as you can in Dockerfile
