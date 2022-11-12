@@ -1,4 +1,23 @@
-from - base image
+
+Image is a read-only template used to create container
+
+
+2 Ways to create Images
+-----------------------
+
+> commit changes made in a docker container
+  * docker commit <container_id> <image_name:version>
+  
+ <Image_name> should be prefixed with your profile name (docker hub profile name), if you like to push to docker hub for public access
+  
+> By creating Dockerfile
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+>  Best Practice : try eliminating as many layes as you can in Dockerfile
+
+
+from - base image   -- name should be lower case, else will throw error
 labels - adds metadata to an image
 run- execute command in a new layer and commit the results
 Add/Copy
@@ -76,6 +95,7 @@ ADD nano.tar.gz /var/www/html  -- here we are adding mean - untar ing nano.tar.g
 
 docker build -t nanoimg .    -- nanoimg is the image name we created ,
  > . mean work in current directory , that is nano directory
+ > -t -> terminal
  
  
  
