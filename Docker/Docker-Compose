@@ -1,0 +1,56 @@
+Docker-compose --> containerization 
+
+https://docs.docker.com/compose/install/linux/
+
+
+Detailes explanation :
+--------------------
+
+
+Website : https://docs.docker.com/compose/gettingstarted/
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  469  yum update
+  470  yum install update
+  471  yum update install
+  472  yum install docker-compose-plugin
+  473  sudo yum update
+  474    $ sudo yum install docker-compose-plugin
+  475  yum install docker-compose-plugin
+  476  docker compose --version
+  477  docker compose --help
+  478  clear
+  479  docker compose version
+  480  Docker Compose version vN.N.N
+  481  docker version
+  482  docker --version
+  483  docker compose version
+  484  mkdir composetest
+  485  cd composetestls
+  486  cd ..
+  487  ls
+  488  cd ..
+  489  ls
+  490  cd ~
+  491  ls
+  492  cd composetest
+  493  ls
+  494  vi app.py
+  495  vi requirements.txt
+  496  vi Dockerfile
+  497  vi docker-compose.yml
+  498  clear
+  499  ls
+  500  ls -l
+  501  docker compose up
+  502  docker compose down
+  503  vi docker-compose.yml
+  504  docker compose up
+  505  vi docker-compose.yml
+  506  docker compose up
+  507  vi docker-compose.yml
+  508  docker compose up
+  509  history
