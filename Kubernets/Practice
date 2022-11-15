@@ -3,9 +3,11 @@ Kubernete
 
 Container Orchestration tool
 
-Docker swam -> supports only docker
+Docker swarm -> supports only docker
+Docker-compose -> used for orchestration in docker
 
 kubernetes supports most of the tools
+Manifest file -> is used for orchestration in kubernets
 
 
 Architecture :
