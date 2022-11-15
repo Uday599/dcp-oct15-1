@@ -1,6 +1,8 @@
 Kubernete
 ----------
 
+Image link : https://platform9.com/wp-content/uploads/2019/05/kubernetes-constructs-concepts-architecture.jpg
+
 Container Orchestration tool
 
 Docker swarm -> supports only docker
@@ -13,28 +15,36 @@ Manifest file -> is used for orchestration in kubernets
 Architecture :
 -------------
 
-KUBCTL -> command line to intract with master
+
 
 URL : https://kubernetes.io/docs/reference/kubectl/
 
-Config file -> describes what is expected
+Config file/manifest -> describes what configuration needed like Playbook in Ansible , writing in YAML or Json
+
+KUBCTL -> command line to intract with master
 
 ---MASTER--
 
 > API server gateway  -> this is the main building block , which process the config file
-> ETCD -> database that stores info about worker nodes/pods and other related details
-> Scheduled -> it identifies whihc PODS to pick to start work on..
+> ETCD -> database that stores info about worker nodes/pods/how many containers are running /there status etc ..and other related details
+> Scheduler -> it identifies whihc PODS to pick to start work on..
 > Controller -> it holds details about Worker node health/authorization/authentication etc...
+ controller ensures that containers are always up and running , ensure high availablity and load balancing 
 
---WORKER--
+--WORKER NODE--VMs
 
 Cluster -> collection of worker node
 Inside worker node :
 KUBELET -> it will receives request from controller and perform almost all weightlifting tasks like downloaing image etc..
-Proxy -> allows pods to expose to outside world
-PODS -> collection of containers
+Container Runtime engine Docker -> verifies the images and gets into dockerhub and then deploy it to containers/pods
+kube Proxy -> allows pods to expose to outside world -> takes care of complete networking 
+PODS -> collection of containers / single unit of work
 basically if we have multiple containers, that means only one will br main and remaining all will be supportive container for main one
 
+
+> Each POD's has its own IP address and each container has its own PORT
+> Inter POD communication 
+> Intra POD communication -> uses Local Host
 
 Setup of K8:
 
@@ -100,19 +110,11 @@ Commands:
   400  minikube delete
 
 
+Open Source:
 
-
-
-
-
-
-
-
-
-
-
-
-
+Minikube
 Kops
+Kubeadm -- edureka
 
-
+Manages services:
+AKS,EKS,GKS
