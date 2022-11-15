@@ -63,7 +63,39 @@ minikube start
 Complete documentation on minikube - URL : https://kubernetes.io/docs/tutorials/hello-minikube/
 ---------------------------------------
 
+Commands:
 
+  370  git clone https://github.com/devopshydclub/vprofile-project.git  -> cloning
+  371  cd vagrant-project
+  372  cd vprofile-project
+  373  ls
+  374  git pull
+  375  git checkout kubernetes-setup  -> moving into kubernetes branch
+  376  ls
+  377  cd
+  378  minikube --help   
+  379  minicube start
+  380  minikube start
+  381  kubectl get nodes
+  382  clear
+  383  cat .kube/config  -> gives the details about configuration/clusters path : home/.kube/config
+  384  kubectl get nodes  -> when this command is run -> kubctl will access KUBECONFIG file for details
+  385  kubectl create deployment hello-node --image=registry.k8s.io/echoserver:1.4  -> deploying 
+  386  kubectl.exec get pod   --> didnt work
+  387  kubectl get pod
+  388  kubectl get deploy
+  389  kubectl expose deployment hello-node --type=LoadBalancer --port=8080  -> exposing
+  390  kubectl get services
+  391  minikube service hello-node
+  392  minikube get services
+  393  kubectl get services
+  394  kubectl delete service hello-node
+  395  kubectl delete deployment hello-node
+  396  kubectl get pod
+  397  kubectl get service
+  398  kubectl get nodes
+  399  minikube stop
+  400  minikube delete
 
 
 
