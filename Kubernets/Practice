@@ -1,0 +1,84 @@
+Kubernete
+----------
+
+Container Orchestration tool
+
+Docker swam -> supports only docker
+
+kubernetes supports most of the tools
+
+
+Architecture :
+-------------
+
+KUBCTL -> command line to intract with master
+
+URL : https://kubernetes.io/docs/reference/kubectl/
+
+Config file -> describes what is expected
+
+---MASTER--
+
+> API server gateway  -> this is the main building block , which process the config file
+> ETCD -> database that stores info about worker nodes/pods and other related details
+> Scheduled -> it identifies whihc PODS to pick to start work on..
+> Controller -> it holds details about Worker node health/authorization/authentication etc...
+
+--WORKER--
+
+Cluster -> collection of worker node
+Inside worker node :
+KUBELET -> it will receives request from controller and perform almost all weightlifting tasks like downloaing image etc..
+Proxy -> allows pods to expose to outside world
+PODS -> collection of containers
+basically if we have multiple containers, that means only one will br main and remaining all will be supportive container for main one
+
+
+Setup of K8:
+
+MINIKUBE
+--------
+
+Git link : https://github.com/devopshydclub/vprofile-project/tree/kubernetes-setup
+
+## Dependency => Oracle VM Virtualbox
+##To Setup Chocolaty
+##Open powershell as administrator and execute below command 
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+## If getting Error, Turn Off Your Anti Virus for a moment and try again.
+
+## Install Minikube with chocolaty
+## Close powershell and start again with admin
+
+choco install minikube kubernetes-cli -y
+
+
+##Execute to Setup Minikube cluster
+minikube start
+
+> cat .kube/config   -- holds the details about cluster
+> kubectl get nodes 
+
+---------------------------------------
+Complete documentation on minikube - URL : https://kubernetes.io/docs/tutorials/hello-minikube/
+---------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kops
+
+
