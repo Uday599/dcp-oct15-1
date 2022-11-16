@@ -94,6 +94,12 @@ Execute the below commmand in Worker Nodes, to join all the worker nodes with Ma
 > you can verify by kubectl get nodes -> to view the nodes
 > Below command should be copied while initializing kubeadm in master (check upper part :)
 
+> execute below command to get join token in kubemaster
+
+kubeadm token create --print-join-command
+
+Sample:
+
 kubeadm join 172.31.13.1:6443 --token db44h7.mld38h3otcgpgs6s --discovery-token-ca-cert-hash sha256:35e4c6d99284116035840e1900712cf00c1850ceaac8318c78164f3ea9183c86
 
 
