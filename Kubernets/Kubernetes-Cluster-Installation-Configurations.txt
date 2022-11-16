@@ -3,7 +3,10 @@ Kube-Master(Controller)
 	Kube-Worker2
 	
 	
-Add Port: 0 - 65535
+WE ARE SETTING UP KUBERNETES USING - KUBEADM
+-------------------------------------------
+	
+Add Port: 0 - 65535  -- Open this posts in inbound rule of security group 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 On Both Master and Worker Nodes:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,16 +54,26 @@ systemctl start kubelet
 Only on Master Node:
 ~~~~~~~~~~~~~~~~~~~~~
 
-sudo kubeadm init --apiserver-advertise-address=172.31.13.1 --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
+sudo kubeadm init --apiserver-advertise-address=172.31.12.224 --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
 
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+Above command : here we are initializing out one of the VM as Master - Private IP , POD CIDR is defined , ignore is to neglect any runtime error like CPU error and Memory and treat them as warning
+
+[WARNING NumCPU]: the number of available CPUs 1 is less than the required 2
+[WARNING Mem]: the system RAM (964 MB) is less than the minimum 1700 MB
+
+
+--------------------------------
+
+mkdir -p $HOME/.kube   -> this is in root directory
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config   -> we are just copying the repo file which we installed earlier(upper part) to required path
+sudo chown $(id -u):$(id -g) $HOME/.kube/config  -> changing the ownership
 
 
 #export KUBECONFIG=/etc/kubernetes/kubelet.conf
 
 #We need to install a flannel network plugin to run coredns to start pod network communication.
+# we have Kubeproxy for networking in PODS
+#FLANNER - pluggin for network adapter
 
 sudo kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml 
 sudo kubectl apply -f https://docs.projectcalico.org/v3.8/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml 
@@ -77,4 +90,13 @@ kubectl describe nodes
 Execute the below commmand in Worker Nodes, to join all the worker nodes with Master :
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+> execute below command in every worker node to connect to master
+> you can verify by kubectl get nodes -> to view the nodes
+> Below command should be copied while initializing kubeadm in master (check upper part :)
+
 kubeadm join 172.31.13.1:6443 --token db44h7.mld38h3otcgpgs6s --discovery-token-ca-cert-hash sha256:35e4c6d99284116035840e1900712cf00c1850ceaac8318c78164f3ea9183c86
+
+
+
+
+Where will Namespace come into picture - cluster?
