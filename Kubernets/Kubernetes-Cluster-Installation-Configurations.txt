@@ -108,3 +108,21 @@ kubeadm join 172.31.13.1:6443 --token db44h7.mld38h3otcgpgs6s --discovery-token-
 
 
 Where will Namespace come into picture - cluster?
+
+--------------Sunday 13 Nov intro --------------
+
+KUBECTL SYNTAX
+--------------
+
+kubectl <command> <type> <name> <flags>
+
+Typs -> objects like pods/deployments/replicaset many more
+command -> get create descrive many more
+flag is optional
+name is name of the object
+
+
+
+
+
+> kubectl get pods --all-namespace
