@@ -28,7 +28,29 @@ kubectl create configmap nginx-configmap-vol --from-file=file-1.txt --from-file=
 # rm -f file-1 file-2
 
 kubectl get configmaps
+
+NAME                  DATA   AGE
+kube-root-ca.crt      1      19h
+nginx-configmap-vol   2      31s
+
 kubectl describe configmaps nginx-configmap-vol
+
+
+Name:         nginx-configmap-vol
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+file-1.txt:
+----
+Non-sensitive data inside file-1
+file-2.txt:
+----
+Non-sensitive data inside file-2
+Events:  <none>
+
 
 ==========================================================
 
@@ -48,10 +70,10 @@ spec:
     - name: test-vol
       mountPath: "/etc/non-sensitive-data"
       readOnly: true
-  volumes:
+  volumes:       --> here we are mapping config file from host to containers through volumes
     - name: test-vol
       configMap:
-        name: nginx-configmap-vol
+        name: nginx-configmap-vol   --> name of the configmap created
         items:
         - key: file-1.txt
           path: file-a.txt
@@ -69,9 +91,17 @@ spec:
 kubectl create -f nginx-pod-configmap-vol.yaml
 
 # Display
-kubectl get po
+kubectl get pods
+
 kubectl get configmaps
+
+NAME                  DATA   AGE
+kube-root-ca.crt      1      20h     > default one
+nginx-configmap-vol   2      4m23s   > data mean 2 files
+
+
 kubectl describe pod nginx-pod-configmap-vol
+
 
 # Validate from "inside" the pod
 kubectl exec nginx-pod-configmap-vol -it /bin/sh
