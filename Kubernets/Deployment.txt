@@ -41,7 +41,7 @@ kubectl get deploy -l app=nginx-app   -> l=lable
 NAME           READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-deploy   3/3     3            3           3m49s
 
-kubectl get rs -l app=nginx-app
+kubectl get rs -l app=nginx-app   -> rs -> replication set
 
 NAME                      DESIRED   CURRENT   READY   AGE
 nginx-deploy-5878ddd45b   3         3         3       3m30s
