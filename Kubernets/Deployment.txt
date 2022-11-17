@@ -37,26 +37,87 @@ spec:
 
 kubectl create -f nginx-deploy.yaml 
 kubectl get deploy -l app=nginx-app   -> l=lable
+
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deploy   3/3     3            3           3m49s
+
 kubectl get rs -l app=nginx-app
+
+NAME                      DESIRED   CURRENT   READY   AGE
+nginx-deploy-5878ddd45b   3         3         3       3m30s
+
 kubectl get po -l app=nginx-app
+
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-5878ddd45b-bwmvr   1/1     Running   0          3m44s
+nginx-deploy-5878ddd45b-ghljm   1/1     Running   0          3m44s
+nginx-deploy-5878ddd45b-gkwzp   1/1     Running   0          3m44s
+
 kubectl describe deploy nginx-deploy
+
+Name:                   nginx-deploy
+Namespace:              default
+CreationTimestamp:      Thu, 17 Nov 2022 10:39:17 +0000
+Labels:                 app=nginx-app
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=nginx-app
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate   -> rolling update one by one
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=nginx-app
+  Containers:
+   nginx-container:
+    Image:        nginx:1.7.9   -> image version
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   nginx-deploy-5878ddd45b (3/3 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  4m5s  deployment-controller  Scaled up replica set nginx-deploy-5878ddd45b to 3
+
 
 *******************************************************************
 # 3. Testing: Rollback update 
 
 kubectl set image deploy nginx-deploy nginx-container=nginx:1.91 --record
+
 kubectl rollout status deployment/nginx-deploy
+>Waiting for deployment "nginx-deploy" rollout to finish: 1 out of 3 new replicas have been updated...
+
 kubectl rollout history deployment/nginx-deploy
+> REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl set image deploy nginx-deploy nginx-container=nginx:1.91 --record=true
+
 kubectl rollout undo deployment/nginx-deploy
+> deployment.apps/nginx-deploy rolled back
+
 kubectl rollout status deployment/nginx-deploy
+> deployment "nginx-deploy" successfully rolled out
+
 kubectl describe deploy nginx-deploy | grep -i image
+Syntax : kubectl <action> <object> <object_name>
+>    Image:        nginx:1.7.9
+
 
 *******************************************************************
 # 4. Testing: Update Version of "nginx:1.7.9"  to "nginx:1.9.1"
 
 kubectl set image deploy nginx-deploy nginx-container=nginx:1.9.1
 # or
-kubectl edit deploy nginx-deploy
+kubectl edit deploy nginx-deploy   -> we can edit through VI from this
 kubectl rollout status deployment/nginx-deploy
 kubectl get deploy
 
@@ -64,7 +125,12 @@ kubectl get deploy
 # 5. Testing: Scale UP
 
 kubectl scale deployment nginx-deploy --replicas=5
+syntax : kubectl <action> <object> <object_name> 
+
 kubectl get deploy
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deploy   5/5     5            5           21m
+
 kubectl get po -o wide
 
 *******************************************************************
@@ -72,6 +138,10 @@ kubectl get po -o wide
 
 kubectl scale deployment nginx-deploy --replicas=3
 kubectl get deploy
+
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deploy   3/3     3            3           22m
+
 kubectl get po -o wide
    
 *******************************************************************
