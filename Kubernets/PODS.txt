@@ -43,14 +43,194 @@ PODS TASKs:
 
 *******************************************************************
 
+
+
+[root@ip-172-31-12-224 kubernetes]# kubectl get nodes
+NAME                                           STATUS   ROLES                  AGE   VERSION
+ip-172-31-12-224.ap-south-1.compute.internal   Ready    control-plane,master   18h   v1.21.3
+ip-172-31-4-68.ap-south-1.compute.internal     Ready    <none>                 17h   v1.21.3
+ip-172-31-6-239.ap-south-1.compute.internal    Ready    <none>                 17h   v1.21.3
+
 2. Create and display Pods
 
 # Create and display PODs
 kubectl create -f nginx-pod.yaml
+
 kubectl get pod
-kubectl get pod -o wide
-kubectl get pod nginx-pod -o yaml
+---------------
+
+NAME        READY   STATUS    RESTARTS   AGE
+nginx-pod   1/1     Running   0          2m36s
+
+kubectl get pod -o wide    -> this will details about Pod like where this pod is running  in worker node
+-----------------------
+
+NAME        READY   STATUS    RESTARTS   AGE     IP             NODE                                         NOMINATED NODE   READINESS GATES
+nginx-pod   1/1     Running   0          2m10s   192.168.7.65   ip-172-31-4-68.ap-south-1.compute.internal   <none>           <none>
+
+kubectl get pod nginx-pod -o yaml   -> displays how yaml file is interpreted of nginx-pod
+---------------------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/podIP: 192.168.7.65/32
+  creationTimestamp: "2022-11-17T06:16:40Z"
+  labels:
+    app: nginx
+    tier: dev
+  name: nginx-pod
+  namespace: default
+  resourceVersion: "11571"
+  uid: 3b932bbb-1a42-44d6-9534-e547dd1319ff
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: nginx-container
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-m2ghb
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: ip-172-31-4-68.ap-south-1.compute.internal
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-m2ghb
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2022-11-17T06:16:40Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2022-11-17T06:16:55Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2022-11-17T06:16:55Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2022-11-17T06:16:40Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://3e016f2cbe42a66fdd6ba878a67b02dcc5ccc14db28c50e6f230ffae8c4fe32a
+    image: nginx:latest
+    imageID: docker-pullable://nginx@sha256:e209ac2f37c70c1e0e9873a5f7231e91dcd83fdf1178d8ed36c2ec09974210ba
+    lastState: {}
+    name: nginx-container
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2022-11-17T06:16:55Z"
+  hostIP: 172.31.4.68
+  phase: Running
+  podIP: 192.168.7.65
+  podIPs:
+  - ip: 192.168.7.65
+  qosClass: BestEffort
+  startTime: "2022-11-17T06:16:40Z"
+
 kubectl describe pod nginx-pod
+------------------------------
+
+Name:         nginx-pod
+Namespace:    default
+Priority:     0
+Node:         ip-172-31-4-68.ap-south-1.compute.internal/172.31.4.68
+Start Time:   Thu, 17 Nov 2022 06:16:40 +0000
+Labels:       app=nginx
+              tier=dev
+Annotations:  cni.projectcalico.org/podIP: 192.168.7.65/32
+Status:       Running
+IP:           192.168.7.65
+IPs:
+  IP:  192.168.7.65
+Containers:
+  nginx-container:
+    Container ID:   docker://3e016f2cbe42a66fdd6ba878a67b02dcc5ccc14db28c50e6f230ffae8c4fe32a
+    Image:          nginx
+    Image ID:       docker-pullable://nginx@sha256:e209ac2f37c70c1e0e9873a5f7231e91dcd83fdf1178d8ed36c2ec09974210ba
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 17 Nov 2022 06:16:55 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m2ghb (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  kube-api-access-m2ghb:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  5m30s  default-scheduler  Successfully assigned default/nginx-pod to ip-172-31-4-68.ap-south-1.compute.internal
+  Normal  Pulling    5m24s  kubelet            Pulling image "nginx"
+  Normal  Pulled     5m15s  kubelet            Successfully pulled image "nginx" in 8.817756004s
+  Normal  Created    5m15s  kubelet            Created container nginx-container
+  Normal  Started    5m15s  kubelet            Started container nginx-container
+
 
 
 *******************************************************************
@@ -58,7 +238,7 @@ kubectl describe pod nginx-pod
 3. Test & Delete
 
 # To get inside the pod
-kubectl exec -it nginx-pod -- /bin/sh
+kubectl exec -it nginx-pod -- /bin/sh     > bin bash
 
 # Create test HTML page
 cat <<EOF > /usr/share/nginx/html/test.html
@@ -76,13 +256,41 @@ EOF
 exit
 
 # Expose PODS using NodePort service
-kubectl expose pod nginx-pod --type=NodePort --port=80
+kubectl expose pod nginx-pod --type=NodePort --port=80    : type - services  -> nodeport is a servcie to expose to internet
+
+service/nginx-pod exposed
+
 
 # Display Service and find NodePort
 kubectl describe svc nginx-pod
 
+Name:                     nginx-pod
+Namespace:                default
+Labels:                   app=nginx
+                          tier=dev
+Annotations:              <none>
+Selector:                 app=nginx,tier=dev
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.107.124.42
+IPs:                      10.107.124.42
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  30426/TCP   -> this port is used to expose
+Endpoints:                192.168.7.65:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+
+
 # Open Web-browser and access webapge using 
+
 http://<external-nodeip>:<nodeport>/test.html
+       <public ip of worker node><nodeport>/indexfile
+
+kubectl get pods -o wide
 
 #eg.: http://13.233.174.93:31424/test.html
 
