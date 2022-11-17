@@ -20,7 +20,7 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
-  selector:
+  selector:     ---> one to one mapping only allowed , Repliation happens based on Selector's only!!
     app: nginx-app
 
 
@@ -39,6 +39,8 @@ kubectl describe rc nginx-rc
 #stop any running worker node 
 
 kubectl get po -o wide --watch
+kubectl get pod <your pod name> -w
+
 kubectl get po -o wide
 kubectl get nodes
 
@@ -47,13 +49,21 @@ kubectl get nodes
 
 kubectl scale rc nginx-rc --replicas=5
 kubectl get rc nginx-rc
+
+NAME       DESIRED   CURRENT   READY   AGE
+nginx-rc   5         5         5       104s
+
 kubectl get po -o wide
 
 *******************************************************************
 # 5. Scalling down
 
 kubectl scale rc nginx-rc --replicas=3
+
 kubectl get rc nginx-rc
+NAME       DESIRED   CURRENT   READY   AGE
+nginx-rc   3         3         3       2m7s
+
 kubectl get po -o wide
 
 *******************************************************************
