@@ -65,6 +65,11 @@ Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavai
 StrategyType:           RollingUpdate   -> rolling update one by one
 MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
+-------------------------------------------
+    maxSurge: The number of pods that can be created above the desired amount of pods during an update. This can be an absolute number or percentage of the replicas count. The default is 25%.
+
+    maxUnavailable: The number of pods that can be unavailable during the update process. This can be an absolute number or a percentage of the replicas count; the default is 25%.
+-------------------------------------------
 Pod Template:
   Labels:  app=nginx-app
   Containers:
@@ -154,3 +159,20 @@ kubectl get rs
 kubectl get po 
 
 *******************************************************************
+
+Reference:
+
+
+[root@ip-172-31-12-224 deployment]# kubectl create -f nginx-deploy.yaml
+deployment.apps/nginx-deploy created
+
+[root@ip-172-31-12-224 deployment]# kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-5878ddd45b-8s7gj   1/1     Running   0          4s
+nginx-deploy-5878ddd45b-pnw5t   1/1     Running   0          4s
+nginx-deploy-5878ddd45b-xqtb6   1/1     Running   0          4s
+
+[root@ip-172-31-12-224 deployment]# kubectl get deploy
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deploy   3/3     3            3           15s
+
