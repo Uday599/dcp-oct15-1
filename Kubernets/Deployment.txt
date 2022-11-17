@@ -1,4 +1,5 @@
 *******************************************************************
+DEPLOYMENT CONTROLLER - MAINLY IN PROD
 *******************************************************************
 We can go and easily update any changes to POD
 Update /Rolebackk
@@ -35,7 +36,7 @@ spec:
 # 2. Create and Display Deployment
 
 kubectl create -f nginx-deploy.yaml 
-kubectl get deploy -l app=nginx-app
+kubectl get deploy -l app=nginx-app   -> l=lable
 kubectl get rs -l app=nginx-app
 kubectl get po -l app=nginx-app
 kubectl describe deploy nginx-deploy
