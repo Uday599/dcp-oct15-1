@@ -32,6 +32,15 @@ Running  -> when pods and ready and deployed
 Failed -> if any configuration failed
 Success -> when it execute its task succesfully
 
+PODS TASKs:
+
+> create  -> apply
+> display   -> get -> many parameters are there
+> describe   -> inspect -> gives complete info about POD defination
+> edit   -> to update/edit running POD
+> logs
+> delete
+
 *******************************************************************
 
 2. Create and display Pods
