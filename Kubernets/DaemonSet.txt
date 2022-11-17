@@ -1,0 +1,74 @@
+*************************************************************************************************************************************************
+DaemonSet : to deploy pod on allworker node
+if you see we dont have replica option defined
+how many worker node we have that many pods will be deployed
+
+
+WE DONT HAVE OPTION TO STOP/PAUSE THE PODS IN KUBERNETS
+instead we can do it by making --replicas-0
+
+Overview:
+~~~~~~~~~~
+
+1. Deploy Pod on "all" worker nodes inside k8s cluster using DaemonSet
+
+   1a. fluentd-DaemonSet manifest file
+   1b. Create | Display | Validate
+
+3. Cleanup
+
+*************************************************************************************************************************************************
+
+
+1. Deploy Pod on "all" worker nodes inside k8s cluster using DaemonSet
+
+1a. YAML File:
+--------------
+# fluentd-ds-allnodes.yaml
+apiVersion: apps/v1
+kind: DaemonSet   -> kind is daemon set
+metadata:
+  name: fluentd-ds
+spec:
+  template:
+    metadata:
+      labels:
+        name: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: gcr.io/google-containers/fluentd-elasticsearch:1.20
+  selector:
+    matchLabels:
+      name: fluentd
+
+---------------------------------------------------------------------
+
+1b. Create | Display | Validate
+
+kubectl create -f fluentd-ds-allnodes.yaml
+
+kubectl get po -o wide
+
+> 2 pods are in two different worker nodes
+
+NAME                      READY   STATUS              RESTARTS   AGE     IP       NODE                                          NOMINATED NODE   READINESS GATES
+fluentd-ds-49jgc          0/1     ContainerCreating   0          6s      <none>   ip-172-31-6-239.ap-south-1.compute.internal   <none>           <none>
+fluentd-ds-65zkk          0/1     ContainerCreating   0          6s      <none>   ip-172-31-4-68.ap-south-1.compute.internal    <none>           <none>
+
+kubectl get ds
+kubectl describe ds fluentd-ds
+
+*************************************************************************************************************************************************
+3. Ceanup
+
+kubectl delete ds fluentd-ds
+syntax : kubecrtl <action> <object> < object_name>
+ds -> daemon set
+
+kubectl delete ds nginx-ds
+kubectl get po
+
+*************************************************************************************************************************************************
+
+
