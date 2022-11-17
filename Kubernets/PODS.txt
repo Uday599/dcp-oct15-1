@@ -1,0 +1,86 @@
+*******************************************************************
+# 1. https://labs.play-with-k8s.com/
+
+# nginx-pod.yamlc    -> manifest file like docker-compose file in docker
+apiVersion: v1  --> GROUP_NAME/VERSIOn 
+kind: Pod   --> what object you want 
+metadata: 
+  name: nginx-pod  -> name of the object
+  labels:  -> optional -> alternate name to refer the above POD
+    app: nginx
+    tier: dev
+spec:         ->  this will specify the container defination details
+  containers:
+  - name: nginx-container
+    image: nginx
+    env:
+    - name: DEM0_GREETING
+      value: "Hello from the environment"
+
+    ports:
+    - containerPort: 80
+
+
+> kubectl create -f <file_name>  -> first time
+> kubectl apply -f  <file_name>  -> incremental changes on existing POD/file
+> kubectl describe  -f <file_name>  -> gives data about containers , where it is executed and other details
+> kubectl get pods <pod_name>   -> gives the status of the pods
+
+Status of PODS:
+Pending  -> when api server is examining the manifest file
+Running  -> when pods and ready and deployed
+Failed -> if any configuration failed
+Success -> when it execute its task succesfully
+
+*******************************************************************
+
+2. Create and display Pods
+
+# Create and display PODs
+kubectl create -f nginx-pod.yaml
+kubectl get pod
+kubectl get pod -o wide
+kubectl get pod nginx-pod -o yaml
+kubectl describe pod nginx-pod
+
+
+*******************************************************************
+
+3. Test & Delete
+
+# To get inside the pod
+kubectl exec -it nginx-pod -- /bin/sh
+
+# Create test HTML page
+cat <<EOF > /usr/share/nginx/html/test.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Testing..</title>
+</head>
+<body>
+<h1 style="color:rgb(90,70,250);">Hello, Everyone...!</h1>
+<h2>Welcome to Kubernetes Demo :-) </h2>
+</body>
+</html>
+EOF
+exit
+
+# Expose PODS using NodePort service
+kubectl expose pod nginx-pod --type=NodePort --port=80
+
+# Display Service and find NodePort
+kubectl describe svc nginx-pod
+
+# Open Web-browser and access webapge using 
+http://<external-nodeip>:<nodeport>/test.html
+
+#eg.: http://13.233.174.93:31424/test.html
+
+
+# Delete pod & svc
+kubectl delete svc nginx-pod
+kubectl delete pod nginx-pod
+
+
+*******************************************************************
