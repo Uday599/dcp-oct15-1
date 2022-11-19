@@ -73,7 +73,7 @@ spec:
   volumes:       --> here we are mapping config file from host to containers through volumes
     - name: test-vol
       configMap:
-        name: nginx-configmap-vol   --> name of the configmap created
+        name: nginx-configmap-vol   --> name of the configmap created and in configmap we use files to transfer , we use folder/directory in hostpath under volumes
         items:
         - key: file-1.txt
           path: file-a.txt
