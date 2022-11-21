@@ -1,3 +1,9 @@
+
+Services are scoped across kuberneters and are not restricted to any cluster/node/pod/master, it will be everywhere
+
+
+
+
 NODEPORT
 --------
 
@@ -17,6 +23,95 @@ for tomcat -> 8080
 > lable selector
 
 
+[root@ip-172-31-12-224 services]# cat nginx-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+ name: nginx-data
+ labels:
+   app: nginx-data1
+spec:
+  containers:
+    - name: nginxcontainer
+      image: nginx
+      ports:
+        - name: nginx-port
+          containerPort: 80
+
+kubectl create -f <object name>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[root@ip-172-31-12-224 services]# cat nginx-nodeport.yaml
+apiVersion: v1
+kind: Service    -> kind is service
+metadata:
+  name: helloworld-service
+spec:
+  ports:
+    - port: 8090     -> internal front end port no need to worry
+      nodePort: 30001    -> external front end nodeport to access from internet
+      targetPort: nginx-port  -> very important target node , should be same as container port
+      protocol: TCP
+  selector:
+    app: nginx-data1     -> selector -> POD
+  type: NodePort
+
+
+ kubectl create -f nginx-nodeport.yaml
+ 
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+
+[root@ip-172-31-12-224 services]# kubectl get svc
+
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+helloworld-service   NodePort    10.101.194.171   <none>        8090:30001/TCP   3m31s   -> the one we created 
+kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP          5d1h
+
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[root@ip-172-31-12-224 services]# kubectl describe svc helloworld-service
+
+Name:                     helloworld-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=nginx-data1
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.101.194.171
+IPs:                      10.101.194.171
+Port:                     <unset>  8090/TCP
+TargetPort:               nginx-port/TCP
+NodePort:                 <unset>  30001/TCP
+Endpoints:                192.168.7.86:80     -> this is the conainer Ip with Port
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+    
+[root@ip-172-31-12-224 services]# kubectl describe pod | grep IP
+
+Annotations:  cni.projectcalico.org/podIP: 192.168.7.86/32
+IP:           192.168.7.86          -> you can verify here
+IPs:
+  IP:  192.168.7.86
+Annotations:               cni.projectcalico.org/podIP: 192.168.154.142/32
+IP:                        192.168.154.142
+IPs:
+  IP:           192.168.154.142
+
+
+To access from internet
+
+<workernode_IP>:30001  
+
+To delete service:
+
+kubectl delete svc helloworld-service
 
 
 
@@ -26,12 +121,62 @@ CLUSTER IP
 > internal communication
 
 
+Cluster IP yamlfile
+
+apiVersion: v1
+kind: Service
+metadata:
+ name: app-service
+spec:
+ type: ClusterIP
+ ports:
+ - targetPort: 8080
+   port: 8080
+   protocol: TCP
+selector:
+ app: backend
+
+
 LOAD BALANCER
 -------------
 
 > this actaully creates ELB in AWS and maps to node port
 > used to expose pod to internet 
 > used mostly for prod activities
+
+
+[root@ip-172-31-12-224 services]# cat nginx-LB.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-lbservice   -> name should be lower case
+spec:
+  ports:
+    - port: 80    ->?load balancer external port
+      targetPort: nginx-port   -> targer port name
+      protocol: TCP
+  selector:
+    app: nginx-data1
+  type: LoadBalancer   -> type name
+  
+  
+ kubectl create -f nginx-LB.yaml
+ 
+ [root@ip-172-31-12-224 services]# kubectl get svc
+ 
+NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+helloworld-lbservice   LoadBalancer   10.110.138.145   <pending>     80:31592/TCP   102s
+kubernetes             ClusterIP      10.96.0.1        <none>        443/TCP        5d1h
+
+
+Clean up
+-------------
+
+kubectl delete pod/nginx-data svc/helloworld-lbservice
+
+
+
 
 
 
