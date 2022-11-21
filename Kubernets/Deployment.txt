@@ -2,6 +2,8 @@
 DEPLOYMENT CONTROLLER - MAINLY IN PROD
 *******************************************************************
 We can go and easily update any changes to POD
+it will have replica-set
+ROlling updated
 Update /Rolebackk
 
 Interview important
@@ -41,7 +43,7 @@ kubectl get deploy -l app=nginx-app   -> l=lable
 NAME           READY   UP-TO-DATE   AVAILABLE   AGE
 nginx-deploy   3/3     3            3           3m49s
 
-kubectl get rs -l app=nginx-app   -> rs -> replication set
+kubectl get rs -l app=nginx-app   -> rs -> replication set -> deployement set inturn creates replicaset
 
 NAME                      DESIRED   CURRENT   READY   AGE
 nginx-deploy-5878ddd45b   3         3         3       3m30s
@@ -125,6 +127,7 @@ kubectl set image deploy nginx-deploy nginx-container=nginx:1.9.1
 kubectl edit deploy nginx-deploy   -> we can edit through VI from this
 kubectl rollout status deployment/nginx-deploy
 kubectl get deploy
+kubectl get rs
 
 *******************************************************************
 # 5. Testing: Scale UP
@@ -153,6 +156,7 @@ kubectl get po -o wide
 
 # 7. Cleanup
 
+kubectl delete deploy <object_namae>
 kubectl delete -f nginx-deploy.yaml
 kubectl get deploy
 kubectl get rs
