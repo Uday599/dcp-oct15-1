@@ -1,0 +1,38 @@
+NODEPORT
+--------
+
+> host port as we do in docker 
+> used for nonprod
+> to expose pod to internet
+
+internet -> node ip:<nodeport> -> SERVICE (lable selector) -> routes to POD equals to lable selector -> container
+
+nodeport : is the external node to access internal node
+
+say x.x.x.x:30001  => mapped to  => SERVICE IP and internal port/backend port
+internal port will be container image port
+for nginx -> 80
+for tomcat -> 8080
+
+> lable selector
+
+
+
+
+
+CLUSTER IP
+----------
+
+> internal communication
+
+
+LOAD BALANCER
+-------------
+
+> this actaully creates ELB in AWS and maps to node port
+> used to expose pod to internet 
+> used mostly for prod activities
+
+
+
+
