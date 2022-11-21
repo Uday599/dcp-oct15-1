@@ -18,7 +18,7 @@ spec:         ->  this will specify the container defination details
       value: "Hello from the environment"
 
     ports:
-    - containerPort: 80
+    - containerPort: 80   -> - means it will have list
 
 
 > kubectl create -f <file_name>  -> first time
@@ -67,6 +67,9 @@ kubectl get pod -o wide    -> this will details about Pod like where this pod is
 
 NAME        READY   STATUS    RESTARTS   AGE     IP             NODE                                         NOMINATED NODE   READINESS GATES
 nginx-pod   1/1     Running   0          2m10s   192.168.7.65   ip-172-31-4-68.ap-south-1.compute.internal   <none>           <none>
+
+
+kubectl get node ip-172-31-12-224.ap-south-1.compute.internal -o yaml   -> gives details about node in yaml 
 
 kubectl get pod nginx-pod -o yaml   -> displays how yaml file is interpreted of nginx-pod
 ---------------------------------
@@ -225,7 +228,7 @@ Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists fo
 Events:
   Type    Reason     Age    From               Message
   ----    ------     ----   ----               -------
-  Normal  Scheduled  5m30s  default-scheduler  Successfully assigned default/nginx-pod to ip-172-31-4-68.ap-south-1.compute.internal
+   Normal  Scheduled  5m30s  default-scheduler  Successfully assigned default/nginx-pod to ip-172-31-4-68.ap-south-1.compute.internal
   Normal  Pulling    5m24s  kubelet            Pulling image "nginx"
   Normal  Pulled     5m15s  kubelet            Successfully pulled image "nginx" in 8.817756004s
   Normal  Created    5m15s  kubelet            Created container nginx-container
@@ -256,12 +259,16 @@ EOF
 exit
 
 # Expose PODS using NodePort service
+-------------------------------------
+
 kubectl expose pod nginx-pod --type=NodePort --port=80    : type - services  -> nodeport is a servcie to expose to internet
 
 service/nginx-pod exposed
 
 
 # Display Service and find NodePort
+------------------------------------
+
 kubectl describe svc nginx-pod
 
 Name:                     nginx-pod
