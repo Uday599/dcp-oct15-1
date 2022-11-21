@@ -48,6 +48,7 @@ kubectl get nodes
 # 4. Scale up pods
 
 kubectl scale rs nginx-rs --replicas=5
+kubectl edit rs nginx-rs  -> can edit this way
 kubectl get rs nginx-rs -o wide
 kubectl get po -o wide
 
