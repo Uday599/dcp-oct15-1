@@ -11,6 +11,8 @@ there are many ingresss controller , we are using Nginx ingress controller in AW
 
 https://kubernetes.github.io/ingress-nginx/deploy/#aws
 
+"We create ingress rule to service"
+
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -92,7 +94,30 @@ spec:
 
 kubectl apply -f vprosvc.yaml
 kubectl get svc
+
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP    5d18h
+my-app       ClusterIP   10.96.141.117   <none>        8080/TCP   17s
+
+
 kubectl describe svc my-app
+
+Name:              my-app
+Namespace:         default
+Labels:            <none>
+Annotations:       <none>
+Selector:          run=my-app
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.96.141.117
+IPs:               10.96.141.117
+Port:              <unset>  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         192.168.7.93:8080
+Session Affinity:  None
+Events:            <none>
+
 
 
 # Create DNS Cname Record for LB
@@ -104,6 +129,7 @@ hostname => Load balancer Endpoint URL
 # Create Ingress
 vim vproingress.yaml
 
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vpro-ingress
@@ -112,7 +138,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: vprofile.groophy.in
+  - host: vprofile.groophy.in    -> where request to this website  -> to /login path is came , then route request to 8080
     http:
       paths:
       - path: /login
@@ -135,7 +161,12 @@ paths:
 
 kubectl apply -f vproingress.yaml
 kubectl get ingress
+
+NAME           CLASS   HOSTS                 ADDRESS   PORTS   AGE
+vpro-ingress   nginx   vprofile.groophy.in             80      2m50s
+
 kubectl get ingress --watch
+
 clear
 kubectl get ns
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml
