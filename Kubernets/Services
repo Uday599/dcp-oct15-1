@@ -2,21 +2,20 @@
 Services are scoped across kuberneters and are not restricted to any cluster/node/pod/master, it will be everywhere
 
 
-
-
 NODEPORT
 --------
 
 > host port as we do in docker 
 > used for nonprod
 > to expose pod to internet
+> NodePort range - 30000 - 32767
 
 internet -> node ip:<nodeport> -> SERVICE (lable selector) -> routes to POD equals to lable selector -> container
 
-nodeport : is the external node to access internal node
+nodeport : is the external node to access internal node (service node)
 
 say x.x.x.x:30001  => mapped to  => SERVICE IP and internal port/backend port
-internal port will be container image port
+internal port will be container image/container port
 for nginx -> 80
 for tomcat -> 8080
 
@@ -43,6 +42,7 @@ kubectl create -f <object name>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [root@ip-172-31-12-224 services]# cat nginx-nodeport.yaml
+
 apiVersion: v1
 kind: Service    -> kind is service
 metadata:
@@ -51,7 +51,7 @@ spec:
   ports:
     - port: 8090     -> internal front end port no need to worry
       nodePort: 30001    -> external front end nodeport to access from internet
-      targetPort: nginx-port  -> very important target node , should be same as container port
+      targetPort: nginx-port  -> very important target node , should be same as container port, we used port name here
       protocol: TCP
   selector:
     app: nginx-data1     -> selector -> POD
@@ -120,6 +120,7 @@ CLUSTER IP
 
 > internal communication
 
+> default one created for a cluster
 
 Cluster IP yamlfile
 
@@ -143,6 +144,7 @@ LOAD BALANCER
 > this actaully creates ELB in AWS and maps to node port
 > used to expose pod to internet 
 > used mostly for prod activities
+> we will have one IP here , as it avaoids problem when we have multiple replicas of pod across nodes , results in multiple URL with NodePort service
 
 
 [root@ip-172-31-12-224 services]# cat nginx-LB.yaml
