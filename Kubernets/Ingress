@@ -2,7 +2,7 @@ What is Ingress?
 
 Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. 
 Traffic routing is controlled by rules defined on the Ingress resource.
-
+ 
 > we use this to add filter condition to Load balancer
 
 https://kubernetes.io/docs/concepts/services-networking/ingress/
