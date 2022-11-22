@@ -1,0 +1,66 @@
+
+Website:
+
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+
++++++++++++++++++++++++++++++++++++++++++++++
+
+kubectl run nginxpod --image=nginx --dry-run=client -o yaml >ngpod.yaml    -> this is called Imperative
+
+> dry run mean it wont run we can check
+
+[root@ip-172-31-12-224 kubernetes]# cat ngpod.yaml
+
+> this is declarative - defination Manifest
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginxpod
+  name: nginxpod
+spec:
+  containers:
+  - image: nginx
+    name: nginxpod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+> Run is only for POD
+
++++++++++++++++++++++++++++++++++++++
+
+> kubectl create deployment ngdep --image=nginx --dry-run=client -o yaml > ngdep.yaml
+
+[root@ip-172-31-12-224 kubernetes]# cat ngdep.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ngdep
+  name: ngdep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ngdep
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ngdep
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
++++++++++++++++++++++++++++++++++++++++
+
