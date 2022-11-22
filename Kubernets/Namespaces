@@ -4,21 +4,29 @@ namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide ob
 
 
 kubectl get ns
+
 kubectl get all
-kubectl get all --all-namespaces
+
+kubectl get pods --all-namespaces
+
 clear
+
 kubectl get svc -n kube-system
+
 kubectl create ns kubekart
-kubectl run nginx1 --image=nginx -n kubekart
+
+kubectl run nginx1 --image=nginx -n kubekart   --imperative - Ahoc command
 kubectl run nginx1 --image=nginx -n kubekart
 
 vim pod1.yaml
+
 cat pod1.yaml
+
 apiVersion: v1
 kind: Pod
 metadata:
   name: nginx12
-  namespace: kubekart
+  namespace: kubekart   -- declarative
 spec:
   containers:
   - name: nginx
@@ -28,4 +36,5 @@ spec:
 
 kubectl apply -f pod1.yaml
 kubectl get pod -n kubekart
+kubectl get pod --namespace=kubecart
 kubectl delete ns kubekart
