@@ -1,0 +1,142 @@
+What is Ingress?
+
+Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. 
+Traffic routing is controlled by rules defined on the Ingress resource.
+
+> we use this to add filter condition to Load balancer
+
+https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+there are many ingresss controller , we are using Nginx ingress controller in AWS:
+
+https://kubernetes.github.io/ingress-nginx/deploy/#aws
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+###STEPS###
+# Create Controller
+# Create Deployment
+# Create Service
+# Create DNS Cname Record for LB
+# Create Ingress
+# Test
+
+# Create controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml
+
+
+[root@ip-172-31-12-224 ~]# kubectl get all -n ingress-nginx
+
+NAME                                            READY   STATUS      RESTARTS   AGE
+pod/ingress-nginx-admission-create-2rjg8        0/1     Completed   0          102s
+pod/ingress-nginx-admission-patch-5bwxv         0/1     Completed   1          102s
+pod/ingress-nginx-controller-756f546d89-5dw5d   1/1     Running     0          32s      -> main ingress controller where qwe configure rules
+
+NAME                                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+service/ingress-nginx-controller             LoadBalancer   10.97.219.6     <pending>     80:31953/TCP,443:30408/TCP   108s     -? LB is created
+service/ingress-nginx-controller-admission   ClusterIP      10.108.229.99   <none>        443/TCP                      108s
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ingress-nginx-controller   0/1     1            0           108s
+
+NAME                                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/ingress-nginx-controller-756f546d89   1         1         0       104s
+
+NAME                                       COMPLETIONS   DURATION   AGE
+job.batch/ingress-nginx-admission-create   1/1           0s         108s
+job.batch/ingress-nginx-admission-patch    1/1           0s         108s
+
+
+# Create Deployment
+vim vprodep.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  selector:
+    matchLabels:
+      run: my-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: imranvisualpath/vproappfix
+        ports:
+        - containerPort: 8080
+
+kubectl apply -f vprodep.yaml
+
+
+# Create service
+vim vprosvc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: my-app
+  type: ClusterIP
+
+
+kubectl apply -f vprosvc.yaml
+kubectl get svc
+kubectl describe svc my-app
+
+
+# Create DNS Cname Record for LB
+Go to your domain hosted records
+Add CNAME record
+hostname => Load balancer Endpoint URL
+
+
+# Create Ingress
+vim vproingress.yaml
+
+kind: Ingress
+metadata:
+  name: vpro-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: vprofile.groophy.in
+    http:
+      paths:
+      - path: /login
+        pathType: Prefix
+        backend:
+          service:
+            name: my-app
+            port:
+              number: 8080
+
+kubectl apply -f vproingress.yaml
+
+# Update Path in ingress from /login to /
+kubectl get ingress
+kubectl delete ingress vpro-ingress
+vim vproingress.yaml
+
+paths:
+  - path: /
+
+kubectl apply -f vproingress.yaml
+kubectl get ingress
+kubectl get ingress --watch
+clear
+kubectl get ns
+kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml
+
