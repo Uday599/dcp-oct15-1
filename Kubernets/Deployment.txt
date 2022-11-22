@@ -133,7 +133,9 @@ kubectl get rs
 # 5. Testing: Scale UP
 
 kubectl scale deployment nginx-deploy --replicas=5
-syntax : kubectl <action> <object> <object_name> 
+syntax : kubectl <action> <controller_object> <Controller_object_name> 
+
+> if you accidentally delete or not able to find manifest file/controller , then you can use above command to make it replicas=0
 
 kubectl get deploy
 NAME           READY   UP-TO-DATE   AVAILABLE   AGE
