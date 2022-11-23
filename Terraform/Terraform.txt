@@ -1,18 +1,88 @@
-provider "aws" {
+
+TERRAFORM
+---------
+
+> Provision of Infra(servers) and configuring it
+> IAC infra as Code - tool
+
+C-Developement
+C-Integration
+    testing  QA,UAT
+    500 micrroservices
+    IAC - Terraform - write the scripts to provision all these 500+ servers dynamically
+    configure the servers using Ansible
+    Build
+    create Artifacts
+    testing the Artifacts
+    Destroy all the test servers
+    
+C-Delivery/Deployment
+
+---------------------------
+Declarative:
+
+Terraform -> HashiCorp language -> keyvalue pair -> HCL
+Ansible - YAML
+
+Managed service:
+----------------
+
+AWS: Cloud formation template -: json
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+" We basically install Terraform in our local machine , becuase using a server to provison another server is meaningless."
+
+for windows use chocolaty
+> run powershell in administrator mode
+> choco install terraform
+
+website: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+
+Install Terraform --> Local Windows Machine!!!
+
+How to access terraform installed:
+---------------------------------
+
+
+1. Use Command prompt to run Terraform commands like : terraform init, terraform plan, terraform apply, etc..
+
+Create the Config file ?
+
+2. Visual Studio Code  to create or develop Terraform Config files! i.e., *.tf files  (recommended)
+  Place or create file -> save in particular folder -> click on terminal -> navigate to file path -> execute teraform commands
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+For config file formatting and all we have defined in the documentaltion itself :
+
+https://registry.terraform.io/browse/providers
+
+==================================================================================================================================
+Very important ready format for config file : https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance
+==================================================================================================================================
+
+
+1. excersice1.tf
+=================
+
+
+provider "aws" {                                               -> provider is important
   region     = "ap-south-1"
-  access_key = "AKIAZCQ3W3FGSD2SSWMB"
-  secret_key = "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"
+  access_key = "AKIAXWCBTXTUAU5HPIPU"                            -> access key and secret key generated from IAM AWS Console
+  secret_key = "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"        -> Account -> security crendentials -> secret key -> create -> download .csv
 }
 
 # Create AWS Instance
 
-resource "aws_instance" "dev_server1" {
-  ami           = "ami-074dc0a6f6c764218"
-  instance_type = "t2.micro"
-  key_name      = "Loksai-aws-key"
+resource "aws_instance" "dev_server1" {    -> resource "type of resource" "name of resource"
+  ami           = "ami-074dc0a6f6c764218"   -> AMI Id
+  instance_type = "t2.micro"                -> type
+  key_name      = "uday-aws-key"             -> key name
 
   tags = {
-    Name = "TerraformDemoServer1"
+    Name = "TerraformDemoServer1"           -> Tag , Also name of resource?
   }
 }
 
@@ -29,18 +99,142 @@ resource "aws_instance" "app_server2" {
 }
 
 
+ Plan STATUS:
+------------
 
 + => Add new resource
 ~ => update any existing resource
 - => Delete any existing resource
 
-terraform init
+1. terraform init    -> to initialize Terraform , done once
 
-terraform plan
+1. terraform plan   -> it will verify syntax other things in config.tf file
 
-terraform apply
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-terraform destroy
+ + resource "aws_instance" "dev_server1" {
+      + ami                                  = "ami-074dc0a6f6c764218"
+      + arn                                  = (known after apply)
+      + associate_public_ip_address          = (known after apply)
+      + availability_zone                    = (known after apply)
+      + cpu_core_count                       = (known after apply)
+      + cpu_threads_per_core                 = (known after apply)
+      + disable_api_stop                     = (known after apply)
+      + disable_api_termination              = (known after apply)
+      + ebs_optimized                        = (known after apply)
+      + get_password_data                    = false
+      + host_id                              = (known after apply)
+      + host_resource_group_arn              = (known after apply)
+      + id                                   = (known after apply)
+      + instance_initiated_shutdown_behavior = (known after apply)
+      + instance_state                       = (known after apply)
+      + instance_type                        = "t2.micro"
+      + ipv6_address_count                   = (known after apply)
+      + ipv6_addresses                       = (known after apply)
+      + key_name                             = "uday-aws-key"
+      + monitoring                           = (known after apply)
+      + outpost_arn                          = (known after apply)
+      + password_data                        = (known after apply)
+      + placement_group                      = (known after apply)
+      + placement_partition_number           = (known after apply)
+      + primary_network_interface_id         = (known after apply)
+      + private_dns                          = (known after apply)
+      + private_ip                           = (known after apply)
+      + public_dns                           = (known after apply)
+      + public_ip                            = (known after apply)
+      + secondary_private_ips                = (known after apply)
+      + security_groups                      = (known after apply)
+      + source_dest_check                    = true
+      + subnet_id                            = (known after apply)
+      + tags                                 = {
+          + "Name" = "TerraformDemoServer1"
+        }
+      + tags_all                             = {
+          + "Name" = "TerraformDemoServer1"
+        }
+      + tenancy                              = (known after apply)
+      + user_data                            = (known after apply)
+      + user_data_base64                     = (known after apply)
+      + user_data_replace_on_change          = false
+      + vpc_security_group_ids               = (known after apply)
+
+      + capacity_reservation_specification {
+          + capacity_reservation_preference = (known after apply)
+
+          + capacity_reservation_target {
+              + capacity_reservation_id                 = (known after apply)
+              + capacity_reservation_resource_group_arn = (known after apply)
+            }
+        }
+
+      + ebs_block_device {
+          + delete_on_termination = (known after apply)
+          + device_name           = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + kms_key_id            = (known after apply)
+          + snapshot_id           = (known after apply)
+          + tags                  = (known after apply)
+          + throughput            = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+
+      + enclave_options {
+          + enabled = (known after apply)
+        }
+
+      + ephemeral_block_device {
+          + device_name  = (known after apply)
+          + no_device    = (known after apply)
+          + virtual_name = (known after apply)
+        }
+
+      + maintenance_options {
+          + auto_recovery = (known after apply)
+        }
+
+      + metadata_options {
+          + http_endpoint               = (known after apply)
+          + http_put_response_hop_limit = (known after apply)
+          + http_tokens                 = (known after apply)
+          + instance_metadata_tags      = (known after apply)
+        }
+
+      + network_interface {
+          + delete_on_termination = (known after apply)
+          + device_index          = (known after apply)
+          + network_card_index    = (known after apply)
+          + network_interface_id  = (known after apply)
+        }
+
+      + private_dns_name_options {
+          + enable_resource_name_dns_a_record    = (known after apply)
+          + enable_resource_name_dns_aaaa_record = (known after apply)
+          + hostname_type                        = (known after apply)
+        }
+
+      + root_block_device {
+          + delete_on_termination = (known after apply)
+          + device_name           = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + kms_key_id            = (known after apply)
+          + tags                  = (known after apply)
+          + throughput            = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+3. terraform apply   -> this will creates infra
+
+4. terraform destroy   -> this will terminate instance
 
 terraform state list
 
@@ -50,18 +244,12 @@ terraform state show aws_instance.app_server2
 
 terraform state rm aws_instance.app_server2
 
-*****************************************************************************************
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+2. Excercise2.tf
+=================
 
-
-Install Terraform --> Local Windows Machine!!!
-
-Use Command prompt to run Terraform commands like : terraform init, terraform plan, terraform apply, etc..
-
-Create the Config file ?
-
-Visual Studio Code  to create or develop Terraform Config files! i.e., *.tf files 
 
 provider "aws" {
   region     = "ap-south-1"
@@ -173,3 +361,10 @@ resource "aws_instance" "App_server1" {
     Name = "Terraform-Server"
   }
 }
+
+
+  
+terraform --version
+terraform init
+terraform plan
+terraform apply
