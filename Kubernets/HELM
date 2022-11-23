@@ -9,15 +9,18 @@ Eg.: Kubernetes Dashboard installation using HELM
 Install HELM 
 on kubernetes master node install Helm
 
+Website: https://helm.sh/docs/intro/install/
+
 #Downlaod helm tar ball for linux
 wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
 
 #https://github.com/helm/helm/releases/download/v3.9.4/helm-v3.9.4-linux-amd64.tar.gz.asc
 
-#Extract tar ball
+#Extract tar ball  - extracting zip /tar file
 tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
 
-#Move helm to usr/local/bin/helm
+#Move helm to usr/local/bin/helm and creating Environmental variable :
+
 sudo mv linux-amd64/helm /usr/local/bin/helm
 
 vi .bash_profile 
@@ -25,6 +28,22 @@ vi .bash_profile
 #Append the helm path to PATH Variable and save.
 
 /usr/local/bin
+++++++++++++++++++++++++++
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/bin:/usr/local/bin
+
+export PATH
+
+++++++++++++++++++++++++++
+
 
 source ~/.bash_profile
 
@@ -32,12 +51,19 @@ source ~/.bash_profile
 helm
 
 #Install Kubernetes Dashboard using Helm
+----------------------------------------
 
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard
+website: https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
 
-helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard
+# Add kubernetes-dashboard repository
 
-kubectl get svc 
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard  -> adding repo into my local machine
+
+# Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
+
+helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard   -> installing
+
+kubectl get svc  -- by default installed kubernetes-dashboard creats cluster IP
 
 #choose kubernetes-dashboard service 
 
@@ -51,15 +77,33 @@ kubectl get svc
 
 # Now use the external IP & Nodeport to access the dashboard. When it asked for token, execute following commands to create service account & token
 
+Website:
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+
+
 kubectl create serviceaccount dashboard -n default
+
+or --->
+
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard
+EOF
 
 kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
 
 kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
 
+copy the above generated secret key and paste in in token
+
 https://15.207.114.100:31290/
+https://MasterNodeIP:Nodeport
 
 https://65.1.130.134:30107/
 
 https://3.111.218.48:30945/
+
+https://65.0.183.168:31625/
 *******************************************************
