@@ -1,4 +1,27 @@
+Continoues Monitoring
+
+Client-server Architecture
+
+Monitoring tool: Nagios, Sensu, prometeus
+Alerting tool: PagerDuty, servicenow, slack
+Metric storage:: splunk, aws, infuxdb
+Vizualization tool: Grafana
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+PROMOTHEUS ARCHITECTURE:
+-----------------------
+
+    RETRIVAL                ->  STORAGE                -> HTTP SERVER   -> Alert manager & GUI
+ pulls metric data          ->  Stores metric data       ->   Accepts queries
+ Data retrival worker node  ->  Timeseries Db           -> Accepts promoQL query
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #Install Prometheus & Grafana :
+-----------------------------
 
 ### Goto https://prometheus.io/download/
 
@@ -7,6 +30,8 @@ wget https://github.com/prometheus/prometheus/releases/download/v2.38.0/promethe
 tar -zxvf prometheus-2.38.0.linux-amd64.tar.gz
 
 ###===> Create following file:
+
+All services will have to run in /etc/systemd/system only
 
 sudo vi /etc/systemd/system/prometheus.service
 #-------------------------------------------------------------------------
@@ -20,53 +45,54 @@ After=network-online.target
 User=root
 Restart=on-failure
 
-ExecStart=/root/prometheus-2.38.0.linux-amd64/prometheus --config.file=/root/prometheus-2.38.0.linux-amd64/prometheus.yml
+ExecStart=/root/prometheus-2.38.0.linux-amd64/prometheus --config.file=/root/prometheus-2.38.0.linux-amd64/prometheus.yml  -> here we are allowing prometheus                                                                                                                               service to use prometheus.yml                                                                                                                                 file
 
 [Install]
 WantedBy=multi-user.target
 
 #-------------------------------------------------------------------------
 
+
+
+[root@ip-172-31-35-24 ~]# ls
+prometheus-2.38.0.linux-amd64  prometheus-2.38.0.linux-amd64.tar.gz
+[root@ip-172-31-35-24 ~]# cd prometheus-2.38.0.linux-amd64
+
+[root@ip-172-31-35-24 prometheus-2.38.0.linux-amd64]# ls
+
+console_libraries  consoles  LICENSE  NOTICE  prometheus  prometheus.yml  promtool
+
+> prometheus is the executable file 
+> prometheus.yaml is the configauration file which has data like tagets and other things
+
+[root@ip-172-31-35-24 prometheus-2.38.0.linux-amd64]# pwd
+/root/prometheus-2.38.0.linux-amd64
+[root@ip-172-31-35-24 prometheus-2.38.0.linux-amd64]#
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> man systemctl  -> gives complete details
+
 sudo systemctl daemon-reload
+----------------------
+    daemon-reload
+
+    Reload systemd manager configuration. This will rerun all generators (see systemd.generator(7)), reload all unit files, and recreate the entire dependency tree. While the daemon is being reloaded, all sockets systemd listens on behalf of user configuration will stay accessible.
+
+    This command should not be confused with the reload command.
+
+----------------------
 sudo systemctl status prometheus
 sudo systemctl start prometheus
 
-<prometheus-external-ip>:9090
+<prometheus-external-ip>:9090  -> prometheus runs on port 9090
 http://13.232.146.141:9090/
 
 ####***********************************************************************
 
-
-#Install Grafana :
-
-### Goto https://grafana.com/grafana/download
-
-###select OSS Edition.
-#Choose Linux
-
-##  Linux Distribution :
-
-Red Hat, CentOS, RHEL, and Fedora(64 Bit)SHA256: 
-
-wget https://dl.grafana.com/oss/release/grafana-9.1.2-1.x86_64.rpm
-
-sudo yum install grafana-9.1.2-1.x86_64.rpm
-
-
-sudo /bin/systemctl enable grafana-server.service
-sudo /bin/systemctl start grafana-server.service
-sudo /bin/systemctl status grafana-server.service
-
-<grafana-external-ip>:3000
-http://13.232.146.141:3000/
-
-default user name & password : admin & admin
-
-http://3.110.30.83/:9090
-
-###*********************************************************************
-
+-------------------------
 ###Install Node Exporters:
+-------------------------
+
 
 ### Goto https://prometheus.io/download/
 
@@ -109,12 +135,38 @@ sudo systemctl status node_exporter
 sudo systemctl start node_exporter
 sudo systemctl enable node_exporter
 
+sudo systemctl status node_exporter
+
+[root@ip-172-31-35-146 ~]# sudo systemctl status node_exporter
+● node_exporter.service - Prometheus Server
+   Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2022-11-23 08:29:21 UTC; 28s ago
+     Docs: https://prometheus.io/docs/introduction/overview/
+ Main PID: 3459 (node_exporter)
+   CGroup: /system.slice/node_exporter.service
+           └─3459 /root/node_exporter-1.4.0-rc.0.linux-amd64/node_exporter
+
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ..._zone
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ...=time
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ...timex
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ...ueues
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ...uname
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ...mstat
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ...r=xfs
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:115 level=info ...r=zfs
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.201Z caller=node_exporter.go:199 level=info ...:9100
+Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]: ts=2022-11-23T08:29:21.202Z caller=tls_config.go:195 level=info msg...false
+Hint: Some lines were ellipsized, use -l to show in full.
+
+> 9100 is the port of node_exporter
+we have to use this port in out prometheus.yml file as target
+
 
 hostname
 
 hostname -i
 
-### copy the IP Address of the server you wish to monitor
+### copy the IP Address of the server you wish to monitor  -> 172.31.35.146(private ip of target/server we wish to monitor)
 
 ## Goto to Prometheus Server ::
 
@@ -137,12 +189,51 @@ sudo systemctl status prometheus
 <prometheus-external-ip>:9090
 http://13.232.146.141:9090/
 
-## in the query field type up and click on execute to see the list of servers up for monitoring
+## in the query field type "up" and click on execute to see the list of servers up for monitoring
 
 
 ##*******************************************************************************************************
 
+-------
+GRAFANA
+-------
+
+
+#Install Grafana :
+------------------
+
+### Goto https://grafana.com/grafana/download
+
+###select OSS Edition.
+#Choose Linux
+
+##  Linux Distribution :
+
+Red Hat, CentOS, RHEL, and Fedora(64 Bit)SHA256: 
+
+wget https://dl.grafana.com/oss/release/grafana-9.1.2-1.x86_64.rpm
+
+sudo yum install grafana-9.1.2-1.x86_64.rpm
+
+
+sudo /bin/systemctl enable grafana-server.service
+sudo /bin/systemctl start grafana-server.service
+sudo /bin/systemctl status grafana-server.service
+
+<grafana-external-ip>:3000  -> works on 3000
+http://13.232.146.141:3000/
+
+default user name & password : admin & admin
+
+http://3.110.30.83/:9090
+
+"AppDynamics" -> meant for app monitoring -> iMportant source tool - web app  -> top in market -> learn 
+"Prometheous" -> meant for infra monitoring 
+
+###*********************************************************************
+
 ###Create Prometheus Data Source in Grafana
+-------------------------------------------
 
 ###Goto Grafana 
 
@@ -160,8 +251,10 @@ See the Prometheus Data Source Created
 
 
 Test in Prometheus-server query 
+------------------------------
 
-https://prometheus.io/docs/prometheus/latest/querying/examples/
+
+Website: https://prometheus.io/docs/prometheus/latest/querying/examples/  -> refer this for sample query
 
 sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
 
