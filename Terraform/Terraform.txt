@@ -108,10 +108,18 @@ resource "aws_instance" "app_server2" {
 
 1. terraform init    -> to initialize Terraform , done once
 
-1. terraform plan   -> it will verify syntax other things in config.tf file
+2. terraform validate -> check syntaxs
+
+PS C:\Users\udayp\Desktop\Terraform_exercise\excercise2> terraform validate
+Success! The configuration is valid.
+
+
+3. terraform fmt  -> will properly format the terraform file
+
+3. terraform plan   -> it will verify syntax other things in config.tf file
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+ 
  + resource "aws_instance" "dev_server1" {
       + ami                                  = "ami-074dc0a6f6c764218"
       + arn                                  = (known after apply)
@@ -232,17 +240,17 @@ resource "aws_instance" "app_server2" {
 Plan: 1 to add, 0 to change, 0 to destroy.
 +++++++++++++++++++++++++++++++++++++++++++++++++++
 
-3. terraform apply   -> this will creates infra
+4. terraform apply   -> this will creates infra
 
-4. terraform destroy   -> this will terminate instance
+5. terraform destroy   -> this will destroy entire state list from target machine
 
-terraform state list
+terraform state list   -> gives the list of resources created , terraform plan uses this data to check if there is any change happened or not
+ 
+terraform destroy -target aws_instance.app_server1   -> to delete/destroy any particular resources,
 
-terraform destroy -target aws_instance.app_server1
+terraform state show aws_instance.app_server2   -> detailed list about state/resource, store's as state
 
-terraform state show aws_instance.app_server2
-
-terraform state rm aws_instance.app_server2
+terraform state rm aws_instance.app_server2    -> to remove entry from state file -> and to avoid tracking any resources
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -368,3 +376,201 @@ terraform --version
 terraform init
 terraform plan
 terraform apply
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+3. exercise 3 - Variable
+========================
+
+Crete a folder ,  push all this related files into one folder and then use terraform command
+
+> terraform init   -> initialize state file
+> plan   -> this will tell what action is going to be performed
+> apply
+
+
+provider.tf
+-----------
+
+provider "aws" {
+  region = var.REGION
+  access_key = "AKIAXWCBTXTUAG44N36E"
+  secret_key = "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"
+}
+
+excerciee.tf
+-------------
+
+resource "aws_instance" "dove-inst" {
+  ami                    = var.AMIS[var.REGION]    -> like AMIS[REGION] will be pulled
+  instance_type          = "t2.micro"
+  availability_zone      = var.ZONE1
+  key_name               = "uday-aws-key"
+  vpc_security_group_ids = ["sg-0c503e902c3832768"]
+  tags = {
+    Name    = "Dove-Instance"
+    Project = "Dove"
+  }
+}
+
+
+variable AMIS {
+  type = map
+  default = {
+    ap-south-2 = "ami-074f102f7cbc99d2f"
+    ap-south-1 = "ami-074dc0a6f6c764218"
+  }
+}
+
+
+
+var.tf
+------
+
+variable REGION {
+  default = "ap-south-1"
+}
+
+variable ZONE1 {
+  default = "ap-south-1a"
+}
+
+variable AMIS {
+  type = map
+  default = {
+    ap-south-2 = "ami-074f102f7cbc99d2f"
+    ap-south-1 = "ami-074dc0a6f6c764218"
+  }
+}
+
+PS C:\Users\udayp\Desktop\Terraform_exercise\excercise2> terraform state list   -> gives the list of resources created
+
+aws_instance.dove-inst
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+4. Excercise4 - Provisioner
+===========================
+
+
+login to powershell
+install aws-cli
+aws configure -> only enter
+ssh-keygen -> provide file name
+public and private keys will be stored in local machine , this keys will be used for instance,
+
+
+Provider.tf
+-----------
+
+provider "aws" {
+  region = var.REGION
+  access_key = "AKIAXWCBTXTUAG44N36E"
+  secret_key = "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"
+}
+
+
+
+Var.tf- defining variables
+------
+
+
+variable REGION {
+  default = "us-east-2"
+}
+
+variable ZONE1 {
+  default = "us-east-2a"
+}
+
+variable AMIS {
+  type = map
+  default = {
+    us-east-2 = "ami-03657b56516ab7912"
+    us-east-1 = "ami-0947d2ba12ee1ff75"
+  }
+}
+
+variable USER {
+  default = "ec2-user"
+}
+
+web.sh  -> user data
+------
+> we are using user data to configure our instance and a sample webapp is loaded here.
+
+#!/bin/bash
+yum install wget unzip httpd -y
+systemctl start httpd
+systemctl enable httpd
+wget https://www.tooplate.com/zip-templates/2117_infinite_loop.zip  -> sample website template
+unzip -o 2117_infinite_loop.zip
+cp -r 2117_infinite_loop/* /var/www/html/
+systemctl restart httpd
+
+
+
+Instance.tf and keypair creation
+--------------------------------
+
+
+
+resource "aws_key_pair" "dove-key" {     -> we are creating a new key pair "newdovekey"
+  key_name   = "newdovekey"
+  public_key = file("newdovekey.pub")      -> passing public key through file, we can hardcode aswell
+}
+
+resource "aws_instance" "dove-inst" {
+  ami                    = var.AMIS[var.REGION]
+  instance_type          = "t2.micro"
+  availability_zone      = var.ZONE1
+  key_name               = aws_key_pair.dove-key.key_name
+  vpc_security_group_ids = ["sg-079caf48f071e10e3"]            -> this SC should have SSH -> port 22 and HTTP -> port 80
+  tags = {
+    Name    = "Dove-Instance"
+    Project = "Dove"
+  }
+
+  provisioner "file" {    -> calling  web.ssh file using "provisioner"
+    source      = "web.sh"
+    destination = "/tmp/web.sh"   
+  }
+
+  provisioner "remote-exec" {    -> remote login and execution to our intance using "provisioner"
+
+    inline = [
+      "chmod +x /tmp/web.sh",
+      "sudo /tmp/web.sh"
+    ]
+  }
+
+  connection {                          -> remote login with user name , private key and public ip
+    user        = var.USER
+    private_key = file("newdovekey")
+    host        = self.public_ip
+  }
+}                                 --> Instance defination ends here
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
