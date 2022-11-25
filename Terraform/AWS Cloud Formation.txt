@@ -14,7 +14,7 @@ https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html
 ----------------------
 
 Resources:
-  MyInstanc:
+  MyInstanc:    --> logical id
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
@@ -210,11 +210,309 @@ Resources:
        CidrIp: 49.37.241.38/32  -> My IP
    
  
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+ Parameters:
+ ----------
+ 
+ https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
  
  
+ parameter.yaml
  
  
+ Parameters:
+  NameofService:  #Logical Id
+    Description: "The name of the service this stack is used for."
+    Type: String
+  InstanceTypeParameter:  # Logical Id
+    Type: String
+    Default: t2.micro
+    AllowedValues:   # gives list
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+  KeyName:                    # Logical ID
+    Description: Name of EC2 loginkey
+    Type: AWS::EC2::KeyPair::KeyName   # using Psedo parameter as a list
+
+
+
+
+Mappings: 
+  AMIRegionMap: 
+    ap-south-1: 
+      "AMI": "ami-074dc0a6f6c764218"
+    ap-south-2: 
+      "AMI": "ami-0beaa649c482330f7"
+
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceTypeParameter
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap
+       - AMIRegionMap
+       - !Ref AWS::Region
+       - AMI
+      Tags: 
+        - Key: "Name"
+          Value: !Ref NameofService   # ref function to refere NameofService Parameter
+      SecurityGroups:
+        - !Ref VprofileSG
+
+  VprofileSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+     GroupDescription: "Allow ssh and http from my IP"
+     GroupName: "Uday group"
+     SecurityGroupIngress: 
+     - IpProtocol: tcp
+       FromPort: 80
+       ToPort: 80
+       CidrIp: 0.0.0.0/0
+     - IpProtocol: tcp
+       FromPort: 22
+       ToPort: 22
+       CidrIp: 49.37.241.38/32
+   
  
+ 
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+ OUTPUTS
+ -------
+ 
+ 
+ https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
+ 
+ 
+ Parameters:
+  NameofService:  #Logical Id
+    Description: "The name of the service this stack is used for."
+    Type: String
+  InstanceTypeParameter:  # Logical Id
+    Type: String
+    Default: t2.micro
+    AllowedValues:   # gives list
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+  KeyName:                    # Logical ID
+    Description: Name of EC2 loginkey
+    Type: AWS::EC2::KeyPair::KeyName   # using Psedo parameter as a list
+
+
+
+
+Mappings: 
+  AMIRegionMap: 
+    ap-south-1: 
+      "AMI": "ami-074dc0a6f6c764218"
+    ap-south-2: 
+      "AMI": "ami-0beaa649c482330f7"
+
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceTypeParameter
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap
+       - AMIRegionMap
+       - !Ref AWS::Region
+       - AMI
+      Tags: 
+        - Key: "Name"
+          Value: !Ref NameofService
+      SecurityGroups:
+        - !Ref VprofileSG
+
+  VprofileSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+     GroupDescription: "Allow ssh and http from my IP"
+     GroupName: "Uday group"
+     SecurityGroupIngress: 
+     - IpProtocol: tcp
+       FromPort: 80
+       ToPort: 80
+       CidrIp: 0.0.0.0/0
+     - IpProtocol: tcp
+       FromPort: 22
+       ToPort: 22
+       CidrIp: 49.37.241.38/32
+
+Outputs:
+  PrintingInfo:   # logical id
+    Value: !GetAtt   # this functions holds only 1 parameter?
+        - MyInstance   # Logical ID
+        - PublicDnsName   # and its paramater we want to print.
+        # we can get the attribute name here:  https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html
+        # search with attribute you want to print
+      #  - PublicIp
+ 
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+ Init - Metadata
+ ---------------
+This is something like "web.sh" we used in Terraform, like giving some task while instance is getting booted.
+We have many more options here.....
+ 
+ https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/metadata-section-structure.html
+ 
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
+
+----------------------------------------------->
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Metadata: 
+      AWS::CloudFormation::Init: 
+        config: 
+          packages: 
+            :
+          groups: 
+            :
+          users: 
+            :
+          sources: 
+            :
+          files: 
+            :
+          commands: 
+            :
+          services: 
+            :
+    Properties:
+      InstanceType: !Ref InstanceTypeParameter
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap
+       - AMIRegionMap
+       - !Ref AWS::Region
+       - AMI
+      Tags: 
+        - Key: "Name"
+          Value: !Ref NameofService
+      SecurityGroups:
+        - !Ref VprofileSG
+
+---------------------------------------------------->
+Init.yaml
+
+Parameters:
+  NameofService:  #Logical Id
+    Description: "The name of the service this stack is used for."
+    Type: String
+  InstanceTypeParameter:  # Logical Id
+    Type: String
+    Default: t2.micro
+    AllowedValues:   # gives list
+      - t2.micro
+      - m1.small
+      - m1.large
+    Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
+  KeyName:                    # Logical ID
+    Description: Name of EC2 loginkey
+    Type: AWS::EC2::KeyPair::KeyName   # using Psedo parameter as a list
+
+
+
+
+Mappings: 
+  AMIRegionMap: 
+    ap-south-1: 
+      "AMI": "ami-074dc0a6f6c764218"
+    ap-south-2: 
+      "AMI": "ami-0beaa649c482330f7"
+
+
+Resources:
+  WebServer:
+    Type: AWS::EC2::Instance
+    Metadata: 
+      AWS::CloudFormation::Init: 
+        config: 
+          packages: 
+            yum: 
+              php: []
+              https: []
+              wget: []
+              unzip: []
+              git: []
+          commands:
+            test:
+              command: "wget https://www.tooplate.com/zip-templates/2119_gymso_fitness.zip && unzip 2119_gymso_fitness.zip && cp -r 2119_gymso_fitness/* /var/www/html/"
+          files: 
+              /var/www/html/heloo.html:
+                content: !Sub |
+                  <!DOCTYPE html>
+                  <html>
+                  <body>
+
+                  <h1>Welcome to CloudFormation. </h1>
+                  <p> this site is deployed by Cloud Formation. </p>
+
+                  </body>
+                  </html>
+          services:
+            sysvinit:
+              httpd:
+                enabled: true
+                ensureRunning: true
+
+    Properties:
+      InstanceType: !Ref InstanceTypeParameter
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap
+       - AMIRegionMap
+       - !Ref AWS::Region
+       - AMI
+      Tags: 
+        - Key: "Name"
+          Value: !Ref NameofService
+      SecurityGroups:
+        - !Ref VprofileSG
+      UserData:
+        'Fn::Base64':
+          !Sub |
+            #!/bin/bash -xe
+            # Ensure AWS CFN Bootstrap is the latest
+            yum install -y aws -cfn-bootstrap
+            # Install the filea and packagess from metadata
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebServer  --region ${AWS::Region}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServer --region ${AWS::Region}
+
+  VprofileSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+     GroupDescription: "Allow ssh and http from my IP"
+     GroupName: "Uday group"
+     SecurityGroupIngress: 
+     - IpProtocol: tcp
+       FromPort: 80
+       ToPort: 80
+       CidrIp: 0.0.0.0/0
+     - IpProtocol: tcp
+       FromPort: 22
+       ToPort: 22
+       CidrIp: 49.37.241.38/32
+
+Outputs:
+  PrintingInfo:
+    Value: !GetAtt   # this functions holds only 1 parameter?
+        - WebServer   # Logical ID
+        - PublicDnsName   # and its paramater we want to print 
+      #  - PublicIp
+      
+      
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
  
  
  
