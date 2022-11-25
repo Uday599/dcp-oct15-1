@@ -1,0 +1,227 @@
+AWS Cloud Formation
+-------------------
+
+
+Check out AWS clean documentation:
+https://docs.aws.amazon.com/cloudformation/?icmpid=docs_homepage_mgmtgov
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+1. firstExample.yaml
+----------------------
+
+Resources:
+  MyInstanc:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-074dc0a6f6c764218
+      
+      
+2. update-example.yaml
+------------------------
+
+> here we are updating existing FirstExample.yaml file to add tag/instance name
+> select stack -> update -> Replace current Template -> upload -> create
+
+Resources:
+  MyInstanc:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-074dc0a6f6c764218
+      Tags: 
+        - Key: "Name"                      -> take care about notation and cases
+          Value: "MyFirstInstance"
+          
+          
+> Once done
+Check "Change Preview Set" to track what changes made and want to proceed with change or not
+this is similar to "Terraform plan"
+
+
++++++++++++++++++++++++++++++++++++++++
+
+3. Intrensic function
+ --------------------
+ 
+ https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-join.html
+ 
+ intrensic.yaml
+ 
+ Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-074dc0a6f6c764218
+      Tags: 
+        - Key: "Name"
+          Value: !Join ["-",[my,instance,from,cloudFormation]]
+          
+          
+          
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CHANGE SET
+----------
+
+Create fresh new stack:
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-074dc0a6f6c764218
+      Tags: 
+        - Key: "Name"
+          Value: !Join ["-",[lets,see,changeset]]
+      
+Now we will create change set:
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-074dc0a6f6c764218
+      Tags: 
+        - Key: "Name"
+          Value: "ChangeSet"
+
+
+Check for Replacement status in change set -> which will be either True or false
+-> if true -> will delete existing resource and creates new
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+Ref function
+------------
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
+
+ref.yaml
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-074dc0a6f6c764218
+      Tags: 
+        - Key: "Name"
+          Value: !Join
+            - " "
+            - - "My instance in"
+              - !Ref AWS::Region    ->  Psedo Parameter :
+                                                          https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html
+              
+
+Resource created:
+
+Instance: i-08cc50453adeebbb3 (My instance in ap-south-1)
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Multi resource
+---------------
+
+multi.yaml
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-074dc0a6f6c764218
+      Tags: 
+        - Key: "Name"
+          Value: !Join ["-",[my,instance,from,cloudFormation,with,SG]]
+      SecurityGroups:
+        - !Ref VprofileSG       - referecing SG resource from here
+
+  VprofileSG:                                     -- name of resource : refer : https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-
+                                                                               properties-ec2-security-group-rule.html#cfn-ec2-security-group-rule-ipprotocol
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+     GroupDescription: "Allow ssh and http from my IP"
+     GroupName: "Uday group"
+     SecurityGroupIngress: 
+     - IpProtocol: tcp
+       FromPort: 80
+       ToPort: 80
+       CidrIp: 0.0.0.0/0
+     - IpProtocol: tcp
+       FromPort: 22
+       ToPort: 22
+       CidrIp: 49.37.241.38/32
+   
+  
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Mappings and Pseduo Parameters:
+------------------------------
+
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html
+        
+Mappings_Psedo.yaml
+
+
+Mappings:  -> keyword
+  AMIRegionMap:  -> user defined
+    us-east-1:   -> regions
+      "AMI": "ami-0b0dcb5067f052a63"  -. there AMI ids
+    us-east-2: 
+      "AMI": "ami-0beaa649c482330f7"
+
+
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !FindInMap   -> Mappings- GO to AMIRegionMap and then check Psedo value(region) and pull its respective region AMi ID
+       - AMIRegionMap
+       - !Ref AWS::Region
+       - AMI
+      Tags: 
+        - Key: "Name"
+          Value: !Join ["-",[my,instance,from,cloudFormation,with,SG]]
+      SecurityGroups:
+        - !Ref VprofileSG
+
+  VprofileSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+     GroupDescription: "Allow ssh and http from my IP"
+     GroupName: "Uday group"   -> name in SG
+     SecurityGroupIngress: 
+     - IpProtocol: tcp
+       FromPort: 80
+       ToPort: 80
+       CidrIp: 0.0.0.0/0
+     - IpProtocol: tcp
+       FromPort: 22
+       ToPort: 22
+       CidrIp: 49.37.241.38/32  -> My IP
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
