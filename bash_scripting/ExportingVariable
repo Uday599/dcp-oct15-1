@@ -1,0 +1,155 @@
+parent shell
+
+export variable
+
+to all child shell
+
+
+
+
+[root@scriptbox bash]# season="Winter"
+[root@scriptbox bash]# echo $season
+Winter
+[root@scriptbox bash]# exit
+logout
+
+# we dont have it for other users:
+[vagrant@scriptbox ~]$ echo $season
+
+# if we logged back in , our variable is vanished as this is temparary
+[vagrant@scriptbox ~]$ sudo -i
+[root@scriptbox ~]# echo $season # no output
+
+----------------------------
+to store Variable permanently
+---------------------------
+we can do that through :
+> .bashrc
+> .bashprofile
+> /etc/profile
+
+--------------------------------------->
+# .bashrc
+----------
+
+[root@scriptbox ~]# ls -a
+.  ..  anaconda-ks.cfg  bash  .bash_history  .bash_logout  .bash_profile  .bashrc  .cshrc  original-ks.cfg  .pki  .tcshrc  .viminfo
+[root@scriptbox ~]# cat .bashrc
+
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+[root@scriptbox ~]# vi .bashrc
+
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+month="december"       # Added variable and this is for only this user @ root
+
+[root@scriptbox ~]# echo $month
+                                      --> no output because , changes has to be sourced through "source .bashrc" command
+                                      
+
+[root@scriptbox ~]# exit
+logout
+# once we exit back from user and logged back in, that it also source'd automatically
+
+[vagrant@scriptbox ~]$ sudo -i
+[root@scriptbox ~]# echo $month
+december            --> you can view here
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2.  .bash_profile
+------------------
+
+
+[root@scriptbox ~]# ls -a
+.  ..  anaconda-ks.cfg  bash  .bash_history  .bash_logout  .bash_profile  .bashrc  .cshrc  original-ks.cfg  .pki  .tcshrc  .viminfo
+[root@scriptbox ~]# vi .bash_profile
+[root@scriptbox ~]# cat .bash_profile
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/bin
+
+export PATH
+
+month="december"     ->  added
+
+[root@scriptbox ~]# source .bash_profile
+[root@scriptbox ~]# exit
+logout
+[vagrant@scriptbox ~]$ sudo -i
+[root@scriptbox ~]# echo $month
+december
+
+[root@scriptbox ~]# vi .bash_profile
+[root@scriptbox ~]# exit
+logout
+[vagrant@scriptbox ~]$ sudo -i
+[root@scriptbox ~]# echo $month
+January
+
+[root@scriptbox ~]# cat .bashrc
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+month="december"
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+3. /etc/profile
+  --------------
+  
+this method is when everybody who logged in and uses global variable
+
+other 2's are :
+   specifically for users
+
+Conclusion:
+-----------
+   
+Anyhow "/etc/profile" will be overrided if we have variables in ".bashrc" or ".bash_profile"
+
+
+
+
+
+
