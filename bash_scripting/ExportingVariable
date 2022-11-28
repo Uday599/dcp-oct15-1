@@ -1,11 +1,15 @@
+
+Export is used to set environment variable in OS. this variable wil be availabe to all child processses created by
+Current Bash process even after
+
+---->
 parent shell
 
 export variable
 
 to all child shell
 
-
-
+---->
 
 [root@scriptbox bash]# season="Winter"
 [root@scriptbox bash]# echo $season
