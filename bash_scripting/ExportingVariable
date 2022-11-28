@@ -102,7 +102,7 @@ PATH=$PATH:$HOME/bin
 export PATH
 
 month="december"     ->  added
-
+  
 [root@scriptbox ~]# source .bash_profile
 [root@scriptbox ~]# exit
 logout
