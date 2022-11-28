@@ -14,7 +14,13 @@ echo "#######################################################"
 echo "Current Load Average $LOAD"
 echo "#######################################################"
 echo "Free ROOT partiotion size is $ROOTFREE"
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+2 ways to define command substituion
+------------------------------------
+
+VarName=`command`
+VarName=$(command)
 
 
 [root@scriptbox bash]# ./cmd_sub.sh
