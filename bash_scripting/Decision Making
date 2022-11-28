@@ -56,4 +56,7 @@ else
   echo "No Active interface found."
 fi
 
-  
+#############################################
+
+/c/Users/udayp/desktop/bash_script/vagrant
+
