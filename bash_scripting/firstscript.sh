@@ -21,6 +21,11 @@ Gnone , KDE
 vi /etc/hostname
  > scriptbox
 
+++++++++++++++++++++++
+$ -> mean you are logged in as root user
+# -> normal user
+++++++++++++++++++++++
+
 [vagrant@scriptbox ~]$ sudo -i
 [root@scriptbox ~]# ls
 anaconda-ks.cfg  bash  original-ks.cfg
