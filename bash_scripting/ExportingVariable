@@ -68,7 +68,7 @@ if [ -f /etc/bashrc ]; then
         . /etc/bashrc
 fi
 
-month="december"       # Added variable and this is for only this user @ root
+export month="december"       # Added variable and this is for only this user @ root
 
 [root@scriptbox ~]# echo $month
                                       --> no output because , changes has to be sourced through "source .bashrc" command
@@ -105,7 +105,7 @@ PATH=$PATH:$HOME/bin
 
 export PATH
 
-month="december"     ->  added
+export month="december"     ->  added
   
 [root@scriptbox ~]# source .bash_profile
 [root@scriptbox ~]# exit
