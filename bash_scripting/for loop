@@ -1,0 +1,45 @@
+#!/bin/bash
+
+for VAR1 in java .net python ruby php
+do
+  echo "Looping....."
+  sleep 1
+  echo "###################################################"
+  echo "Value of VAR1 is $VAR1."
+  echo "###################################################"
+  date
+  echo
+done
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++
+
+#!/bin/bash
+
+MYUSERS="alpha beta gamma"
+
+for usr in $MYUSERS
+do 
+   echo "Adding user $usr."
+   useradd $usr
+   id $usr
+   echo "#####################################"
+done
+
+
+++++++++++++++++++++++++++++++++++++++++++++++
+
+#!/bin/bash
+
+read -p  "Enter user name pls:" MYUSERS
+
+for usr in $MYUSERS
+do
+   echo "Adding user $usr."
+   useradd $usr
+   id $usr
+   echo "#####################################"
+done
+
+
