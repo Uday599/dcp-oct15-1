@@ -42,4 +42,16 @@ do
    echo "#####################################"
 done
 
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+[root@scriptbox bash]# for host in `cat remhost` ; do echo $host; done   -> single line
+web01
+web02
+web03
+
+[root@scriptbox bash]#  cat remhost
+web01
+web02
+web03
 
