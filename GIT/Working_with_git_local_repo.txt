@@ -1,3 +1,18 @@
+git config file : 
+
+git config - - global user.name "<your name>"
+
+git config - - global user.email "<your email>"
+
+
+this is important to configure because it stores data about who made changes to what
+like in > git log  -> we see details , that is coming from this configuration file only.
+
+
+
+
+
+
 scenario 1: Create Empty Local repository & add some files, modify files then add to git staging area & commit all changes together
 
 	mkdir ProjectA ; cd ProjectA
