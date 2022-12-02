@@ -9,6 +9,13 @@ git config --list
 this is important to configure because it stores data about who made changes to what
 like in > git log  -> we see details , that is coming from this configuration file only.
 
+$ git log
+commit 2d0d33cd32f8d3a7cdbac79a5db906a9a41606b0 (HEAD -> feature1)
+Author: Uday <udayp081198@gmail.com>    -> this data
+Date:   Fri Dec 2 12:25:44 2022 +0530
+
+    uday commited this
+
 
 
 
