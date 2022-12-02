@@ -4,6 +4,7 @@ git config - - global user.name "<your name>"
 
 git config - - global user.email "<your email>"
 
+git config --list
 
 this is important to configure because it stores data about who made changes to what
 like in > git log  -> we see details , that is coming from this configuration file only.
