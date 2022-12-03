@@ -1,0 +1,65 @@
+Rebase (Merge)
+------
+
+Rebase is like merging commits in proper order  , so in future there will be proper liner order
+
+master commits  : A B C        |    Parallel working
+feature commits : A B D
+
+So,
+rebaseing feature branch :  linear development fashion
+ we get logs : A B C D
+            first parent commits arranged in linear and timestamp | then child commits in linear with timestamp
+              
+Without rebasing and direct merge from master : A B D C   # this is not good right!
+
+# we rebase only local branch (private) not public
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Reset :
+-------
+# carefull while doing this beacuse it remove commits permanently.
+# Revert -> will preserve commits and add upon old commit
+
+Master branch commits :
+A  -> HEAD
+B
+C
+D
+
+# git reset --hard <commitid>
+
+git reset --hard C
+
+#git log --oneline
+
+C -> HEAD
+D
+   
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Remote Repo :
+-------------
+
+git add remote orgin <branch>
+
+origin ->variable which stores git hub origin
+
+# git push origin <branch_name>
+# git push orgin --delete <branch_name>
+
+Local Repo :
+
+# git branch -d <branch_name>
+# git branch -D <branch_name> -> will delete even if we have unmerged changes in the branch (not recommended)
+
+Pull -> fetch and updates/merge the working directory
+Fetch -> will shows that there is updates on remote , if no output then no updates in remote
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+Creating local repo :
+
+1. git init
+2. git clone <remote_repo_url> -> this will automatically creates a local repo in local machine as well as adds - remote orgin
