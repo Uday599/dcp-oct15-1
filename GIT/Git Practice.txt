@@ -75,7 +75,11 @@ Quiz:
 # git merge tool  to resolve merge conflict?
 
 
++++++++++++++++++++++++++++++++++++++++++++++++++
 
+Stash :
+
+saving files temporarily without commiting to make working tree clean
 
 
 
