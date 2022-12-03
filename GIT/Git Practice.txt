@@ -63,3 +63,31 @@ Creating local repo :
 
 1. git init
 2. git clone <remote_repo_url> -> this will automatically creates a local repo in local machine as well as adds - remote orgin
+
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Quiz:
+
+# git branch --merge
+# git branch --no-merge -> shows any branch is not merged with master
+
+
+# git merge tool  to resolve merge conflict?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
