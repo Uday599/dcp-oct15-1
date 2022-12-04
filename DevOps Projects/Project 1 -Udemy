@@ -1,0 +1,23 @@
+Udemy Course :100% Hands-on labs on how to create DevOps CI/CD pipelines using Git, Jenkins, Ansible, Docker and Kubernetes on AWS
+
+
+Code ->  Commit to VCS/SCM  ->  Build   -> Move to stage (test/QA/NonProd/Dev)    -> PROD
+
+Cont. intergration : Once code is commited ,it will be automatically build and tested and created artifact
+
+Cont. delivery : from 1st stage till deployment to prod , but user intervention will be there, to confirm deploy on prod or not
+
+Cont. Deployment : " dito"  , but no user intervention
+                                                                                
+                                                                              (user intervention)
+
+GitHub -------> Pull Code ----> Jenkins  ----------> Copy Artifacts ---------> Ansible ------------> Deploy containers ----------> Kubernetes
+  ^                               |                                              |                                                    ^
+  |                               |                                              |                                                    |  
+  | Commit code                   |  to build code                               ---------------  >   Docker Hub ---------------------|
+  |                               |                                                  Push Image                     Pull Image
+  |                             Maven
+  |
+ Git
+ 
+ ============================= CI ====================================                  =============== Cont. Delivery =====================
