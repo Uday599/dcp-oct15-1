@@ -76,6 +76,7 @@ sudo ln -s /opt/apache-maven-3.8.6 /opt/maven
 Set Java Path / Environment Variables:
 open .bashrc & add the following lines:
 
+# maven environment variables
 
 export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.amzn2.0.1.x86_64"
 export MAVEN_HOME=/opt/apache-maven-3.8.6
