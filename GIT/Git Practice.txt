@@ -37,7 +37,11 @@ git reset --hard C
 
 C -> HEAD
 D
-   
+
+
+RESER --hard 
+      --soft
+      --mixed
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Remote Repo :
 -------------
@@ -80,6 +84,35 @@ Quiz:
 Stash :
 
 saving files temporarily without commiting to make working tree clean
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+Feature branch:
+
+a.txt
+     cm1
+     cm2
+     cm3
+     cm4  --> latest change
+
+if you merge this with master all commits will be merged , which causes problem in master so, we combine all commits into one commit then merge to master
+
+command : git rebase -i HEAD~4    # head is a pointer so last 4 commits is combined
+command : git squash rebase -i HEAD~4 
+> squash the remaining commit
+> pick one commit
+> lastest change will be there
+
+this will merge cm1/cm2/cm3/cm4 and pick one commit
+
+
+# CherryPick
+
+command : git cherry-pick <commit_id>   # run on master branch
+# this will pick mentioned commit_id and merge it to master
+ 
+ 
+
 
 
 
