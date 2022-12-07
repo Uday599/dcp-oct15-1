@@ -7,16 +7,22 @@ Update the Instance
 
 Execute only in Master:
 
+# to update existing updates
+yum update -y 
+
 #Install Jenkins :
+# go to official documentation of jenkins and download - https://www.jenkins.io/download/
 
-sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo  # copying the Jenkins repo into our local                                                                                                                     # /etc/yum.repos.d directory
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key           # importing keys aswell through rpm package
+                                                                                
+                                                                               
+sudo -i  # be a root
 
-sudo -i
 
 #Install epel Package:
+amazon-linux-extras install epel   # amazon-linux-extras is a package library available inside amazon linux , we just have to install it to use
 
-amazon-linux-extras install epel
 #Install Java: 
 amazon-linux-extras install java-openjdk11
 
@@ -40,11 +46,12 @@ systemctl start jenkins
 #  /var/lib/jenkins/
 #  /var/lib/jenkins/secrets -> will have secrets
 #  /var/lib/jenkins/plugins -> will have plugins installed for jenkins
+#  /var/lib/jenkins/Jobs  -> will actually holds job conf, details
+#  /var/lib/jenkins/workspace -> will have output/status of job
 
-#systemctl enable tomcat
-#systemctl start tomcat
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ###Execute in Slave Nodes:
+# we are using Maven to build Java in this Slave
 
 sudo -i
 
@@ -118,6 +125,9 @@ chmod 700 /home/jenkins/.ssh
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+
+
+
 #Jenkins-Master <---> Jenkins Slave 
 
 #How the connection is established? SSH Keys
@@ -129,3 +139,6 @@ chmod 700 /home/jenkins/.ssh
 #Config the Node Name, Label, Access thru SSH Parm - user Name, with private key
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# The difference between wget, apt-get, yum rpm in linux: https://blog.actorsfit.com/a?ID=00950-a47fcd6e-2cf3-45af-95d7-f39b9006f1d9
+# RPM and YUM : https://www.2daygeek.com/comparison-difference-between-yum-vs-rpm/
