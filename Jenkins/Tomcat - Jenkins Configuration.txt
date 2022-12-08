@@ -1,3 +1,6 @@
+# Tomcat : Application server that is used to test/run any web application 
+to test .war file
+
 #Install & configure Tomcat server :
 
 #Check out Official WebPage:
@@ -11,7 +14,7 @@ yum update -y
 
 #Install JDK
 #Install epel Package:
-amazon-linux-extras install epel   --- what is this?
+amazon-linux-extras install epel   
 
 #Install Java: 
 amazon-linux-extras install java-openjdk11
@@ -28,6 +31,7 @@ amazon-linux-extras install java-openjdk11
 export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.amzn2.0.1.x86_64"
 PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 
+# tomcat is a server like jenkins , not like tool -Maven
 #Save the file
 
 source ~/.bashrc  --optional
@@ -59,6 +63,7 @@ cd /opt/tomcat/bin
 ./startup.sh
 
 ****************************************************************************************************
+App server " Tomcat/Nginx
 
 #Add-USer for Tomcat :
 
