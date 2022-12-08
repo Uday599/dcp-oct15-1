@@ -6,6 +6,7 @@ With port 8080 & Name Tag
 Update the Instance
 
 Execute only in Master:
+======================
 
 # to update existing updates
 yum update -y 
@@ -51,6 +52,8 @@ systemctl start jenkins
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ###Execute in Slave Nodes:
+   ======================
+   
 # we are using Maven to build Java in this Slave
 
 sudo -i
@@ -58,14 +61,15 @@ sudo -i
 #Install epel Package:
 
 amazon-linux-extras install epel
+
 #Install Java: 
-amazon-linux-extras install java-openjdk11
+amazon-linux-extras install java-openjdk11  # Maven runs on Java
 
 #Install GIT:
 
-yum install git
+yum install git  # this is because we use Git to pull SCM
   
-#Install Maven:
+#Install Maven: website: https://maven.apache.org/download.cgi
 
 cd /tmp
 
@@ -81,6 +85,8 @@ sudo ln -s /opt/apache-maven-3.8.6 /opt/maven
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Set Java Path / Environment Variables:
+=====================================
+
 open .bashrc & add the following lines:
 
 # maven environment variables
@@ -102,11 +108,16 @@ PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$MAVEN_HOME:$M2
 source ~/.bash_profile
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Here we created specific user to generate ssh key and through that key we will connect to master and Slave
+# Here we are creating a dedicated user to handle Jenkins Master
+
+
 Add User : useradd -m -d /home/jenkins jenkin
 
 su - jenkin
 
-ssh-keygen
+ssh-keygen  # to create public key and private key
 
 ls ~/.ssh 
 
@@ -118,6 +129,8 @@ ls ~/.ssh
 cat id_rsa & copy the private key and paste it into jenkins node config. enter private key directly field
 Then,
 cat id_rsa.pub > authorized_keys
+
+# restricting access ti only Jenkin user
 
 chown -R jenkin /home/jenkins/.ssh
 chmod 600 /home/jenkins/.ssh/authorized_keys
