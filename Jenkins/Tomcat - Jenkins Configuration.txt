@@ -28,7 +28,7 @@ amazon-linux-extras install java-openjdk11
 
 #java-11-openjdk-11.0.16.0.8-1.amzn2.0.1.x86_64
 
-export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.amzn2.0.1.x86_64"
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.amzn2.0.1.x86_64"  #Always check for the latest JDK installed in the system else tomcat wont run
 PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 
 # tomcat is a server like jenkins , not like tool -Maven
@@ -92,7 +92,7 @@ chmod 700 /home/jenkins/.ssh
 
 #make jenkin user as a owner to tomcat dir :
 
-chown -R jenkin /opt/tomcat
+chown -R jenkin /opt/tomcat  # execute this in root else it will ask for password
 
 ****************************************************************************************************
 
