@@ -43,6 +43,10 @@ if we have defined inventory file separatly
 then
 #for using user defined Inventory file
 
+> we can edit conf file to inventory as /etc/ansible/inventory
+> then in that case by default inventory file will be picked as source so no need to mention the file name in the adhoc command
+
+
 > cat cd /etc/ansible/hosts > inventoryfile.txt   -- if file is present in same path else complete path should be mentioned
 > we have to define the host file now, like
 ansible -i inventoryfile.txt -m ping all
@@ -164,6 +168,7 @@ ansible samplenode1 -m copy -a "src=/etc/ansible/testfile1.txt dest=/home/ansibl
 ansible -i inventoryfile.txt samplenode1 -m copy -a "content='Hello from Controller\n' dest=/home/ansibleadmin/hello.txt"
 ansible -i <host> <node> -m <module> -a <parameter>  = destination file should exit else it will throw error
 
+# Node we can place anywhere in the command
 
 ansible testnodes -m copy -a "content='hello from Ansible Controller\n' dest=/dest/path/hello.txt"
 
@@ -174,7 +179,7 @@ ansible testnodes -m copy -a "content='hello from Ansible Controller\n' dest=/de
 
 ##Transfer a file from Ansible Nodes to Ansible Controller using fetch Module
 
-ansible testnodes -m fetch -a "src=/home/ansibleadmin/file1.txt dest=/etc/ansible/"   
+ansible testnodes -m fetch -a "src=/home/ansibleadmin/file1.txt dest=/etc/ansible/"     # complete path will be pulled into controller lol not only just file
 
 ansible testnodes -m fetch -a "src=/srcfile/path/nodefile1.txt dest=/dest/path/"
 
@@ -202,7 +207,8 @@ ansible -i inventory_file_name prodnodes -m shell -a "uptime"
 
 
 ### List all modules:
-ansible-doc -l
+ansible-doc -l 
+ansible-doc -l | grep <command>
 
 ### No. of modules:
 ansible-doc -l | wc -l
@@ -211,7 +217,7 @@ ansible-doc -l | wc -l
 ansible-doc -l | grep shel
 
 ### To know about any specific modules:
-ansible-doc shell
+ansible-doc shell  # this gives detailedddd explanation
 
 *********************************************************************************************
 [devopsadmin@ip-172-31-47-91 ansible]$ ansible -i inventoryfile.txt -m yum -a "name=httpd state=absent" --become samplenode1
@@ -269,6 +275,8 @@ To install httpd in sample node 1
  
 ansible-playbook -i inventoryfile.txt httpdinstall.yaml
 
+# we should run the command only in the present directory where playbook is present
+
 =============================================
 ansible-playbook -i inventoryfile.txt httpdinstall.yaml C   -- this will run the syntax to check(dummy run), but wont effect target machine
 
@@ -301,8 +309,18 @@ ansible-playbook -i inventoryfile.txt httpdinstall.yaml C   -- this will run the
         line 01
         line 02
 	
-	
-	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
+
+# to remove directory
+
+- hosts: all
+  tasks:		
+  - name: Recursively remove directory
+    file:
+      path: /home/dummy
+      state: absent
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	
 ---
 - name: Provisioning Server 
