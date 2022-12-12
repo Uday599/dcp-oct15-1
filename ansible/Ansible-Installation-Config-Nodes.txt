@@ -51,9 +51,12 @@ amazon-linux-extras install epel
 amazon-linux-extras install ansible2
 
 #go to /etc/ansible
+==================================================
+/etc/ansible : path where ansible has all its data 
+==================================================
 
 #host - inventory file
-#config
+#config  - will have all it configuration details
 #roles 
 
 # you can edit host file  add the ips of nodes
@@ -94,7 +97,7 @@ devopsadmin ALL=(ALL) NOPASSWD: ALL
 
 ###test ssh connection from ansible host/controller to remote hosts
 
-ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode1.key ansibleadmin@172.31.44.179
+ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode1.key ansibleadmin@172.31.44.179   # public/private ip
 ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode2.key ansibleadmin@172.31.41.222
 
 ###update vi etc/ansible/host
@@ -125,7 +128,7 @@ ansible testnodes -m ping
    79  ansible -m ping '*'
    80  clear
    81  history
- syntax : ansible <file_name if not hosts> -m ping <node_name>
+ syntax : ansible <file_name/Host Group name> -m ping <node_name>
  > here we can create an inventoy file which we can use as Hosts and can call in syntax
 > we can declare group inside group , group variables so on...
 
