@@ -6,6 +6,14 @@ Launch 3 EC2 Instances... 1 for Ansible Controller & 2 as Nodes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Login to Ansible Node1 & Node2. Perform below activities:
 
+++++++++++++++++++++++++++++++++++++++++++
+
+target machine -> ssh keys
+ansible controller  will connect to target through SSh key
+and we are creating ssh key by ansibleadmin user and only this user has access to generated key
+
+++++++++++++++++++++++++++++++++++++++++++
+
 #Add User in Ansible Nodes1 : 
 
 useradd -m -d /home/ansibleadmin ansibleadmin
@@ -38,6 +46,9 @@ chmod 700 /home/ansibleadmin/.ssh
 
 $ visudo
 
+# when you do sudo -i, for root you will be directed to root without password, that is because in this file we defined that :)
+# similary to switch amaong ansibleadmin , weare defining that no password is required
+
 add the below mentioned line in the file and save it.
 ansibleadmin ALL=(ALL) NOPASSWD: ALL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,20 +57,24 @@ ansibleadmin ALL=(ALL) NOPASSWD: ALL
 yum install update -y
 #Install epel Package :
 #Install Ansible 
+# Ansible is wriiten in python, if not Amazon-AMI, then we should intall python and then Ansible in other OS's.
+# amazon-linux-extras is a package manager for Amazon-linux like how we have yum for Centos/Redhat
 
 amazon-linux-extras install epel
 amazon-linux-extras install ansible2
 
+ansible --version
+
 #go to /etc/ansible
 ==================================================
-/etc/ansible : path where ansible has all its data 
+/etc/ansible : path where ansible has all its details
 ==================================================
 
 #host - inventory file
 #config  - will have all it configuration details
 #roles 
 
-# you can edit host file  add the ips of nodes
+# you can edit host file - add the ips of nodes
 
 #[appservers]
 #4.14.136.217
@@ -85,6 +100,8 @@ cd ansiblenodekeys
 vi ansiblenode1.key ### copy & paste the private key of ansible-node1
 vi ansiblenode2.key ### copy & paste the private key of ansible-node2
 
+# Changing/Protecting ansiblenode keys access
+
 chmod 600 ansiblenode1.key
 chmod 600 ansiblenode2.key
 
@@ -97,15 +114,16 @@ devopsadmin ALL=(ALL) NOPASSWD: ALL
 
 ###test ssh connection from ansible host/controller to remote hosts
 
-ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode1.key ansibleadmin@172.31.44.179   # public/private ip
+ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode1.key ansibleadmin@172.31.44.179   #private ip
 ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode2.key ansibleadmin@172.31.41.222
 
 ###update vi etc/ansible/host
 
 [testnodes]
-samplenode1 ansible_ssh_host=172.31.44.179 ansible_ssh_user=ansibleadmin ansible_ssh_private_key_file=/etc/ansible/ansiblenodekeys/ansiblenode1.key
+samplenode1 ansible_ssh_host=172.31.44.179 ansible_ssh_user=ansibleadmin ansible_ssh_private_key_file=/etc/ansible/ansiblenodekeys/ansiblenode1.key 
 samplenode2 ansible_ssh_host=172.31.41.222 ansible_ssh_user=ansibleadmin ansible_ssh_private_key_file=/etc/ansible/ansiblenodekeys/ansiblenode2.key
 
+# private ip/static Ip
 
 [testnodes2]
 samplenode1 ansible_ssh_host=172.31.44.179 ansible_ssh_user=ansibleadmin ansible_ssh_private_key_file=/etc/ansible/ansiblenodekeys/ansiblenode1.key
