@@ -799,6 +799,25 @@ intalling and configuring mysql db
 
 
 then we can create an another file with Role keyword calling above file
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+Visual Block Mode
+
+First, move the cursor to the first char of the first line in block code you want to comment, then type:
+
+Ctrl + v                                    
+
+then vim will go into VISUAL BLOCK mode. Use j to move the cursor down until you reach the last line of your code block. Then type:
+
+Shift + i
+
+now vim goes to INSERT mode and the cursor is at the first char of the first line. Finally, type # then ESC and the code block is now commented.
+
+To decomment, do the same things but instead of type Shift + I, you just type x to remove all # after highlight them in VISUAL BLOCK mode.
+
+++++++++++++++++++++++++++++++++++++++++++++++
+
+:%d -> to delete vi content
 
 
