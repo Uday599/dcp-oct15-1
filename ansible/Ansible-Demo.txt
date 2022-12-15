@@ -22,6 +22,35 @@ ssh -p22 -i /etc/ansible/ansiblenodekeys/ansiblenode2.key ansibleadmin@172.31.0.
 samplenode1 ansible_ssh_host=172.31.1.175 ansible_ssh_user=ansibleadmin ansible_ssh_private_key_file=/etc/ansible/ansiblenodekeys/ansiblenode1.key
 samplenode2 ansible_ssh_host=172.31.0.194 ansible_ssh_user=ansibleadmin ansible_ssh_private_key_file=/etc/ansible/ansiblenodekeys/ansiblenode2.key
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Practice Inventory files
+--------------------------
+
+[db_nodes]
+sql_db1 ansible_host=sql01.xyz.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Lin$Pass # OS=linux
+sql_db2 ansible_host=sql02.xyz.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Lin$Pass
+
+[web_nodes]
+web_node1 ansible_host=web01.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass # OS=Windows
+web_node2 ansible_host=web02.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+web_node3 ansible_host=web03.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+
+[boston_nodes]
+sql_db1 ansible_host=sql01.xyz.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Lin$Pass
+web_node1 ansible_host=web01.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+
+[dallas_nodes]
+sql_db2 ansible_host=sql02.xyz.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Lin$Pass
+web_node2 ansible_host=web02.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+web_node3 ansible_host=web03.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+
+[us_nodes:children]
+boston_nodes
+dallas_nodes
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #**************************************************************************************************************************
 #Access through Ansible Controller :
 #**************************************************************************************************************************
@@ -819,5 +848,287 @@ To decomment, do the same things but instead of type Shift + I, you just type x 
 ++++++++++++++++++++++++++++++++++++++++++++++
 
 :%d -> to delete vi content
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+Practice:1
+----------
+# to print output on console
+
+-
+    name: 'Execute two commands on localhost'
+    hosts: samplenode1
+    tasks:
+        -
+            name: 'Execute a date command'
+            command: date
+        -
+            name: 'Execute a command to display hosts file'
+            command: cat /etc/test.txt
+            register: command_output
+
+        -
+            debug:
+                var: command_output.stdout_lines
+~
+
+Practice:2 Variable
+----------
+
+
+# Sample Inventory File
+localhost ansible_connection=localhost nameserver_ip=10.1.250.10 snmp_port=160-161
+
+Playbook:
+
+-
+    name: 'Update nameserver entry into resolv.conf file on localhost'
+    hosts: localhost
+    tasks:
+        -
+            name: 'Update nameserver entry into resolv.conf file'
+            lineinfile:
+                path: /etc/resolv.conf
+                line: 'nameserver {{ nameserver_ip }}'
+        -
+            name: 'Disable SNMP Port'
+            firewalld:
+                port: "{{snmp_port}}"
+                permanent: true
+                state: disabled
+
+
+Practice :3
+-----------
+-
+    name: 'Update nameserver entry into resolv.conf file on localhost'
+    hosts: localhost
+    vars:
+             car_model: BMWM3
+             country_name:  USA
+             title: Systems Engineer  # we can give spaces
+    tasks:
+        -
+            name: 'Print my car model'
+            command: 'echo "My car''s model is {{car_model}}"'
+        -
+            name: 'Print my country'
+            command: 'echo "I live in the {{country_name}}"'
+        -
+            name: 'Print my title'
+            command: 'echo "I work as a {{title}}"'
+
+
+
+> Ansible Modules:
+------------------
+
+1.
+
+-   name: "Execute a script on all web server nodes"
+    hosts: web_nodes
+    tasks:
+        -   script: /tmp/install_script.sh
+	
+	
+	
+2.
+
+-
+    name: 'Execute a script on all web server nodes'
+    hosts: web_nodes
+    tasks:
+        -
+            name: 'Execute a script on all web server nodes'
+            script: /tmp/install_script.sh
+        -   
+            name: 'start httpd services on all web nodes'
+            service: 
+                state: started
+		
+3.
+
+-
+    name: 'Execute a script on all web server nodes'
+    hosts: web_nodes
+    tasks:
+        -   
+            lineinfile:
+                line: nameserver10.1.250.10
+                path: /etc/resolv.conf
+        -
+            name: 'Execute a script'
+            script: /tmp/install_script.sh
+        -
+            name: 'Start httpd service'
+            service:
+                name: httpd
+                state: present
+4.
+
+-
+    name: 'Execute a script on all web server nodes and start httpd service'
+    hosts: web_nodes
+    tasks:
+        -
+            name: 'Update entry into /etc/resolv.conf'
+            lineinfile:
+                path: /etc/resolv.conf
+                line: 'nameserver 10.1.250.10'
+        -   
+            user:
+                
+                uid: 1040
+                group: developers
+                username: web_user
+        -
+            name: 'Execute a script'
+            script: /tmp/install_script.sh
+        -
+            name: 'Start httpd service'
+            service:
+                name: httpd
+                state: present
+
+> Ansible Variable part-2
+-------------------------
+
+
+1.
+
+# Sample Inventory File
+
+localhost ansible_connection=localhost nameserver_ip=10.1.250.10
+
+
+-
+    name: 'Update nameserver entry into resolv.conf file on localhost'
+    hosts: localhost
+    tasks:
+        -
+            name: 'Update nameserver entry into resolv.conf file'
+            lineinfile:
+                path: /etc/resolv.conf
+                line: 'nameserver {{nameserver_ip}}'
+
+
+2.
+
+# We have created a group for web servers. Similarly create a group for database servers named 'db_servers' and add db1 server to it
+# --------------------------------
+# Sample Inventory File
+
+# Web Servers
+web1 ansible_host=server1.company.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+web2 ansible_host=server2.company.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+web3 ansible_host=server3.company.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+
+# Database Servers
+db1 ansible_host=server4.company.com ansible_connection=winrm ansible_user=administrator ansible_ssh_pass=Password123!
+
+[web_servers]
+web1
+web2
+web3
+
+[db_servers]
+db1
+
+
+Playbook:
+
+-
+    name: 'Execute a script on all web server nodes'
+    hosts: all_servers
+    tasks:
+        -
+            service: 'name=mysql state=started'
+            when: ansible_host=="server4.company.com"
+
+
+
+3. 
+
+
+
+- name: Am I an Adult or a Child?
+  hosts: localhost
+  vars:
+    age: 25
+  tasks:
+    - command: echo "I am a Child"
+      when: age<18     # we are calling variable directly, we use "{{age}}" when we want to print that value
+    - command: echo "I am an Adult"
+      when: age >= 18
+
+
+
+
+4.
+
+
+-
+    name: 'Add name server entry if not already entered'
+    hosts: localhost
+    tasks:
+        -
+            shell: 'cat /etc/resolv.conf'
+            register: command_output
+        -
+            shell: 'echo "nameserver 10.0.250.10" >> /etc/resolv.conf'
+            when: command_output.stdout.find("10.0.250.10") == -1   # -1 represents True
+
+
+
+
+> Ansible Loops:
+--------------------
+
+
+1.
+
+-
+    name: 'Print list of fruits'
+    hosts: localhost
+    vars:
+        fruits:
+            - Apple
+            - Banana
+            - Grapes
+            - Orange
+    tasks:
+        -
+            command: 'echo "{{item}}"'
+            with_items: "{{fruits}}"
+            
+	    
+	    
+2. 
+-
+    name: 'Install required packages'
+    hosts: localhost
+    vars:
+        packages:
+            - httpd
+            - binutils
+            - glibc
+            - ksh
+            - libaio
+            - libXext
+            - gcc
+            - make
+            - sysstat
+            - unixODBC
+            - mongodb
+            - nodejs
+            - grunt
+    tasks:
+        -
+            yum: 'name={{item}} state=present'
+            with_items: "{{packages}}"
+
+
+
+
 
 
