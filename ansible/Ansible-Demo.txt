@@ -1128,6 +1128,13 @@ Playbook:
             with_items: "{{packages}}"
 
 
++++++++++++++++++++++++++++++++++++++++++++
+
+# Dry run
+
+Ansible-playbook -c <playbook.yml>
+
+> ansible-playbook <playbook name> -k --step   # to execute playbook in interactive mode
 
 
 
