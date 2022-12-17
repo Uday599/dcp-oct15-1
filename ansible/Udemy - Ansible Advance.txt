@@ -489,22 +489,260 @@ you could specify a percentage to say execute the playbook against 20% of server
 
 
 
+================
+ERROR HANDLING 
+================
+
+
+1.
+-
+  name: Deploy a web application
+  hosts: app_servers
+  any_errors_fatal: true   # this will make ansible to stop execute , even if one server failed, by default it wont work lik this, it will execute even if other                                 # server failed
+  vars:
+    db_name: employee_db
+    db_user: db_user
+    db_password: Passw0rd
+  tasks:
+    - name: Install dependencies
+      apt: name={{ item }} state=present
+      with_items:
+       - python
+       - python-setuptools
+       - python-dev
+       - build-essential
+       - python-pip
+       - python-mysqldb
+
+    - name: Install MySQL database
+      apt:
+        name: "{{ item }}"
+        state:  present
+      with_items:
+       - mysql-server
+       - mysql-client
+
+    - name: Start Mysql Service
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Create Application Database
+      mysql_db: name={{ db_name }} state=present
+
+    - name: Create Application DB User
+      mysql_user: name={{ db_user }} password={{ db_password }} priv='*.*:ALL' host='%' state='present'
+
+    - name: Install Python Flask dependencies
+      pip:
+        name: '{{ item }}'
+        state: present
+      with_items:
+       - flask
+       - flask-mysql
+
+    - name: Copy web-server code
+      copy: src=app.py dest=/opt/app.py
+
+    - name: Start web-application
+      shell: FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 &
 
 
 
 
+2.
+
+-
+  name: Deploy a web application
+  hosts: app_servers
+  any_errors_fatal: true
+  vars:
+    db_name: employee_db
+    db_user: db_user
+    db_password: Passw0rd
+  tasks:
+    - name: Install dependencies
+      apt: name={{ item }} state=present
+      with_items:
+       - python
+       - python-setuptools
+       - python-dev
+       - build-essential
+       - python-pip
+       - python-mysqldb
+
+    - name: Install MySQL database
+      apt:
+        name: "{{ item }}"
+        state:  present
+      with_items:
+       - mysql-server
+       - mysql-client
+
+    - name: Start Mysql Service
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Create Application Database
+      mysql_db: name={{ db_name }} state=present
+
+    - name: Create Application DB User
+      mysql_user: name={{ db_user }} password={{ db_password }} priv='*.*:ALL' host='%' state='present'
+
+    - name: Install Python Flask dependencies
+      pip:
+        name: '{{ item }}'
+        state: present
+      with_items:
+       - flask
+       - flask-mysql
+
+    - name: Copy web-server code
+      copy: src=app.py dest=/opt/app.py
+
+    - name: Start web-application
+      shell: FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 &
+
+    - name: "Send notification email"
+      mail:
+        to: devops@corp.com
+        subject: Server Deployed!
+        body: Web Server Deployed Successfully
+      ignore_errors: yes  # this will ignore even if there is any error and move to next task
+      
+      
+================
+JinJa2 Temaplate
+================
+
+1.
+
+-
+  name: Test Jinja2 Templating
+  hosts: localhost
+  vars:
+    first_name: james
+    last_name: bond
+  tasks:
+  - debug:
+      msg: "The name is {{last_name}}! {{first_name}}{{last_name}}!"
 
 
 
+2.
+-
+  name: Test Jinja2 Templating
+  hosts: localhost
+  vars:
+    first_name: james
+    last_name: bond
+  tasks:
+  - debug:
+      msg: 'The name is {{last_name|title}}! {{first_name|title}} {{last_name|title}}!'
+
+
+3.
+
+-
+  name: Test Jinja2 Templating
+  hosts: localhost
+  vars:
+    array_of_numbers:
+      - 12
+      - 34
+      - 06
+      - 34
+  tasks:
+  - debug:
+      msg: 'Lowest = {{array_of_numbers|min}}'
+
+4.
+
+-
+  name: Install Dependencies
+  hosts: localhost
+  vars:
+    web_dependencies:
+         - python
+         - python-setuptools
+         - python-dev
+         - build-essential
+         - python-pip
+         - python-mysqldb
+    sql_dependencies:
+         - python
+         - python-mysqldb
+  tasks:
+  - name: Install dependencies
+    apt: name='{{ item }}' state=present
+    with_items: '{{ sql_dependencies | union(web_dependencies) }}'
+
+
+5.
+
+-
+  name: Generate random file name
+  hosts: localhost
+  tasks:
+  - name: Install dependencies
+    file:
+      path: /tmp/random_file"{{ 1000 | random }}"
+      state: touch
+
+
+6.
+
+  hosts: localhost
+  vars:
+    ip_address: 192.168.1.6
+  tasks:
+  - name: Test IP Address
+    debug:
+      msg: IP Address = {{ ip_address | ipaddr }}
 
 
 
+=================
+LOOKUPS
+=================
+
+1. Before:
+-
+  name: Test Connectivity
+  hosts: web_server
+  vars:
+    ansible_ssh_pass: "Passw0rd"
+  tasks:
+  - name: Ping target host
+    ping:
+           data: "Test"
 
 
-
-
-
-
-
-
+After:
+-
+  name: Test Connectivity
+  hosts: web_server
+  vars:
+    ansible_ssh_pass: "{{ lookup('csvfile', 'web_server file=credentials.csv delimiter=,') }}"
+  tasks:
+  - name: Ping target host
+    ping:
+      data: "Test"
+      
+      
+      
+ 2.
+ 
+ -
+  name: Test Connectivity
+  hosts: web_server
+  vars:
+    ansible_ssh_pass: "{{ lookup('ini', 'password section=web_server file=credentials.ini') }}"
+  tasks:
+  - name: Ping target host
+    ping:
+      data: "Test"
 
