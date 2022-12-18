@@ -56,42 +56,55 @@ For more examples and ideas, visit:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Installation:
+=============
+https://docs.docker.com/engine/install/
 
+Docker Hub: https://hub.docker.com/
+
+Docker Swarm : docker orchestration tool from docker , howwver we use k8
     1  yum install docker
     2  systemctl status docker
     3  systemctl start docker
     4  systemctl enable docker
     5  systemctl status docker
-    6  clear
-    7  docket ps
-    8  docker ps
+    
+    
+
+    8  docker ps  # gives list of container which are active
+       docker ps -a # gives list of container which are in stopped state - total
+       
     9  which docker
    10  cd container_id
    11  clear
    12  docker ps
    13  docker images
-   14  docker pull centos
-   15  docker images
-   16  docker ps
-   17  dockerclear
-   18  clear
-   19  docker inmages
-   20  docker inmage
-   21  docker images
-   22  docker run centos
+   
+   
+   14  docker pull centos # running as root user, to pull image from docker hub and pulls latest tags by default. can mention tags aswell
+   15  docker images # gives list of images 
+   16  docker ps # active state containers
+
+   22  docker run centos  # running container having image centos
    23  docker ps
    24  docker ps -a
-   25  docker run nginx
-   26  docker pull loksaieta/loksaimvndevops:v1.0
-   27  docker images
+  
+  
+   25  docker run nginx  # this will automatically pulls image from hub and runs it
+   
+   26  docker pull loksaieta/loksaimvndevops:v1.0   # our own image
+   27  docker images # gives list
+   
    28  docker run -it loksaieta/loksaimvndevops bash
+   
+   
    29  docker --version
    30  docker run hello-world
-   31  clear
+ 
    32  docker images
    33  docker ps
    34  docker ps -a
-   35  history
+here
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Docker hub - registry for docker images
