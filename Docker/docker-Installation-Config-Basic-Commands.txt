@@ -406,7 +406,29 @@ docker run -it centos bash
 dockerpath# cat /etc/*release*
 dockerpath# exit
 
-  
++++++++++++++++++++++++++++++++++++++
+> we cant do "-it" for services lik tomcat/nginx -> you can check in docker hub , works for: OS
+> run command  -> will pull image from hub and then start it
+> start -> is to start already pulled container-image
+> stop -> is to stop already pulled container-image
+> exec command -> will execute command , but container should be running , it can any service/os
+eg:
+[root@ip-172-31-39-243 /]# docker exec 965eb9d166de cat /etc/*release* # container is OS- centos container
+NAME="CentOS Linux"
+VERSION="8"
+ID="centos"
+ID_LIKE="rhel fedora"
+VERSION_ID="8"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="CentOS Linux 8"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:centos:centos:8"
+HOME_URL="https://centos.org/"
+BUG_REPORT_URL="https://bugs.centos.org/"
+CENTOS_MANTISBT_PROJECT="CentOS-8"
+CENTOS_MANTISBT_PROJECT_VERSION="8"
+CentOS Linux release 8.4.2105
+cpe:/o:centos:centos:8
   
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 DOCKER VOLUMES
