@@ -63,115 +63,115 @@ https://docs.docker.com/engine/install/
 Docker Hub: https://hub.docker.com/
 
 Docker Swarm : docker orchestration tool from docker , howwver we use k8
-    1  yum install docker
-    2  systemctl status docker
-    3  systemctl start docker
-    4  systemctl enable docker
-    5  systemctl status docker
+      yum install docker
+      systemctl status docker
+      systemctl start docker
+      systemctl enable docker
+      systemctl status docker
     
     
 
-    8  docker ps  # gives list of container which are active
+      docker ps  # gives list of container which are active
        docker ps -a # gives list of container which are in stopped state - total
        
-    9  which docker
-   10  cd container_id
-   11  clear
-   12  docker ps
-   13  docker images
+      which docker
+     cd container_id
+     clear
+     docker ps
+     docker images
    
    
-   14  docker pull centos # running as root user, to pull image from docker hub and pulls latest tags by default. can mention tags aswell
-   15  docker images # gives list of images 
-   16  docker ps # active state containers
+     docker pull centos # running as root user, to pull image from docker hub and pulls latest tags by default. can mention tags aswell
+     docker images # gives list of images 
+     docker ps # active state containers
 
-   22  docker run centos  # running container having image centos
-   23  docker ps
-   24  docker ps -a
+     docker run centos  # running container having image centos
+     docker ps
+     docker ps -a
   
   
-   25  docker run nginx  # this will automatically pulls image from hub and runs it
+     docker run nginx  # this will automatically pulls image from hub and runs it
    
-   26  docker pull loksaieta/loksaimvndevops:v1.0   # our own image
-   27  docker images # gives list
+     docker pull loksaieta/loksaimvndevops:v1.0   # our own image
+     docker images # gives list
    
-   28  docker run -it loksaieta/loksaimvndevops bash
+     docker run -it loksaieta/loksaimvndevops bash  # interactive mode in terminal, interactive and terminal
    
    
-   29  docker --version
-   30  docker run hello-world
+     docker --version
+     docker run hello-world
  
-   32  docker images
-   33  docker ps
-   34  docker ps -a
-here
+     docker images
+     docker ps
+     docker ps -a  # 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Docker hub - registry for docker images
 
 docker pull nginx:<tag_id>
 
-    1  yum install docker
-    2  systemctl status docker
-    3  systemctl start docker
-    4  systemctl enable docker
-    5  systemctl status docker
-    6  clear
-    7  docket ps
-    8  docker ps
-    9  which docker
-   10  cd container_id
-   11  clear
-   12  docker ps
-   13  docker images
-   14  docker pull centos
-   15  docker images
-   16  docker ps
-   17  dockerclear
-   18  clear
-   19  docker inmages
-   20  docker inmage
-   21  docker images
-   22  docker run centos
-   23  docker ps
-   24  docker ps -a
-   25  docker run nginx
-   26  docker pull loksaieta/loksaimvndevops:v1.0
-   27  docker images
-   28  docker run -it loksaieta/loksaimvndevops bash
-   29  docker --version
-   30  docker run hello-world
-   31  clear
-   32  docker images
-   33  docker ps
-   34  docker ps -a
-   35  history
-   36  docker pull nginx
-   37  docker images
-   38  docket rmi loksaieta/loksaimvndevops
-   39  docker rmi loksaieta/loksaimvndevops
-   40  docker ps -a
-   41  docker rm a0303e44cb9e
-   42  docker rmi loksaieta/loksaimvndevops
-   43  docker images
-   44  docker rmi loksaieta/loksaimvndevops
-   45  docker ps -a
-   46  docker rm
-   47  docker rm b818a67fcc12
-   48  docker ps -a
-   49  docker iamges
-   50  docker images
-   51  docker rm nginx
-   52  docker rmi nginx
-   53  clear
-   54  docker images
-   55  docker pull nginx
-   56  nginx -- version
-   57  nginx --version
-   58  docker run nginx
-   59  docker images
-   60  nginx --version
-   61  docker run  --name myweb -p 7090:80 -d nginx   
+      yum install docker
+      systemctl status docker
+      systemctl start docker
+      systemctl enable docker
+      systemctl status docker
+      clear
+      docket ps
+      docker ps
+      which docker
+     cd container_id
+     clear
+      docker ps
+     docker images
+     docker pull centos
+     docker images
+     docker ps
+     dockerclear
+    clear
+     docker inmages
+     docker inmage
+     docker images
+     docker run centos
+     docker ps
+     docker ps -a
+     docker run nginx
+     docker pull loksaieta/loksaimvndevops:v1.0
+     docker images
+     docker run -it loksaieta/loksaimvndevops bash
+     docker --version
+     docker run hello-world
+     clear
+     docker images
+     docker ps
+     docker ps -a
+     history
+     docker pull nginx
+     docker images
+     docket rmi loksaieta/loksaimvndevops
+     docker rmi loksaieta/loksaimvndevops
+     docker ps -a
+     docker rm a0303e44cb9e
+     docker rmi loksaieta/loksaimvndevops
+     docker images
+     docker rmi loksaieta/loksaimvndevops
+     docker ps -a
+     docker rm
+     docker rm b818a67fcc12
+     docker ps -a
+     docker iamges
+     docker images
+     docker rm nginx
+     docker rmi nginx
+     clear
+     docker images
+     docker pull nginx
+     nginx -- version
+     nginx --version
+     docker run nginx
+     docker images
+     nginx --version
+     docker run  --name myweb -p 7090:80 -d nginx   
    -- what above command does is : 
    > it will run container NGINX on port 80 (we need to know which service runs on which port , for Nginx it is 80)
    > consider nginx is runnning in private subnet , so do access this service from internet, we have to link internet -> public Ip host -> map to port 80 in private subnet.
