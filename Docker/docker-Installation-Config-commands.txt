@@ -109,69 +109,17 @@ Docker Swarm : docker orchestration tool from docker , howwver we use k8
 
 Docker hub - registry for docker images
 
-docker pull nginx:<tag_id>
+docker pull nginx:<tag_id>        # to pull dedicated tag image
 
-      yum install docker
-      systemctl status docker
-      systemctl start docker
-      systemctl enable docker
-      systemctl status docker
-      clear
-      docket ps
-      docker ps
-      which docker
-     cd container_id
-     clear
-      docker ps
-     docker images
-     docker pull centos
-     docker images
-     docker ps
-     dockerclear
-    clear
-     docker inmages
-     docker inmage
-     docker images
-     docker run centos
-     docker ps
-     docker ps -a
-     docker run nginx
-     docker pull loksaieta/loksaimvndevops:v1.0
-     docker images
-     docker run -it loksaieta/loksaimvndevops bash
-     docker --version
-     docker run hello-world
-     clear
-     docker images
-     docker ps
-     docker ps -a
-     history
-     docker pull nginx
-     docker images
-     docket rmi loksaieta/loksaimvndevops
-     docker rmi loksaieta/loksaimvndevops
-     docker ps -a
-     docker rm a0303e44cb9e
-     docker rmi loksaieta/loksaimvndevops
-     docker images
-     docker rmi loksaieta/loksaimvndevops
-     docker ps -a
-     docker rm
-     docker rm b818a67fcc12
-     docker ps -a
-     docker iamges
-     docker images
-     docker rm nginx
-     docker rmi nginx
-     clear
-     docker images
-     docker pull nginx
-     nginx -- version
-     nginx --version
-     docker run nginx
-     docker images
-     nginx --version
-     docker run  --name myweb -p 7090:80 -d nginx   
+docker run centos <command>
+docker run centos sleep 20 # by default runs in foreground mode
+
+
+ which docker
+ cd container_id
+    
+ docker run --name myweb -p 7090:80 -d nginx
+     
    -- what above command does is : 
    > it will run container NGINX on port 80 (we need to know which service runs on which port , for Nginx it is 80)
    > consider nginx is runnning in private subnet , so do access this service from internet, we have to link internet -> public Ip host -> map to port 80 in private subnet.
@@ -180,17 +128,18 @@ docker pull nginx:<tag_id>
    > --name myweb is like giving name for this particular container process.
    > by defualt run command runs in foreground causing not to have access to terminal
       
-      docker run --name myweb -d -P nginx  -> capital P is for automatically doing port mapping
-      docker ps -a to see port
+docker run --name myweb -d -P nginx  -> capital P is for automatically doing port mapping
+docker ps -a  # to see port
    
-   62  docker ps
-   63  docker stop 579d293a4641
-       dockar start <image>
-   64  docker ps -a
-   65  history
+docker ps
+docker stop 579d293a4641  # to stop the container
+dockar start <image>
+docker ps -a
+
    
-   COntainers are stored in below path :
-   /var/lib/docker/containers
+COntainers are stored in below path :
+
+/var/lib/docker/containers
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -230,6 +179,7 @@ systemctl enable docker
 
  # by default lates tag will be pulled if not you can mention the required tag to download
 docker pull centos 
+docker pull centos:tag
 
 docker run centos 
 
@@ -281,17 +231,17 @@ docker ps -a
 docker run -d centos sleep 200
 docker stop <container_id>
 
-docker rm 2c5b 1b4f
+docker rm 2c5b1b4f   # to remove container
 
 docker images
-docker rmi <image_id>
+docker rmi <image_id>  # to remove image
 
 ### Before deleting image, ensure that it is not referenced to any container. 
 ### In it is mapped, delete the container first, then can re container image.
 
 docker rmi -f hello-world
 
-docker pull centos:centos7.9.2009
+docker pull centos:centos7.9.2009  # using tag to pull image
 
 docker run centos sleep 1100
 
@@ -303,7 +253,7 @@ docket rmi <imaged_id>  - to remove the image from local machine
 ### Detached Mode
 docker run -d centos sleep 2000
 
-docker attach <running_container_id>  -- to attach , default
+docker attach <running_container_id>  -- to attach back to default mode i.e foreground mode , default
 docker stop <container_id>
 
 ###docker pull timer
@@ -311,36 +261,41 @@ docker stop <container_id>
 #docker pull jenkins
 
 #docker run jenkins
-
+G
 docker inspect <container_id>   -- to get details of containers
 
-docker history <imagename>
+docker history <imagename>  # to get the various layers of image, can be seen in docker hub
 
-docker run tomcat 
+docker run tomcat # default runs in foreground mode, use case: when tomcat is running , I want nobody to change/edit something in terminal so we use foreground
 
 ### Port-Mapping / Port-Binding
+================================
+
 
 goto hub.docker & search for tomcat
 
 docker run -it -p 8088:8080 tomcat:8.0
 
-#### -p host_port:container_port
+docker run -it -p host_port:container_port
 
-Once you install tomcat on ur vm :
+Once you install tomcat on container not on VM , very fast and easy:
 
-<public_ip>:8088
+<public_ip>:<host_port>  # 8088
 
 
 ###Docker Logs
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-docker logs <container_id>
+docker logs <container_id>  # to get logs
 
 #Access Docker contents using 
 
-- Non-Interactive Mode: 
+- Non-Interactive Mode:
 
+# docket run -it is to run container in interactive mode, whereas how to login/enter into already running container? we use "exec" command
+ 
 docker exec <container_id/container_name> <any bash command>
+docker exec container_id cat /etc/hosts
 
 docker exec myweb ls / 
 
@@ -405,18 +360,18 @@ DOCKER LOGS
 ------------
 ALways run inspect command first to know , how containers installation happens and condition it checks!
  
- docker inspect <image_id>
+ docker inspect <image_id>  # to know complete info about container , same thing is being pullled from docket hub but seen in terminal
  docker inspect 76c69feac34e
 
-  141  docker run --name Mysql -d -P mysql:5.7.40   -> this will run and intall mysql:5.7.40
-  142  docker ps   -> will give list of running process
-  143  docker ps -a  -> all process list
-  144  docker images -> will give list of images installed
-  145  docker logs Mysql -> this will give logs about Mysql process
-  146  docker run --name Mysql1 -d -P -e MYSQL_ROOT_PASSWORD=mypass mysql:5.7.40  -> -e is for providing export variables
-  147  docker ps
-  148  docker logs Mysql1
-  149  history
+    docker run --name Mysql -d -P mysql:5.7.40   -> this will run and intall mysql:5.7.40
+    docker ps   -> will give list of running process
+    docker ps -a  -> all process list
+    docker images -> will give list of images installed
+    docker logs Mysql -> this will give logs about Mysql process
+    docker run --name Mysql1 -d -P -e MYSQL_ROOT_PASSWORD=mypass mysql:5.7.40  -> -e is for providing export variables
+    docker ps
+    docker logs Mysql1
+
   
   
   =====================================================================
