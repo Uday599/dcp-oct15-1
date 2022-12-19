@@ -17,50 +17,53 @@ Image is a read-only template used to create container
 --------------
 
 ###Build Docker Image :::
+=========================
 
-#Dockerfile 
-
-###Using commit: 
+1.
+Using commit: 
+================
 
 	docker run -it debian
-
 	ls
-
-	git
-
+ 	git --version
 	apt-get update && apt-get install -y git 
-
-	clear
-
-	git 
-
+	git --version
+	exit
 	docker ps -a 
-
+	
+	# to create image , docker commit <container_id> <validreponame/imagename:tag> #by default latest
 	docker commit <container_id> loksaieta/deb-git:v1.0
-
+	
+	# now we created image in our local machine, we can push to docker hub for team's access.
 	docker images
 
 	docker run -it loksaieta/debian-git:s1.1
 	
 	###Login to Container:
 	docker exec -it <container_name-wizardly_shannon> bash
-	
-###Using Docker file:
 
+
+2.
+
+Using Dockerfile:
+======================
+
+2.a
 mkdir docker-contents
 cd docker-contents
 
-vi Dockerfile
+vi Dockerfile # naming should be same
 
-FROM debian
-RUN apt-get update
+FROM debian 				 # base image
+RUN apt-get update			 # All this commands will run upon this base image
 RUN apt-get install -y git
 RUN apt-get install -y vim
 
-### Best Practice:
+
+### Best Practice: # create less layers as possible
 
 FROM debian
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \ 			# this creates only one image layer
 	git \
 	vim
 
@@ -68,9 +71,14 @@ RUN apt-get update && apt-get install -y \
 
 ###save this Dockerfile
 
-docker build -t loksaieta/deb-git-vim .
+docker build -t loksaieta/deb-git-vim . 			# . mean dockerfile is present in current working directory, if not give complete path of dockerfile
 
 docker images
+
+docker history <image_name> # to see layers
+
+
+2.b
 
 #Dockerfile 
 
@@ -81,63 +89,15 @@ RUN cp -r /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps
 
 docker build -t loksaieta/javawebapp .
 
-#QA Environment ---> OS, appln, appln server, mysql, Testing tool, Monitoring tools 
 
-#docker-compose.yaml 
-
-#While running multiple containers ----> we shd establish links between the containers... for data trans
- 
-#### Docker Push images to Docker Registry:
-
-docker images
-
-docker tag <image_id> loksaieta/debian-git1:1.0
-
-docker tag 33e83a2fdb90 loksaieta/debian-git2:v1.0
-
-docker images 
-
-## Push to docker registry
-
-docker login --username=loksaieta
-dckr_pat_xG5pnARsdVF_nmgQsUgKVHuJshZoQ
-
-
-password: dckr_pat_lu71sdfvhQjN0UYt7wDiSwySTovVy3ikWf8
-
-#docker push loksaieta/debian-git2:v1.0
-
-docker push loksaieta/mywebappln:v1.1
-
-#docker push loksaieta/debian-git:v1.1
-
-##Docker File
-
-###Storage
-### Volumes:
-
-docker run centos sleep 30
-
-docker volume list
-
-docker volume create v1 
-
-docker volume inspect v1
-
-docker run -it --name=testvol1 --mount source=v1,destination=/v1 bash 
-
-docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
-
-#stateless & Stateful Appln.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.c
 
 >  Best Practice : try eliminating as many layes as you can in Dockerfile
 
 
-from - base image   -- name should be lower case, else will throw error
-labels - adds metadata to an image
-run- execute command in a new layer and commit the results
+from 				- base image   # name should be lower case, else will throw error
+labels 				- adds metadata to an image
+run				- execute command in a new layer and commit the results
 Add/Copy
 CMD
 EntryPoint
@@ -215,6 +175,82 @@ docker build -t nanoimg .    -- nanoimg is the image name we created ,
  > . mean work in current directory , that is nano directory
  > -t -> terminal
  
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+#QA Environment ---> OS, appln, appln server, mysql, Testing tool, Monitoring tools 
+
+#docker-compose.yaml 
+
+#While running multiple containers ----> Orchestration -> we shd establish links between the containers... for data trans
+
+
+DockerSwarm -> docker-compose.yaml -> docker container orchestration tool -> No LB
+K8 -> this is also container orchestration -> supports LB
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
+# You can group your images together using names and tags, and then upload them to Share images on Docker Hub.
+
+docker images
+
+docker tag <image_id> loksaieta/debian-git1:1.0
+
+docker tag 33e83a2fdb90 loksaieta/debian-git2:v1.0
+
+docker images 
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Push to docker registry
+==========================
+
+docker login --username=loksaieta   # dckr_pat_xG5pnARsdVF_nmgQsUgKVHuJshZoQ -> token
+password: dckr_pat_lu71sdfvhQjN0UYt7wDiSwySTovVy3ikWf8
+
+# docker push image_name
+#docker push loksaieta/debian-git2:v1.0
+
+docker push loksaieta/mywebappln:v1.1
+
+#docker push loksaieta/debian-git:v1.1
+
+# check docker hub to check image, image will be public
+
+# artifact -> image built -> sent to docker hub -> kubernetes will pull that image and deploy to higher ec.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Storage and ### Volumes - Mount :
+==================================
+
+docker run centos sleep 30
+
+# this give volume list in our local machine
+docker volume list
+
+# docker vloume create <vol_name>
+docker volume create v1 
+
+# this is to inspect volume - details about volume
+docker volume inspect v1
+
+docker run -it --name=testvol1 --mount source=v1,destination=/v1 bash 
+# Add some content into this storage inside container and then exit , go into local machine volume and check the data - you will find - helps in backup
+# can be used to send some data- secrets aswell into container storage
+# Once container work is done, we can detach/remove volume - stateless
+# storage size is dynamic
+
+docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
+
+#stateless & Stateful Appln.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
  
  
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
