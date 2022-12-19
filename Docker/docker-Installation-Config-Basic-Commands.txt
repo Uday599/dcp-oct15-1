@@ -74,18 +74,30 @@ Docker Swarm : docker orchestration tool from docker , howwver we use k8
       docker ps  # gives list of container which are active
        docker ps -a # gives list of container which are in stopped state - total
        
-      which docker
+      which docker 
+      # bin/docker
+      
      cd container_id
      clear
      docker ps
      docker images
    
    
-     docker pull centos # running as root user, to pull image from docker hub and pulls latest tags by default. can mention tags aswell
+     docker pull centos:centos7.9.2009 # running as root user, to pull image from docker hub and pulls latest tags by default. can mention tags aswell
+
+
      docker images # gives list of images 
+          REPOSITORY   TAG              IMAGE ID       CREATED         SIZE
+          centos       centos7.9.2009   eeb6ee3f44bd   15 months ago   204MB
+          
      docker ps # active state containers
 
      docker run centos  # running container having image centos
+     
+     REPOSITORY   TAG              IMAGE ID       CREATED         SIZE
+    centos       centos7.9.2009   eeb6ee3f44bd   15 months ago   204MB
+    centos       latest           5d0da3dc9764   15 months ago   231MB
+
      docker ps
      docker ps -a
   
@@ -116,7 +128,7 @@ docker run centos sleep 20 # by default runs in foreground mode
 
 
  which docker
- cd container_id
+cd container_id
     
  docker run --name myweb -p 7090:80 -d nginx
      
@@ -139,7 +151,8 @@ docker ps -a
    
 COntainers are stored in below path :
 
-/var/lib/docker/containers
+/var/lib/docker/containers   # need to explore
+
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -198,7 +211,7 @@ docker ps     --> this is used to get running containers
 docker ps -a    --> this is used to get list of containes - running/stopped/exited etc...
 
 ### Run Container in Interactive Mode:
-###docker run -it --name=testvol1 centos bash
+###docker run -it --name=testvol1 centos bash  # run command will pull image from docker hub, ok but start is to start already installed container-image
 docker run -it centos bash
 
 i -> interactive mode
@@ -261,7 +274,7 @@ docker stop <container_id>
 #docker pull jenkins
 
 #docker run jenkins
-G
+
 docker inspect <container_id>   -- to get details of containers
 
 docker history <imagename>  # to get the various layers of image, can be seen in docker hub
@@ -276,7 +289,7 @@ goto hub.docker & search for tomcat
 
 docker run -it -p 8088:8080 tomcat:8.0
 
-docker run -it -p host_port:container_port
+# docker run -it -p host_port:container_port
 
 Once you install tomcat on container not on VM , very fast and easy:
 
@@ -295,7 +308,7 @@ docker logs <container_id>  # to get logs
 # docket run -it is to run container in interactive mode, whereas how to login/enter into already running container? we use "exec" command
  
 docker exec <container_id/container_name> <any bash command>
-docker exec container_id cat /etc/hosts
+docker exec container_id cat /etc/hosts # this will execute this command inside container # container should be running ok before running "exec" command
 
 docker exec myweb ls / 
 
