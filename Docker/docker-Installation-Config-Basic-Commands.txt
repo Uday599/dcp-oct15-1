@@ -426,12 +426,20 @@ Unable to find image 'df7cd6816d65:latest' locally
 docker: Error response from daemon: pull access denied for df7cd6816d65, repository does not exist or may require 'docker login': denied: requested access to the resource is denied.
 
 > we can do "-it" only when we are creating container, i,e.. docker run -it centos
-> we can't do "-it" for already running container. it shows access denied
-> run command  -> will pull image from hub and then start it
-> start -> is to start already created container
-> stop -> is to stop already created container
-> exec command -> will execute command , but container should be running , it can any service/os
-
+> we can't do "-it" for already running container. it shows access denied , instead we can start by interactive mode again.
+> run command  -> will pull image from hub and then start it -> works with image only.
+> start -> is to start already created container -> we can enter into container through "-i" command, 
+# docker start -i c4316e0494d2
+> stop -> is to stop already running container
+> exec command -> will execute command without login into container , but container should be running
+[root@ip-172-31-39-243 _data]# docker exec c4316e0494d2 ls /v1
+secrets.txt
+test1.txt
+test2.txt
+test3.txt
+test4.txt
+test5.txt
+==================================================================================
 [root@ip-172-31-39-243 ~]# docker start centos  # there is no container called centos
 Error response from daemon: No such container: centos
 Error: failed to start containers: centos
