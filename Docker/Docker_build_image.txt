@@ -41,6 +41,16 @@ Using commit:
 	
 	###Login to Container:
 	docker exec -it <container_name-wizardly_shannon> bash
+	
+	# Image layers
+	
+	docker history <image>
+	[root@ip-172-31-39-243 ~]# docker history c2a88faad174
+	IMAGE          CREATED              CREATED BY                                      SIZE      COMMENT
+	c2a88faad174   About a minute ago   bash                                            119MB
+	291bf168077c   13 days ago          /bin/sh -c #(nop)  CMD ["bash"]                 0B
+	<missing>      13 days ago          /bin/sh -c #(nop) ADD file:553d20b03d45305e5…   124MB
+
 
 
 2.
@@ -248,11 +258,7 @@ docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
 
 #stateless & Stateful Appln.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
- 
- 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
