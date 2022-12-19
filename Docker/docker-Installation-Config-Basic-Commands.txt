@@ -408,10 +408,44 @@ dockerpath# exit
 
 +++++++++++++++++++++++++++++++++++++
 > we cant do "-it" for services lik tomcat/nginx -> you can check in docker hub , works for: OS
+
+[root@ip-172-31-39-243 ~]# docker ps
+CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS              PORTS     NAMES
+df7cd6816d65   centos    "/bin/bash"   2 minutes ago   Up About a minute             distracted_bartik
+[root@ip-172-31-39-243 ~]# docker run -it df7cd6816d65
+Unable to find image 'df7cd6816d65:latest' locally
+docker: Error response from daemon: pull access denied for df7cd6816d65, repository does not exist or may require 'docker login': denied: requested access to the resource is denied.
+
+> we can do "-it" only when we are creating container, i,e.. docker run -it centos
+> we can't do "-it" for already running container. it shows access denied
 > run command  -> will pull image from hub and then start it
-> start -> is to start already pulled container-image
-> stop -> is to stop already pulled container-image
+> start -> is to start already created container
+> stop -> is to stop already created container
 > exec command -> will execute command , but container should be running , it can any service/os
+
+[root@ip-172-31-39-243 ~]# docker start centos  # there is no container called centos
+Error response from daemon: No such container: centos
+Error: failed to start containers: centos
+[root@ip-172-31-39-243 ~]# docker ps -a
+CONTAINER ID   IMAGE     COMMAND       CREATED         STATUS                          PORTS     NAMES
+0258ea56bc61   centos    "/bin/bash"   2 minutes ago   Exited (0) About a minute ago             focused_wright  # this contanier is stopped
+14d4ae0d1df2   centos    "/bin/bash"   4 minutes ago   Exited (0) 3 minutes ago                  cool_wozniak
+4c7dc7dd8092   centos    "/bin/bash"   6 minutes ago   Exited (0) 5 minutes ago                  sad_easley
+df7cd6816d65   centos    "/bin/bash"   7 minutes ago   Exited (0) 4 minutes ago                  distracted_bartik
+aa413fbf7d1c   centos    "bash"        8 minutes ago   Exited (0) 7 minutes ago                  suspicious_dewdney
+[root@ip-172-31-39-243 ~]# docker start 0258ea56bc61   # we are starting
+0258ea56bc61
+[root@ip-172-31-39-243 ~]# docker run -it 0258ea56bc61  # we can't execute -it , because container is already running instead we use "exec"
+Unable to find image '0258ea56bc61:latest' locally
+docker: Error response from daemon: pull access denied for 0258ea56bc61, repository does not exist or may require 'docker login': denied: requested access to the resource is denied.
+See 'docker run --help'.
+[root@ip-172-31-39-243 ~]# docker exec 0258ea56bc61 ls /home  # like this , this file was addedd earlier when creating container unsing "run -it centos" command
+file1.txt
+
+
+
+
+
 eg:
 [root@ip-172-31-39-243 /]# docker exec 965eb9d166de cat /etc/*release* # container is OS- centos container
 NAME="CentOS Linux"
