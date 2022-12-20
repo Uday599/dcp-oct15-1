@@ -100,10 +100,16 @@ RUN cp -r /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps
 docker build -t loksaieta/javawebapp .
 
 
+
 2.c
 
->  Best Practice : try eliminating as many layes as you can in Dockerfile
 
+
+
+2.d
+
+>  Best Practice : try eliminating as many layes as you can in Dockerfile
+Instruction - Arguments format
 
 from 				- base image   # name should be lower case, else will throw error
 labels 				- adds metadata to an image
