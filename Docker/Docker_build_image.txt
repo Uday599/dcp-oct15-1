@@ -234,29 +234,6 @@ docker push loksaieta/mywebappln:v1.1
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-### Storage and ### Volumes - Mount :
-==================================
-
-docker run centos sleep 30
-
-# this give volume list in our local machine
-docker volume list
-
-# docker vloume create <vol_name>
-docker volume create v1 
-
-# this is to inspect volume - details about volume
-docker volume inspect v1
-
-docker run -it --name=testvol1 --mount source=v1,destination=/v1 bash 
-# Add some content into this storage inside container and then exit , go into local machine volume and check the data - you will find - helps in backup
-# can be used to send some data- secrets aswell into container storage
-# Once container work is done, we can detach/remove volume - stateless
-# storage size is dynamic
-
-docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
-
-#stateless & Stateful Appln.
 
 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
