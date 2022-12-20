@@ -328,7 +328,8 @@ docker run -p <IP>:<hostPort>:<containerPort> -d <imageNam>  #  Host network dri
 curl: (7) Couldn't connect to server
 
 
-
+3.
+Run an instance of kodekloud/simple-web with tag- blue and map port 8080 on the container to 38282 on the host 
 
 ###Docker Logs
 ~~~~~~~~~~~~~~~~~~~~~~~
