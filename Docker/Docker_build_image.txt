@@ -117,7 +117,9 @@ ENTRYPOINT FLASK_APP=app.py flask run --host=0.0.0.0
 
 > copy app.py to /opt/app.py
 > docker build -t uday1011/web-app .
-> docker run -p 8080:5000 uday1011/web-app
+> docker run -p 8080:5000 uday1011/web-app   # port binding is very important, flask runs in port 5000, Access from Instance ip
+
+# <Public_ip of instance>:<Host_port_8080>
 
 root@4d11918463b8:/# cat /etc/*release*
 DISTRIB_ID=Ubuntu
