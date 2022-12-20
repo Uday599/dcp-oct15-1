@@ -11,6 +11,14 @@ Bind:
 docker run --name db2 -d -e MYSQL_ROOT_PASSWORD=passwd -p 3030:3306 -v /root/vproddata:/var/lib/mysql mysql 
 # -v uses soource_path:destination_path
 
+Use case: Assume you installed and configured Jenkins instance , however if you stop/restart the container, all configuration will be erased out
+so to preserve that current state, we will use volume and mapps to container, whenever we install new Jenkins and use this volume, it will started from where we saved last :)
+
+
+
+
+
+
 > we are attaching vproddata directory from host sysem to containers directory
 
 Mounting volume:
