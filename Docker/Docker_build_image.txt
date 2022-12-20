@@ -284,11 +284,18 @@ docker push loksaieta/mywebappln:v1.1
  Command CMD & EntryPoint
  -----------------------
  
- 1.
+ 1.a
  vi Dockerfile
  
 FROM centos:latest
-CMD ["echo","hello"]
+CMD ["echo","hello"] # json command shld be first then argument
+# this will print Hello as first command once container is started with this image
+
+1.b
+FROM centos:latest
+CMD ["bash"]
+# docker build -t test .
+# docker run -it test -> this will enter into bash terminal as first command to execute is givn as - bash
 
  
 docker build -t printer:v1 .    -> this will build printer:v1 image
@@ -338,7 +345,7 @@ Dockerfile
 
 FROM centos:latest
 ENTRYPOINT ["echo"]
-cmd ["hello"]
+cmd ["hello"] # this will be default, it can overwriddn 
 
 [root@ip-172-31-1-219 ~]# ls
 entrycmd  images  vproddata
