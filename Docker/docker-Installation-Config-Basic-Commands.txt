@@ -442,6 +442,21 @@ docker run -it centos bash
 dockerpath# cat /etc/*release*
 dockerpath# exit
 
+==========================================================================
+Environmental varibles:
+----------------------
+
+# when we want to change some parameter , say background color for each time, each container then we will make that variable as environmental variable and define them while running container.
+
+docker run -e APP_COLOR=blue <image_name>
+
+# similarly if we want to run MYSQL container, then we should define env variable "MYSQL_ROOT_PASSWORD" .
+
+ docker run --name some-mysql -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root -d mysql:tag
+
+
+# you can refer official image from docker hub
+
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 > we cant do "-it" for services lik tomcat/nginx -> you can check in docker hub , works for: OS
 
