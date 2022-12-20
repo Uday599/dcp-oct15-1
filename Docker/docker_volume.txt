@@ -6,19 +6,23 @@ DOCKER VOLUMES
 
 Bind:
 -----
+# may be here we are mapping directory structure?
 
 docker run --name db2 -d -e MYSQL_ROOT_PASSWORD=passwd -p 3030:3306 -v /root/vproddata:/var/lib/mysql mysql 
+# -v uses soource_path:destination_path
 
-> we are attaching prodata directory from host sysem to containers directory
+> we are attaching vproddata directory from host sysem to containers directory
 
 Mounting volume:
 ----------------
-
-> Though both methods are similar, there is a slight difference. Docker manages Volumes and is usually not affected by other processes running on the same host. In contrast, Bind Mounts are just directories on the host file system and may be modified by other processes other than docker.
-
-> Binding host volume to container
+# may be here we are creating a volume?
 
 >>>   docker run -it --mount source=<volume_name>,destination=</container_volume_path> <image>
+# --mount uses key value pair seperared by , source=<>,destination=<>
+
+>>>  docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql
+#-v uses soource_path:destination_path
+
 
 docker volumes:
 ---------------
@@ -30,23 +34,24 @@ docker volumes:
 > image --> appl .war  = spl-db - credentials /config parameter
    * so secrets from host will be send to containers to access db
 
-
-docker volume
+example 1:
+---------
 
 docker volume create <volume_name>
 docker volume ls
 
 docker volume inspect <volume_name>  --- to check the mount point of volume
 
-docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd =p 3031:3306 -v <volume_name_created>:/var/lib/mysql <image_name/mysql>
-
+docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p 3031:3306 -v <volume_name_created>:/var/lib/mysql <image_name/mysql>
+                                                                                  <source_path>:<destination_path>
 docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql 
 
 volume directory in host :
+--------------------------
 
 cd /var/lib/docker/volumes/mydbdata/_data -> this will create data from containers to host machine
 
-> we can re- attach it to other containers aswll in docker volume
+> we can re-attach it to other containers aswll in docker volume
 
  "HostConfig": {
             "Binds": [ 
@@ -60,3 +65,29 @@ cd /var/lib/docker/volumes/mydbdata/_data -> this will create data from containe
                         "HostIp": "",
                         "HostPort": "3031"    -> gives port info
 
+
+example 2:
+----------
+# Storage and ### Volumes - Mount :
+-----------------------------------
+
+docker run centos sleep 30
+
+# this give volume list in our local machine
+docker volume list
+
+# docker vloume create <vol_name>
+docker volume create v1 
+
+# this is to inspect volume - details about volume
+docker volume inspect v1
+
+docker run -it --name=testvol1 --mount source=v1,destination=/v1 bash 
+# Add some content into this storage inside container and then exit , go into local machine volume and check the data - you will find - helps in backup
+# can be used to send some data- secrets aswell into container storage
+# Once container work is done, we can detach/remove volume - stateless
+# storage size is dynamic
+
+docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
+
+#stateless & Stateful Appln.
