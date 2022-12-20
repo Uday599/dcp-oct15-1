@@ -250,7 +250,8 @@ root@<container_id): interactive mode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 docker pull loksaieta/loksaimvndevops:v1.0
 
-cat /etc/*release*
+cat /etc/*release*  
+docker run python:3,6 cat /etc/*release*   -> to know the base OS on which this container is running.
 
 ### Print the Docker Centos Image Release Info.
 dockerpath# cat /etc/*release*
