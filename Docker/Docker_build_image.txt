@@ -244,15 +244,7 @@ K8 -> this is also container orchestration -> supports LB
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  
-# You can group your images together using names and tags, and then upload them to Share images on Docker Hub.
 
-docker images
-
-docker tag <image_id> loksaieta/debian-git1:1.0
-
-docker tag 33e83a2fdb90 loksaieta/debian-git2:v1.0
-
-docker images 
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,7 +268,24 @@ docker push loksaieta/mywebappln:v1.1
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# other arguments:
 
+docker image --help
+docker images --help
+# docker image purne -a  -> will delete all images in single shot expects the one which has container(running/stopped)
+
+# # You can group your images together using names and tags, and then upload them to Share images on Docker Hub.
+
+docker images
+
+docker tag <image_id> loksaieta/debian-git1:1.0
+
+docker tag 33e83a2fdb90 loksaieta/debian-git2:v1.0
+docker tag <source_name> <target_name>
+
+docker images 
+
+ Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
