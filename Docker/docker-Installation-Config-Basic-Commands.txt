@@ -52,8 +52,16 @@ Share images, automate workflows, and more with a free Docker ID:
 
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# containers uses different namespace to isolate
+1. using process id
+ps -eaf # gives process info
+ps -eaf | grep   # in host machine
 
 
+All containers used default infra from host machine,
+if we are running a process in container that actually mean we are running process in host but with different PID
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Installation:
