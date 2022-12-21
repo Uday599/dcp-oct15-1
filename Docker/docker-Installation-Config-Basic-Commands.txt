@@ -462,6 +462,7 @@ docker run -e APP_COLOR=blue <image_name>
 
  docker run --name some-mysql -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root -d mysql:tag
 
+# -e in command is for one variable, if you have to mention 2 env variables then we have to use -e for separatey
 
 # you can refer official image from docker hub
 
