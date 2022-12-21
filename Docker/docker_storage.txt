@@ -1,0 +1,230 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+DOCKER VOLUMES
+---------------
+> storage path inside container : /var/lib/container_name
+> Persistant storage for volatile containers
+
+
+file system:
+/var/lib/docker  # default
+
+> Layered architecture
+> Storage driver
+
+Types of Mounting:
+------------------
+
+1. Bind Mount: 
+-------------
+#  here we are mapping directory structure, it mounts directory structure any location from Host
+
+docker run --name db2 -d -e MYSQL_ROOT_PASSWORD=passwd -p 3030:3306 -v /root/vproddata:/var/lib/mysql mysql  # this wont create any volume
+# -v uses soource_path:destination_path
+
+# --mount is latest fashion.
+docker run  --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql  
+
+docker run -it --mount source=centos,target=/var/lib/centos centos bash  # this creates volume under /var/lib/docker/volume/_data in host machine, because we should 
+                                                                         # mention type=bind in mount command for bind mount
+
+Use case: 
+1. when you want to mount specific location instead var/lib/docker , we go for bind mount.
+2.Assume you installed and configured Jenkins instance , however if you stop/restart the container, all configuration will be erased out
+so to preserve that current state, we will use volume and mapps to container, whenever we install new Jenkins and use this volume, it will started from where we saved last :)
+
+> we are attaching vproddata directory from host sysem to containers directory
+
+2. Volume Mount:
+---------------
+# here we will create a volume and mount it to container, volume from, host will have it data under : var/lib/docker/volumes path
+
+>>>  docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql
+#-v uses soource_path:destination_path
+# even if we have not created "mydbdata" before running contianer, it will create at run time and then mount it
+
+# latest fashion
+>>>   docker run -it --mount source=<volume_name>,destination=</container_volume_path> <image>
+# --mount uses key value pair seperared by , source=<>,destination=<>
+
+
+
+
+docker volumes:
+---------------
+
+
+> Stateless application
+> statefull application
+
+> image --> appl .war  = spl-db - credentials /config parameter
+   * so secrets from host will be send to containers to access db
+
+example 1:
+---------
+
+docker volume create <volume_name>
+docker volume ls
+
+docker volume inspect <volume_name>  --- to check the mount point of volume
+
+docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p 3031:3306 -v <volume_name_created>:/var/lib/mysql <image_name/mysql>
+                                                                                  <source_path>:<destination_path>
+docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql 
+
+volume directory in host :
+--------------------------
+
+cd /var/lib/docker/volumes/mydbdata/_data -> this will create data from containers to host machine
+
+> we can re-attach it to other containers aswll in docker volume
+
+ "HostConfig": {
+            "Binds": [ 
+                "mydbdata:/var/lib/mysql"    --> gives bind info
+
+
+"NetworkMode": "default",
+            "PortBindings": {
+                "3306/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "3031"    -> gives port info
+
+
+example 2:
+----------
+# Storage and ### Volumes - Mount :
+-----------------------------------
+
+docker run centos sleep 30
+
+# this give volume list in our local machine
+docker volume list
+
+# docker vloume create <vol_name>
+docker volume create v1 
+
+# this is to inspect volume - details about volume
+docker volume inspect v1
+
+docker run -it --name=testvol1 --mount source=v1,destination=/v1 bash 
+# Add some content into this storage inside container and then exit , go into local machine volume and check the data - you will find - helps in backup
+# can be used to send some data- secrets aswell into container storage
+# Once container work is done, we can detach/remove volume - stateless
+# storage size is dynamic
+
+docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
+
+#stateless & Stateful Appln.
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Demo-Udemy- Docker Storage - Docker for beginners
+------------------------------------------------
+1.
+
+[root@ip-172-31-39-243 ~]# cd /var/lib/docker  # path where all DOcker related data resides
+ 
+[root@ip-172-31-39-243 docker]# ll
+total 4
+drwx--x--x  4 root root  120 Dec 19 06:53 buildkit
+drwx--x---  4 root root  150 Dec 21 08:16 containers
+drwx------  3 root root   22 Dec 19 06:53 image
+drwxr-x---  3 root root   19 Dec 19 06:53 network
+drwx--x--- 18 root root 4096 Dec 21 09:32 overlay2  # storage driver
+drwx------  4 root root   32 Dec 19 06:53 plugins
+drwx------  2 root root    6 Dec 21 09:32 runtimes
+drwx------  2 root root    6 Dec 19 06:53 swarm
+drwx------  2 root root    6 Dec 21 09:32 tmp
+drwx------  2 root root    6 Dec 19 06:53 trust
+drwx-----x  6 root root  276 Dec 21 09:32 volumes
+
+2.
+[root@ip-172-31-39-243 volumes]# docker info
+
+Client:
+ Context:    default
+ Debug Mode: false
+
+Server:
+ Containers: 2
+  Running: 0
+  Paused: 0
+  Stopped: 2
+ Images: 2
+ Server Version: 20.10.17
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Native Overlay Diff: true
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 io.containerd.runtime.v1.linux runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 9cd3357b7fd7218e4aec3eae239db1f68a5a6ec6
+ runc version: 5fd4c4d144137e991c4acebb2146ab1483a97925
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 5.10.157-139.675.amzn2.x86_64
+ Operating System: Amazon Linux 2
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 1
+ Total Memory: 964.8MiB
+ Name: ip-172-31-39-243.ap-south-1.compute.internal
+ ID: CYQQ:MBCN:P3XR:OVUF:AI2C:UEUT:US75:4ZCD:RM4E:TX6R:VC7I:LAQX
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Username: uday1011
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Live Restore Enabled: false
+
+
+3. the direcrory name is same as the container id
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
