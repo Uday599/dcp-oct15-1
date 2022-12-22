@@ -1,0 +1,229 @@
+# Pull and run this image to create local image registry
+
+> https://hub.docker.com/_/registry
+> https://docs.docker.com/registry/deploying/
+
+Demo:1
+======
+Registry image : from docker to setup local repository to store images
+
+[root@ip-172-31-39-243 ~]# docker run -d -p 5000:5000 --restart always --name registry registry:2
+Unable to find image 'registry:2' locally
+2: Pulling from library/registry
+ca7dd9ec2225: Pull complete
+c41ae7ad2b39: Pull complete
+1ed0fc8a6161: Pull complete
+21df229223d2: Pull complete
+626897ccab21: Pull complete
+Digest: sha256:ce14a6258f37702ff3cd92232a6f5b81ace542d9f1631966999e9f7c1ee6ddba
+Status: Downloaded newer image for registry:2
+5b66fcf690ad18eca23148f07d4451645f9905be241ed1985496b24393497701
+
+[root@ip-172-31-39-243 ~]# docker ps
+CONTAINER ID   IMAGE        COMMAND                  CREATED         STATUS        PORTS                                       NAMES
+5b66fcf690ad   registry:2   "/entrypoint.sh /etc…"   2 seconds ago   Up 1 second   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+
+[root@ip-172-31-39-243 ~]# docker pull hello-world
+Using default tag: latest
+latest: Pulling from library/hello-world
+2db29710123e: Pull complete
+Digest: sha256:c77be1d3a47d0caf71a82dd893ee61ce01f32fc758031a6ec4cf1389248bb833
+Status: Downloaded newer image for hello-world:latest
+docker.io/library/hello-world:latest
+
+[root@ip-172-31-39-243 ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED         SIZE
+registry      2         81c944c2288b   5 weeks ago     24.1MB
+hello-world   latest    feb5d9fea6a5   15 months ago   13.3kB
+
+[root@ip-172-31-39-243 ~]# docker ps
+CONTAINER ID   IMAGE        COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+5b66fcf690ad   registry:2   "/entrypoint.sh /etc…"   18 seconds ago   Up 17 seconds   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+
+[root@ip-172-31-39-243 ~]# docker tag hello-world localhost:5000/hello-world
+
+[root@ip-172-31-39-243 ~]# docker images
+REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
+registry                     2         81c944c2288b   5 weeks ago     24.1MB
+localhost:5000/hello-world   latest    feb5d9fea6a5   15 months ago   13.3kB
+hello-world                  latest    feb5d9fea6a5   15 months ago   13.3kB
+
+[root@ip-172-31-39-243 ~]# docker ps
+CONTAINER ID   IMAGE        COMMAND                  CREATED              STATUS              PORTS                                       NAMES
+5b66fcf690ad   registry:2   "/entrypoint.sh /etc…"   About a minute ago   Up About a minute   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+
+
+[root@ip-172-31-39-243 ~]# docker exec -it 5b66fcf690ad /bin/sh
+/ # cd /var/lib/registry
+/var/lib/registry # ls
+docker
+/var/lib/registry # cd docker
+/var/lib/registry/docker # ls
+registry
+/var/lib/registry/docker # cd registry
+/var/lib/registry/docker/registry # ls
+v2
+/var/lib/registry/docker/registry # cd v2
+/var/lib/registry/docker/registry/v2 # ls
+blobs         repositories
+/var/lib/registry/docker/registry/v2 # cd repositories
+/var/lib/registry/docker/registry/v2/repositories # ls
+hello-world                                                           # we can see our image saved locally here in this registry container
+/var/lib/registry/docker/registry/v2/repositories # cd hello-world
+/var/lib/registry/docker/registry/v2/repositories/hello-world # ls
+_layers     _manifests  _uploads
+/var/lib/registry/docker/registry/v2/repositories/hello-world # exit
+
+[root@ip-172-31-39-243 ~]# docker images
+REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
+registry                     2         81c944c2288b   5 weeks ago     24.1MB
+hello-world                  latest    feb5d9fea6a5   15 months ago   13.3kB
+localhost:5000/hello-world   latest    feb5d9fea6a5   15 months ago   13.3kB
+
+[root@ip-172-31-39-243 ~]# docker rmi hello-world
+Untagged: hello-world:latest
+Untagged: hello-world@sha256:c77be1d3a47d0caf71a82dd893ee61ce01f32fc758031a6ec4cf1389248bb833
+
+[root@ip-172-31-39-243 ~]# docker rmi fe
+Untagged: localhost:5000/hello-world:latest
+Untagged: localhost:5000/hello-world@sha256:f54a58bc1aac5ea1a25d796ae155dc228b3f0e11d046ae276b39c4bf2f13d8c4
+Deleted: sha256:feb5d9fea6a5e9606aa995e879d862b825965ba48de054caab5ef356dc6b3412
+Deleted: sha256:e07ee1baac5fae6a26f30cabfe54a36d3402f96afda318fe0a96cec4ca393359
+
+[root@ip-172-31-39-243 ~]# docker images
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+registry     2         81c944c2288b   5 weeks ago   24.1MB
+
+[root@ip-172-31-39-243 ~]# docker pull localhost:5000/hello-world           # pulling image from local repository
+Using default tag: latest
+latest: Pulling from hello-world
+2db29710123e: Pull complete
+Digest: sha256:f54a58bc1aac5ea1a25d796ae155dc228b3f0e11d046ae276b39c4bf2f13d8c4
+Status: Downloaded newer image for localhost:5000/hello-world:latest
+localhost:5000/hello-world:latest
+
+[root@ip-172-31-39-243 ~]# docker images                                                    # pull successfull
+REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
+registry                     2         81c944c2288b   5 weeks ago     24.1MB
+localhost:5000/hello-world   latest    feb5d9fea6a5   15 months ago   13.3kB
+
+
+====================================================================
+WE HAVE A OPTION TO SEE/ACCESS OUR LOCAL REGISTRY THROUGH BROWSER :
+=====================================================================
+
+Front-end
+
+link for image:
+https://hub.docker.com/r/konradkleine/docker-registry-frontend
+
+[root@ip-172-31-39-243 ~]# docker ps
+CONTAINER ID   IMAGE        COMMAND                  CREATED         STATUS         PORTS                                       NAMES
+5b66fcf690ad   registry:2   "/entrypoint.sh /etc…"   9 minutes ago   Up 9 minutes   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+command to run:
+docker run \
+  -d \
+  -e ENV_DOCKER_REGISTRY_HOST=registry \
+  -e ENV_DOCKER_REGISTRY_PORT=5000\
+  -p 8080:80 \
+  --link registry:registry \
+  konradkleine/docker-registry-frontend:v2
+  +++++++++++++++++++++++++++++++++++++++++++++++
+
+[root@ip-172-31-39-243 ~]# docker run \
+>   -d \
+>   -e ENV_DOCKER_REGISTRY_HOST=registry \
+>   -e ENV_DOCKER_REGISTRY_PORT=5000\
+>   -p 8080:80 \
+>   --link registry:registry \
+>   konradkleine/docker-registry-frontend:v2
+Unable to find image 'konradkleine/docker-registry-frontend:v2' locally
+v2: Pulling from konradkleine/docker-registry-frontend
+85b1f47fba49: Pull complete
+e3c64813de17: Pull complete
+6e61107884ac: Pull complete
+411f14e0e0fd: Pull complete
+987d1071cd71: Pull complete
+95913db6ef30: Pull complete
+1eb7ee3fbde2: Pull complete
+9b6f26b1b1a1: Pull complete
+daa6941a3108: Pull complete
+86cc842193a6: Pull complete
+024ab6890532: Pull complete
+af9b7d0cb338: Pull complete
+02f33fb0dcad: Pull complete
+e8275670ee05: Pull complete
+1c1a56903b01: Pull complete
+afc4e94602b9: Pull complete
+df1a95efa681: Pull complete
+d8bcb7be9e08: Pull complete
+d9c69b7bcc4f: Pull complete
+2a14b209069e: Pull complete
+e7c2bcdf63d5: Pull complete
+efc16e6bbbea: Pull complete
+552460069ca8: Pull complete
+e6b075740da3: Pull complete
+9976bc800046: Pull complete
+Digest: sha256:181aad54ee64312a57f8ccba5247c67358de18886d5e2f383b8c4b80a7a5edf6
+Status: Downloaded newer image for konradkleine/docker-registry-frontend:v2
+f0a3647a12eff0f6d1a0039e446d3afaa8b4bad1fc6c4a6fb5aad033f4710d4d
+
+[root@ip-172-31-39-243 ~]# docker images
+REPOSITORY                              TAG       IMAGE ID       CREATED         SIZE
+registry                                2         81c944c2288b   5 weeks ago     24.1MB
+localhost:5000/hello-world              latest    feb5d9fea6a5   15 months ago   13.3kB
+konradkleine/docker-registry-frontend   v2        60d4b91e68fa   5 years ago     266MB
+
+[root@ip-172-31-39-243 ~]# docker ps
+CONTAINER ID   IMAGE                                      COMMAND                  CREATED         STATUS         PORTS                                            NAMES
+f0a3647a12ef   konradkleine/docker-registry-frontend:v2   "/bin/sh -c $START_S…"   5 seconds ago   Up 4 seconds   443/tcp, 0.0.0.0:8080->80/tcp, :::8080->80/tcp   nostalgic_chatterjee
+5b66fcf690ad   registry:2                                 "/entrypoint.sh /etc…"   9 minutes ago   Up 9 minutes   0.0.0.0:5000->5000/tcp, :::5000->5000/tcp        registry
+
+[root@ip-172-31-39-243 ~]# docker tag konradkleine/docker-registry-frontend:v2 localhost:5000/konradkleine/docker-registry-frontend:v2
+
+[root@ip-172-31-39-243 ~]# docker images
+REPOSITORY                                             TAG       IMAGE ID       CREATED         SIZE
+registry                                               2         81c944c2288b   5 weeks ago     24.1MB
+localhost:5000/hello-world                             latest    feb5d9fea6a5   15 months ago   13.3kB
+konradkleine/docker-registry-frontend                  v2        60d4b91e68fa   5 years ago     266MB
+localhost:5000/konradkleine/docker-registry-frontend   v2        60d4b91e68fa   5 years ago     266MB
+
+[root@ip-172-31-39-243 ~]# docker push localhost:5000/konradkleine/docker-registry-frontend
+Using default tag: latest
+The push refers to repository [localhost:5000/konradkleine/docker-registry-frontend]
+tag does not exist: localhost:5000/konradkleine/docker-registry-frontend:latest
+[root@ip-172-31-39-243 ~]# docker push localhost:5000/konradkleine/docker-registry-frontend:v2
+The push refers to repository [localhost:5000/konradkleine/docker-registry-frontend]
+7d8dc290808a: Pushed
+d6c941eb59d8: Pushed
+cbe2762cbcd1: Pushed
+8d3c84ae77a1: Pushed
+dbbc217b7a9d: Pushed
+af06342339d8: Pushed
+eb4b69e09ca7: Pushed
+1921366cc88b: Pushed
+5752eb6055bf: Pushed
+e74da66339d5: Pushed
+ed128a871a29: Pushed
+206f9a570850: Pushed
+292a0ed19e8e: Pushed
+6379e7b4f999: Pushed
+982f9b37921c: Pushed
+737bfec5d8a3: Pushed
+d5999efed976: Pushed
+48f5baf270a5: Pushed
+6302268132e9: Pushed
+94c65501f3b6: Pushed
+810823947e7a: Pushed
+1903d69a8c76: Pushed
+6368c66b7c70: Pushed
+bc489b08f444: Pushed
+c01c63c6823d: Pushed
+v2: digest: sha256:181aad54ee64312a57f8ccba5247c67358de18886d5e2f383b8c4b80a7a5edf6 size: 5513
+
+Done!
+
+# to access registry through browser : public_ip:8080
+# we can view our local images pushed into registry here : )
