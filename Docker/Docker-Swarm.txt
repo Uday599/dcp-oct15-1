@@ -17,42 +17,280 @@
 Leader:
 -------------
 
-docker swarm init
+> docker swarm init  # to initialize the cluster
 
-docker node ls
+> docker node ls # to view the cluster
 
-docker node rm  <node_name>
-
-docker swarm join-token manager # this is to ask nodes to be a manager in cluster, run the command in node to make that node as Manager
-docker node ls
-
-docker swarm join-token worker # to initiate node as worker in cluster
-
-
-docker node promote <worker_node2> # we are promoting worker node as Manager
-
-docker node ls
-
-shutdown one Manager
-
-Quorum: is 2 now , which is ok
-
-shutdown another one , it will throw error, Cluster is down now , because Quorum rule is breaked
-
-bring back one manager
-
-and try , it will work now.
-
-bring down again
+[root@ip-172-31-39-243 ~]# docker node ls
+ID                            HOSTNAME      STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+pms07q8r4tk9kmjajbxc91wvg *   Manager       Ready     Active         Leader           20.10.17
+bfsgt1v75tmpafudqc10sxbom     workernode1   Ready     Active                          20.10.17
+qhqt6hmjiuw0rsy84ik653qu4     workernode2   Ready     Active                          20.10.17
 
 
-Worker Node1:
--------------
-Run token command created in leadernode to initialize this node as worker node
-docker swarm leave
+> docker node rm  <node_name> # to remove node from cluster
 
-Worker Node 2:
--------------
-Run token command created in leadernode ti initailize this node as worker node
+> docker swarm join-token manager # this command is to get token , needed to join node as manager to cluster, token(command)should be runned in worker node
+> docker swarm join-token worker # to initiate node as worker in cluster
 
-Hostname <proper_name> # this will reflect in cluster so name accordingly
+
+> docker node promote <worker_node2> # we are promoting worker node as Manager - Rechable
+
+[root@ip-172-31-39-243 ~]# docker node promote workernode2
+Node workernode2 promoted to a manager in the swarm.
+[root@ip-172-31-39-243 ~]# docker node ls
+ID                            HOSTNAME      STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+pms07q8r4tk9kmjajbxc91wvg *   Manager       Ready     Active         Leader           20.10.17
+bfsgt1v75tmpafudqc10sxbom     workernode1   Ready     Active                          20.10.17
+qhqt6hmjiuw0rsy84ik653qu4     workernode2   Ready     Active         Reachable        20.10.17
+
+> docker node demote <NODE> # to demote
+
+> docker swarm leave --force  # to leave docker swarm mode
+[root@ip-172-31-39-243 ~]# docker swarm leave --force  # force is becuse this node could be a leader so,
+Node left the swarm.
+[root@ip-172-31-39-243 ~]# docker node ls
+Error response from daemon: This node is not a swarm manager. Use "docker swarm init" or "docker swarm join" to connect this node to swarm and try again
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Orchestration using Docker Swarm:
+================================
+
+# Using " Docker Service" we can able to run same web app accross different docker hosts
+
+> docker service create --replica=3 web_app # should run in manager node only, this will create webapp is different hosts
+
+> docker service --help
+
+Demo:1
+======
+
+[root@manager ~]# docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERS                                                                 ION
+ooln27b6puhigzhmswssfxqo6 *   manager    Ready     Active         Leader           20.10.17
+6tjh5k2b7k586jrxssfm16u6r     worker1    Ready     Active                          20.10.17
+w4kjr173tr2nzfqgces0cjt9k     worker2    Ready     Active                          20.10.17
+
+[root@manager ~]# docker service --help
+
+Usage:  docker service COMMAND
+
+Manage services
+
+Commands:
+  create      Create a new service
+  inspect     Display detailed information on one or more services
+  logs        Fetch the logs of a service or task
+  ls          List services
+  ps          List the tasks of one or more services
+  rm          Remove one or more services
+  rollback    Revert changes to a service's configuration
+  scale       Scale one or multiple replicated services
+  update      Update a service
+
+Run 'docker service COMMAND --help' for more information on a command.
+
+[root@manager ~]# docker service create nginx  # creating Nginx service
+rax6us5opwe62wni20fyzjrik
+overall progress: 1 out of 1 tasks
+1/1: running
+verify: Service converged
+
+[root@manager ~]# docker service ls                                                   # to list the services 
+ID             NAME         MODE         REPLICAS   IMAGE          PORTS
+rax6us5opwe6   focused_tu   replicated   1/1        nginx:latest
+
+                                                                 
+[root@manager ~]# docker service ps ra                                                # to list the process/task running under that service
+ID             NAME           IMAGE          NODE      DESIRED STATE   CURRENT STATE                ERROR     PORTS
+yfal4k3m6stn   focused_tu.1   nginx:latest   manager   Running         Running about a minute ago
+# you can see that this task is running in NODE: Manager
+  
+[root@manager ~]# docker ps                                     # in manager node we can see a task running, you can verify with NAMES.tag
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS     NAMES
+add20f5af400   nginx:latest   "/docker-entrypoint.…"   3 minutes ago   Up 3 minutes   80/tcp    focused_tu.1.yfal4k3m6stncgk63ubd8bad7
+
+
+# Now we will update port for nginx container
+
+[root@manager ~]# docker service update --help
+
+Usage:  docker service update [OPTIONS] SERVICE
+
+Update a service
+
+Options:
+      --args command                       Service command args
+      --cap-add list                       Add Linux capabilities
+      --cap-drop list                      Drop Linux capabilities
+      --config-add config                  Add or update a config file on a service
+      --config-rm list                     Remove a configuration file
+      --constraint-add list                Add or update a placement constraint
+      --constraint-rm list                 Remove a constraint
+      --container-label-add list           Add or update a container label
+      --container-label-rm list            Remove a container label by its key
+      --credential-spec credential-spec    Credential spec for managed service account (Windows only)
+  -d, --detach                             Exit immediately instead of waiting for the service to converge
+      --dns-add list                       Add or update a custom DNS server
+      --dns-option-add list                Add or update a DNS option
+      --dns-option-rm list                 Remove a DNS option
+      --dns-rm list                        Remove a custom DNS server
+      --dns-search-add list                Add or update a custom DNS search domain
+      --dns-search-rm list                 Remove a DNS search domain
+      --endpoint-mode string               Endpoint mode (vip or dnsrr)
+      --entrypoint command                 Overwrite the default ENTRYPOINT of the image
+      --env-add list                       Add or update an environment variable
+      --env-rm list                        Remove an environment variable
+      --force                              Force update even if no changes require it
+      --generic-resource-add list          Add a Generic resource
+      --generic-resource-rm list           Remove a Generic resource
+      --group-add list                     Add an additional supplementary user group to the container
+      --group-rm list                      Remove a previously added supplementary user group from the container
+      --health-cmd string                  Command to run to check health
+      --health-interval duration           Time between running the check (ms|s|m|h)
+      --health-retries int                 Consecutive failures needed to report unhealthy
+      --health-start-period duration       Start period for the container to initialize before counting retries towards unstable (ms|s|m|h)
+      --health-timeout duration            Maximum time to allow one check to run (ms|s|m|h)
+      --host-add list                      Add a custom host-to-IP mapping (host:ip)
+      --host-rm list                       Remove a custom host-to-IP mapping (host:ip)
+      --hostname string                    Container hostname
+      --image string                       Service image tag
+      --init                               Use an init inside each service container to forward signals and reap processes
+      --isolation string                   Service container isolation mode
+      --label-add list                     Add or update a service label
+      --label-rm list                      Remove a label by its key
+      --limit-cpu decimal                  Limit CPUs
+      --limit-memory bytes                 Limit Memory
+      --limit-pids int                     Limit maximum number of processes (default 0 = unlimited)
+      --log-driver string                  Logging driver for service
+      --log-opt list                       Logging driver options
+      --max-concurrent uint                Number of job tasks to run concurrently (default equal to --replicas)
+      --mount-add mount                    Add or update a mount on a service
+      --mount-rm list                      Remove a mount by its target path
+      --network-add network                Add a network
+      --network-rm list                    Remove a network
+      --no-healthcheck                     Disable any container-specified HEALTHCHECK
+      --no-resolve-image                   Do not query the registry to resolve image digest and supported platforms
+      --placement-pref-add pref            Add a placement preference
+      --placement-pref-rm pref             Remove a placement preference
+      --publish-add port                   Add or update a published port
+      --publish-rm port                    Remove a published port by its target port
+  -q, --quiet                              Suppress progress output
+      --read-only                          Mount the container's root filesystem as read only
+      --replicas uint                      Number of tasks
+      --replicas-max-per-node uint         Maximum number of tasks per node (default 0 = unlimited)
+      --reserve-cpu decimal                Reserve CPUs
+      --reserve-memory bytes               Reserve Memory
+      --restart-condition string           Restart when condition is met ("none"|"on-failure"|"any")
+      --restart-delay duration             Delay between restart attempts (ns|us|ms|s|m|h)
+      --restart-max-attempts uint          Maximum number of restarts before giving up
+      --restart-window duration            Window used to evaluate the restart policy (ns|us|ms|s|m|h)
+      --rollback                           Rollback to previous specification
+      --rollback-delay duration            Delay between task rollbacks (ns|us|ms|s|m|h)
+      --rollback-failure-action string     Action on rollback failure ("pause"|"continue")
+      --rollback-max-failure-ratio float   Failure rate to tolerate during a rollback
+      --rollback-monitor duration          Duration after each task rollback to monitor for failure (ns|us|ms|s|m|h)
+      --rollback-order string              Rollback order ("start-first"|"stop-first")
+      --rollback-parallelism uint          Maximum number of tasks rolled back simultaneously (0 to roll back all at once)
+      --secret-add secret                  Add or update a secret on a service
+      --secret-rm list                     Remove a secret
+      --stop-grace-period duration         Time to wait before force killing a container (ns|us|ms|s|m|h)
+      --stop-signal string                 Signal to stop the container
+      --sysctl-add list                    Add or update a Sysctl option
+      --sysctl-rm list                     Remove a Sysctl option
+  -t, --tty                                Allocate a pseudo-TTY
+      --ulimit-add ulimit                  Add or update a ulimit option (default [])
+      --ulimit-rm list                     Remove a ulimit option
+      --update-delay duration              Delay between updates (ns|us|ms|s|m|h)
+      --update-failure-action string       Action on update failure ("pause"|"continue"|"rollback")
+      --update-max-failure-ratio float     Failure rate to tolerate during an update
+      --update-monitor duration            Duration after each task update to monitor for failure (ns|us|ms|s|m|h)
+      --update-order string                Update order ("start-first"|"stop-first")
+      --update-parallelism uint            Maximum number of tasks updated simultaneously (0 to update all at once)
+  -u, --user string                        Username or UID (format: <name|uid>[:<group|gid>])
+      --with-registry-auth                 Send registry authentication details to swarm agents
+  -w, --workdir string                     Working directory inside the container
+  
+
+[root@manager ~]# docker service update ra --publish-add 5000:80  # docker service command <serive_id/name> <arguments>
+ra
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+
+[root@manager ~]# docker service ls
+ID             NAME         MODE         REPLICAS   IMAGE          PORTS
+rax6us5opwe6   focused_tu   replicated   1/1        nginx:latest   *:5000->80/tcp
+
+# Public_ip of manager node:5000
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# will remove previous service and create new one
+
+
+[root@manager ~]# docker service rm ra
+ra
+
+[root@manager ~]# docker service ls
+ID        NAME      MODE      REPLICAS   IMAGE     PORTS
+
+[root@manager ~]# docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+[root@manager ~]# docker service create --replicas 2 --name nginx  nginx
+uie8d3z2bw1qi2rkdzpgvvr48
+overall progress: 2 out of 2 tasks
+1/2: running   [==================================================>]
+2/2: running   [==================================================>]
+verify: Service converged
+
+[root@manager ~]# docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE          PORTS
+uie8d3z2bw1q   nginx     replicated   2/2        nginx:latest
+
+[root@manager ~]# docker service ps nginx
+ID             NAME      IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+w6swozbxa38y   nginx.1   nginx:latest   manager   Running         Running 35 seconds ago
+vqlm7zl7e88h   nginx.2   nginx:latest   worker1   Running         Running 35 seconds ago
+# serrice is ruunning in manager and worker1
+
+
+# checking tasks in mananger node and you can check in worker node1 aswell you will find docker task running there.
+[root@manager ~]# docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED              STATUS              PORTS     NAMES
+97da6735a5a6   nginx:latest   "/docker-entrypoint.…"   About a minute ago   Up About a minute   80/tcp    nginx.1.w6swozbxa38y13y6e2xeyw799
+
+
+# in order to make Manager node only to administor and not to work , we will drain its availabilty
+[root@manager ~]# docker node update --availability drain manager
+manager
+
+# Now manager node is shutting dowm and service is running in worker node2
+[root@manager ~]# docker service ps nginx
+ID             NAME          IMAGE          NODE      DESIRED STATE   CURRENT STATE             ERROR     PORTS
+dd9zzzas9ker   nginx.1       nginx:latest   worker2   Running         Running 11 seconds ago
+w6swozbxa38y    \_ nginx.1   nginx:latest   manager   Shutdown        Shutdown 19 seconds ago
+vqlm7zl7e88h   nginx.2       nginx:latest   worker1   Running         Running 3 minutes ago
+
+
+# we will shut down worker node2 , then
+
+[root@manager ~]# docker service ps nginx
+ID             NAME          IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+xe74qolqsoq1   nginx.1       nginx:latest   worker1   Ready           Ready 1 second ago
+dd9zzzas9ker    \_ nginx.1   nginx:latest   worker2   Shutdown        Running 2 minutes ago
+w6swozbxa38y    \_ nginx.1   nginx:latest   manager   Shutdown        Shutdown 2 minutes ago
+vqlm7zl7e88h   nginx.2       nginx:latest   worker1   Running         Running 5 minutes ago
+
+[root@manager ~]# docker service ps nginx
+ID             NAME          IMAGE          NODE      DESIRED STATE   CURRENT STATE            ERROR     PORTS
+xe74qolqsoq1   nginx.1       nginx:latest   worker1   Running         Running 8 seconds ago                   
+dd9zzzas9ker    \_ nginx.1   nginx:latest   worker2   Shutdown        Running 2 minutes ago
+w6swozbxa38y    \_ nginx.1   nginx:latest   manager   Shutdown        Shutdown 2 minutes ago
+vqlm7zl7e88h   nginx.2       nginx:latest   worker1   Running         Running 5 minutes ago
+
+
+
+
