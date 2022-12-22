@@ -1,3 +1,7 @@
+#  No pre-configuration required, just init is enough 
+# should have docker/docker-compose installed
+
+
 # Distributed Consensus - RAFT Algotithms
 
 > Which of the below statements correctly describe a Docker Swarm? Docker swarm is cluster of Docker Hosts
@@ -305,11 +309,82 @@ docker service update --replicas=6 <service_name>
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2. Using Docker-compose.yml file  - DOcker Stack
+2. Using Docker-stack.yml file  - DOcker Stack
 =================================
 
+[root@manager ~]# ls
+centos  docker-compose.yml  example-voting-app-docker-compose  voting-app-stack
+
+[root@manager ~]# cd voting-app-stack
+
+[root@manager voting-app-stack]# ls
+docker-stack.yml
+
+[root@manager voting-app-stack]# cat docker-stack.yml
+
+version: '3'
+services:
+  redis:
+    image: redis
+
+  db:
+    image: postgres:9.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  vote:
+    image: dockersamples/examplevotingapp_vote
+    ports:
+      - 5000:80
+    deploy:
+      replicas: 2
 
 
+  worker:
+    image: dockersamples/examplevotingapp_worker
+
+
+
+  result:
+    image: dockersamples/examplevotingapp_result
+    ports:
+      - 5001:80
+
+
+
+
+
+[root@manager voting-app-stack]# docker stack deploy voting-app --compose-file docker-stack.yml
+                               # docker stack deploy <service_name> --compose-file <file_name.yml>
+                               
+Creating network voting-app_default
+Creating service voting-app_worker
+Creating service voting-app_result
+Creating service voting-app_redis
+Creating service voting-app_db
+Creating service voting-app_vote
+
+
+[root@manager voting-app-stack]# docker service ls
+ID             NAME                MODE         REPLICAS   IMAGE                                          PORTS
+rggamt73grq8   voting-app_db       replicated   1/1        postgres:9.4
+ljn2trhvq8dv   voting-app_redis    replicated   1/1        redis:latest
+jrlkjyp9spy7   voting-app_result   replicated   1/1        dockersamples/examplevotingapp_result:latest   *:5001->80/tcp
+4lg1wbu4pefu   voting-app_vote     replicated   2/2        dockersamples/examplevotingapp_vote:latest     *:5000->80/tcp
+j6b2w3ddrxuw   voting-app_worker   replicated   1/1        dockersamples/examplevotingapp_worker:latest
+
+[root@manager voting-app-stack]# docker service ps voting-app_vote
+ID             NAME                IMAGE                                        NODE          DESIRED STATE   CURRENT STATE            ERROR     PORTS
+5ulm6ezgadzf   voting-app_vote.1   dockersamples/examplevotingapp_vote:latest   workernode2   Running         Running 28 seconds ago
+cwg7bwrfbpc9   voting-app_vote.2   dockersamples/examplevotingapp_vote:latest   workernode1   Running         Running 29 seconds ago
+
+[root@manager voting-app-stack]# docker service ps voting-app_result
+ID             NAME                  IMAGE                                          NODE          DESIRED STATE   CURRENT STATE           ERROR     PORTS
+f4sn7oinoyyj   voting-app_result.1   dockersamples/examplevotingapp_result:latest   workernode2   Running         Running 3 minutes ago
+
+# you can access vote app using : <public_ip of workernode1/2:5000>
+# you can access result app using: <public_ip of workernode2:5001>
 
 
 
