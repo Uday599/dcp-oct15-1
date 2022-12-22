@@ -17,7 +17,10 @@
 Leader:
 -------------
 
+
 > docker swarm init  # to initialize the cluster
+
+> docker swarm init --advertise-addr <ip>
 
 > docker node ls # to view the cluster
 
@@ -59,7 +62,7 @@ Orchestration using Docker Swarm:
 
 # Using " Docker Service" we can able to run same web app accross different docker hosts
 
-> docker service create --replica=3 web_app # should run in manager node only, this will create webapp is different hosts
+> docker service create --replicas 3 web_app # should run in manager node only, this will create webapp is different hosts
 
 > docker service --help
 
@@ -290,6 +293,12 @@ xe74qolqsoq1   nginx.1       nginx:latest   worker1   Running         Running 8 
 dd9zzzas9ker    \_ nginx.1   nginx:latest   worker2   Shutdown        Running 2 minutes ago
 w6swozbxa38y    \_ nginx.1   nginx:latest   manager   Shutdown        Shutdown 2 minutes ago
 vqlm7zl7e88h   nginx.2       nginx:latest   worker1   Running         Running 5 minutes ago
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Demo2:
+docker service update --replicas=6 <service_name>
 
 
 
