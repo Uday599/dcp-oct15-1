@@ -1,0 +1,58 @@
+# Distributed Consensus - RAFT Algotithms
+
+> Which of the below statements correctly describe a Docker Swarm? Docker swarm is cluster of Docker Hosts
+> What is the command to create a Swarm cluster? docker swarm init
+> What is the command to join nodes to a Swarm Cluster? docker swarm join --token token
+> How many manager's can a swarm cluster have at a time? (Note: Not the recommended number, the maximum number)? recommended is 7 , however there is no limit
+> How many Leaders can a swarm cluster have at a time? 1
+> How does Docker ensure all manager nodes are in sync at all times? RAFT Consensus
+> Which of the below statements rightly describe Quorum? Min number of manager nodes that must to be avaialble in cluster to function properly
+> Odd number of Manager nodes is always preefered
+> Quorum = (n/2)+1
+> Failure tolerant: (n-1)/2
+> What is the impact of losing the Quorum? Cluster failes, however worker nodes performs theri tasks untill they are healthy and available
+> How do we recover from a failed cluster? bring back the failed/offline nodes and check quorum
+> by default all nodes are Manager-worker, we can set node to manager only by using special command -- set availabilty to drain
+
+Leader:
+-------------
+
+docker swarm init
+
+docker node ls
+
+docker node rm  <node_name>
+
+docker swarm join-token manager # this is to ask nodes to be a manager in cluster, run the command in node to make that node as Manager
+docker node ls
+
+docker swarm join-token worker # to initiate node as worker in cluster
+
+
+docker node promote <worker_node2> # we are promoting worker node as Manager
+
+docker node ls
+
+shutdown one Manager
+
+Quorum: is 2 now , which is ok
+
+shutdown another one , it will throw error, Cluster is down now , because Quorum rule is breaked
+
+bring back one manager
+
+and try , it will work now.
+
+bring down again
+
+
+Worker Node1:
+-------------
+Run token command created in leadernode to initialize this node as worker node
+docker swarm leave
+
+Worker Node 2:
+-------------
+Run token command created in leadernode ti initailize this node as worker node
+
+Hostname <proper_name> # this will reflect in cluster so name accordingly
