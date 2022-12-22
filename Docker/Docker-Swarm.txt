@@ -60,6 +60,10 @@ Error response from daemon: This node is not a swarm manager. Use "docker swarm 
 Orchestration using Docker Swarm:
 ================================
 
+1. Using docker -service
+=========================
+
+
 # Using " Docker Service" we can able to run same web app accross different docker hosts
 
 > docker service create --replicas 3 web_app # should run in manager node only, this will create webapp is different hosts
@@ -294,11 +298,17 @@ dd9zzzas9ker    \_ nginx.1   nginx:latest   worker2   Shutdown        Running 2 
 w6swozbxa38y    \_ nginx.1   nginx:latest   manager   Shutdown        Shutdown 2 minutes ago
 vqlm7zl7e88h   nginx.2       nginx:latest   worker1   Running         Running 5 minutes ago
 
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++++
 
 Demo2:
 docker service update --replicas=6 <service_name>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2. Using Docker-compose.yml file  - DOcker Stack
+=================================
+
+
 
 
 
