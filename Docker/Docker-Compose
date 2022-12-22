@@ -15,13 +15,341 @@ When you want to run multiple container on a single host we use docker-compose.y
 we simple create docker-compose-yml file and up
 # we need to install docker-compose machine 
 
-git hub: https://github.com/Uday599/example-voting-app-docker-compose.git
+
+Using Run command:
+------------------
+docker run mmumshad/simple-webapp
+docker run mongodb
+docker run redis:alpine
+docker run ansible
 
 
-# udemy- docker for absolute beginners -> Docker-compose
-1. run vote
-2. run redis
-3 link vote -> redis
+Using Docker-Compose: # we mention all containers in one file a
+---------------------
+services:
+  web:
+    image: “mmumshad/simple-webapp"
+  database:
+    image: “mongodb“
+  messaging:
+    image: "redis:alpine“
+  orchestration:
+    image: “ansible“
 
-4. run postgress
-5. run worker
+# Docker-compose up 
+
+
+
+docker run links:  # old style
+-----------------
+
+docker run -d --name=redis redis
+docker run -d --name=db
+
+docker run -d --name=vote –p 5000:80 --link redis:redis
+docker run -d --name=result –p 5001:80  --link db:db
+docker run -d --name=worker --link redis:redis --link db:db
+
+usind Docker-compose.yml
+------------------------
+1.
+docker-compose.yml
+
+redis:
+  image: redis
+db:
+  image: postgres:9.4
+vote:
+  image: voting-app
+  ports:
+    - 5000:80
+  links:
+    - redis
+result:
+  image: result
+  ports:
+    - 5001:80
+  links:
+    - db
+worker:
+  image: worker
+  links:
+    - db
+    - redis
+
+2. (or)
+
+
+redis:
+  image: redis
+db:
+  image: postgres:9.4
+vote:
+  build: ./vote  # here we can mention the path where dockerfile /application file present , it will automatically build image from this and uses
+  ports:
+    - 5000:80
+  links:
+    - redis
+result:
+  build: ./result # here we can mention the path where dockerfile /application file present , it will automatically build image from this and uses
+  ports:
+    - 5000:80
+  ports:
+    - 5001:80
+  links:
+    - db
+worker:
+  build: ./worker # here we can mention the path where dockerfile /application file present , it will automatically build image from this and uses
+  ports:
+    - 5000:80
+  links:
+    - db
+    - redis
+
+
+Network:
+=======
+
+version: 2
+services:
+  redis:
+    image: redis
+    networks:
+      - back-end
+  db:
+    image: postgres:9.4
+    networks:
+      - back-end
+  vote:
+    image: voting-app
+    networks:
+      - front-end:
+      - back-end:
+  result:
+    image: result
+    networks:
+      - front-end
+      - back-end
+networks:
+- front-end
+- back-end
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+for handson : git hub: https://github.com/Uday599/example-voting-app-docker-compose.git
+
+voting-app            Result-app
+    |                   |
+  Redis               Postgres:9.4
+    |                   |
+     ------ Worker------
+   
+Images: https://hub.docker.com/search?q=dockersamples%2F
+
+1. Using Run :
+=============
+
+# setting up votingapp, exposed to port 5000, you can veryify from brower after running this container
+docker run --name voting-app -p 5000:80 dockersamples/examplevotingapp_vote
+
+# setting up Redis
+docker pull redis
+docker run --name redis -d redis
+
+# to link voting-app to redis , kill/remove current voting-app and run below command and make sure redis conatiners should be running:
+docker run -p 5000:80 --name voting-app -d  --link redis:redis dockersamples/examplevotingapp_vote
+
+# Once done, to confifure Worker node, we should first install Postgres:9.4 to store our result:
+docker run --name db -e POSTGRES_PASSWORD=mysecretpassword -d postgres:9.4
+
+# configure worker container now, it should be linked to both redis answell as Postgress:
+docker run --name worker -d --link redis:redis --link db:db dockersamples/examplevotingapp_worker
+
+# Configure Result-app: Can access in <public_ip:5001>
+docker run --name result-app -d -p 5001:80 --link db:db dockersamples/examplevotingapp_result
+
+
+
+2. Using Docker-Compose:
+=========================
+
+Links to donwload Compose plugin:
+https://docs.docker.com/compose/install/linux/#install-the-plugin-manually
+
+[root@ip-172-31-39-243 ~]# docker compose version
+Docker Compose version v2.14.2
+
+2a. old way:
+-------------
+
+# this versionis 1. 
+services: 
+  redis:
+    image: redis
+
+  db:	
+    image: postgres:9.4
+
+  vote:
+    image: docker pull dockersamples/examplevotingapp_vote
+    ports:
+      - 5000:80
+    links:
+      - redis
+
+  worker:
+    image: docker pull dockersamples/examplevotingapp_worker
+    links:
+      - redis
+      - db
+
+
+  result:
+    image: docker pull dockersamples/examplevotingapp_result
+    ports:
+      - 5001:80
+    links:
+      - db		
+
+
+
+2.b: Above version 2 , we dont use links
+------------------------------------------
+
+docker-compose.yml # No need to mention links, it will linked by default in Version-3
+------------------
+
+version: '3'
+services: 
+  redis:
+    image: redis
+
+  db:	
+    image: postgres:9.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  vote:
+    image: dockersamples/examplevotingapp_vote
+    ports:
+      - 5000:80
+
+
+  worker:
+    image: dockersamples/examplevotingapp_worker
+
+
+
+  result:
+    image: dockersamples/examplevotingapp_result
+    ports:
+      - 5001:80
+
+
+# docker compose up
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3. Adding Networks and attaching it to containers
+
+version: '3'
+services: 
+  redis:
+    image: redis
+    networks:
+      - back-end
+
+  db:	
+    image: postgres:9.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - back-end
+
+  vote:
+    image: dockersamples/examplevotingapp_vote
+    ports:
+      - 5000:80
+    networks:
+      - back-end
+      - front-end
+
+
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+      - back-end
+
+
+
+  result:
+    image: dockersamples/examplevotingapp_result
+    ports:
+      - 5001:80
+    networks:
+      - back-end
+
+networks:
+  front-end:
+    driver: bridge
+  back-end:
+    driver: bridge
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+4. Adding Volumes and attaching it to containers
+
+version: '3'
+services: 
+  redis:
+    image: redis
+    networks:
+      - back-end
+    volumes:
+      - redis-data: /var/lib/redis
+ 
+
+  db:	
+    image: postgres:9.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - back-end
+    volumes:
+      - db-data: /var/lib/postgresql/data
+
+  vote:
+    image: dockersamples/examplevotingapp_vote
+    ports:
+      - 5000:80
+    networks:
+      - back-end
+      - front-end
+
+
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+      - back-end
+
+
+
+  result:
+    image: dockersamples/examplevotingapp_result
+    ports:
+      - 5001:80
+    networks:
+      - back-end
+
+networks:
+  front-end:
+    driver: bridge
+  back-end:
+    driver: bridge
+    
+volumes:
+  redis-data:
+  db-data:
