@@ -136,6 +136,8 @@ networks:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Demo Practicals
+===============
 
 for handson : git hub: https://github.com/Uday599/example-voting-app-docker-compose.git
 
@@ -251,7 +253,9 @@ services:
 # docker compose up
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-3. Adding Networks and attaching it to containers
+Quizes:
+------
+3. Adding Networks and attaching it to containers 
 
 version: '3'
 services: 
@@ -299,7 +303,7 @@ networks:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-4. Adding Volumes and attaching it to containers
+4. Adding Volumes and attaching it to containers 
 
 version: '3'
 services: 
