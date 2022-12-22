@@ -312,6 +312,10 @@ docker service update --replicas=6 <service_name>
 2. Using Docker-stack.yml file  - DOcker Stack
 =================================
 
+
+example:1
+---------
+
 [root@manager ~]# ls
 centos  docker-compose.yml  example-voting-app-docker-compose  voting-app-stack
 
@@ -354,9 +358,9 @@ services:
 
 
 
-
-[root@manager voting-app-stack]# docker stack deploy voting-app --compose-file docker-stack.yml
-                               # docker stack deploy <service_name> --compose-file <file_name.yml>
+# to deploy this stack:
+[root@manager voting-app-stack]# docker stack deploy voting-app --compose-file docker-stack.yml   
+                               # docker stack deploy <service_name> --compose-file <file_name.yml> 
                                
 Creating network voting-app_default
 Creating service voting-app_worker
@@ -386,5 +390,76 @@ f4sn7oinoyyj   voting-app_result.1   dockersamples/examplevotingapp_result:lates
 # you can access vote app using : <public_ip of workernode1/2:5000>
 # you can access result app using: <public_ip of workernode2:5001>
 
+
+example:2
+---------
+deploy properties: https://docs.docker.com/compose/compose-file/deploy/
+
+docker-stack.yml
+----------------
+
+version: '3'
+service:
+  redis:
+    image: redis
+    networks:
+      - back-end
+    volumes:
+      - redis-data:/var/lib/redis
+    deploy:
+      replicas: 1
+
+  db:
+    image: postgres:9.4
+    networks:
+        - back-end
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    deploy:
+          replicas: 1
+          placement:
+            constraints: [node.role == manager]  # we are telling to run this container/task in Manager node
+
+  vote:
+    image: voting-app
+    ports:
+      - "5000:80"
+    networks:
+        - back-end
+        - front-end
+    deploy:
+          replicas: 2
+          update_config:        # configures how the service should be updated. Useful for configuring rolling updates.
+            parallelism: 2      # The number of containers to update at a time.
+
+  result:
+    image: result-app
+    ports:
+        - 5001:80
+    networks:
+        - back-end
+        - front-end
+    deploy:
+          replicas: 1
+
+  worker:
+    image: worker-app
+    networks:
+        - back-end
+    deploy:
+          replicas: 1
+          restart_policy:         # configures if and how to restart containers when they exit
+            condition: on-failure   
+            delay: 10s            # How long to wait between restart attempts, specified as a duration (default: 0).
+
+networks:
+  front-end:
+    driver: bridge
+  back-end:
+    driver: bridge
+
+volumes:
+  redis-data:
+  db-data:
 
 
