@@ -1,3 +1,7 @@
+Orchestrator: Cluster of containers created on a bunch of nodes
+
+
+
 #  No pre-configuration required, just init is enough 
 # should have docker/docker-compose installed
 
