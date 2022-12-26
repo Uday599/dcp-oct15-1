@@ -1,10 +1,12 @@
-Overview:
+Overview: Very Important
 ---------
 
 Collection of variable and injecting them to POD
 
 > Environmental variable
 > files from volume
+> there are 4 differecnt ways to move variables/confi_files to inside container
+
 
 
 
