@@ -1,4 +1,5 @@
 ******************************************************************
+Uses Setbased operator -> set of values can be passes to selector
 *******************************************************************
 ReplicaSet YAML file
 
@@ -21,7 +22,7 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
-  selector:
+  selector:                                 # this is set based
     matchLabels:
       app: nginx-app
     matchExpressions:
