@@ -26,7 +26,7 @@ Overview:
 --------------
 # fluentd-ds-allnodes.yaml
 apiVersion: apps/v1
-kind: DaemonSet   -> kind is daemon set
+kind: DaemonSet   # kind is daemon set
 metadata:
   name: fluentd-ds
 spec:
