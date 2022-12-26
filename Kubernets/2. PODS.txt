@@ -1,15 +1,15 @@
 *******************************************************************
 # 1. https://labs.play-with-k8s.com/
 
-# nginx-pod.yamlc    -> manifest file like docker-compose file in docker
-apiVersion: v1  --> GROUP_NAME/VERSIOn 
-kind: Pod   --> what object you want 
+# nginx-pod.yamlc    # manifest file like docker-compose file in docker
+apiVersion: v1  # GROUP_NAME/VERSIOn 
+kind: Pod   # what object you want 
 metadata: 
-  name: nginx-pod  -> name of the object
-  labels:  -> optional -> alternate name to refer the above POD
+  name: nginx-pod  #name of the object
+  labels:  # optional -> alternate name to refer the above POD
     app: nginx
     tier: dev
-spec:         ->  this will specify the container defination details
+spec:        #  this will specify the container defination details
   containers:
   - name: nginx-container
     image: nginx
@@ -18,7 +18,7 @@ spec:         ->  this will specify the container defination details
       value: "Hello from the environment"
 
     ports:
-    - containerPort: 80   -> - means it will have list
+    - containerPort: 80  
 
 
 > kubectl create -f <file_name>  -> first time
@@ -200,7 +200,7 @@ Containers:
     Image:          nginx
     Image ID:       docker-pullable://nginx@sha256:e209ac2f37c70c1e0e9873a5f7231e91dcd83fdf1178d8ed36c2ec09974210ba
     Port:           80/TCP
-    Host Port:      0/TCP
+    Host Port:      0/TCP  # host port
     State:          Running
       Started:      Thu, 17 Nov 2022 06:16:55 +0000
     Ready:          True
@@ -241,7 +241,7 @@ Events:
 3. Test & Delete
 
 # To get inside the pod
-kubectl exec -it nginx-pod -- /bin/sh     > bin bash
+kubectl exec -it nginx-pod -- /bin/sh     # bin bash
 
 # Create test HTML page
 cat <<EOF > /usr/share/nginx/html/test.html
@@ -284,8 +284,8 @@ IP:                       10.107.124.42
 IPs:                      10.107.124.42
 Port:                     <unset>  80/TCP
 TargetPort:               80/TCP
-NodePort:                 <unset>  30426/TCP   -> this port is used to expose
-Endpoints:                192.168.7.65:80
+NodePort:                 <unset>  30426/TCP   # this port is used to expose
+Endpoints:                192.168.7.65:80     # this is used in internal communiction , not accessable from broswer
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
