@@ -1,12 +1,12 @@
 *******************************************************************
-DEPLOYMENT CONTROLLER - MAINLY IN PROD
+DEPLOYMENT CONTROLLER - MAINLY IN PROD = Interview important
 *******************************************************************
-We can go and easily update any changes to POD
-it will have replica-set
-ROlling updated
-Update /Rolebackk
+# We can go and easily update any changes to POD
+# it will have replica-set - set based selector
+# ROlling updated   -> main advantage
+# Update /Rolebackk    
 
-Interview important
+
 
 
 # 1. Deployment YAML file
