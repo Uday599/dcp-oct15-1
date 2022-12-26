@@ -64,7 +64,7 @@ Above command : here we are initializing out one of the VM as Master - Private I
 [WARNING Mem]: the system RAM (964 MB) is less than the minimum 1700 MB
 
 
---------------------------------
+--------------------------------# this can be seen in welcome page only
 
 mkdir -p $HOME/.kube   -> this is in root directory
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config   -> we are just copying the repo file which we installed earlier(upper part) to required path
@@ -74,19 +74,43 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config  -> changing the ownership
 #export KUBECONFIG=/etc/kubernetes/kubelet.conf
 
 #We need to install a flannel network plugin to run coredns to start pod network communication.
-# we have Kubeproxy for networking in PODS
+# we have Kubeproxy for networking in PODS  - Network Pluggin
 #FLANNER - pluggin for network adapter
 
 sudo kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml 
 sudo kubectl apply -f https://docs.projectcalico.org/v3.8/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml 
 
+# Kubelet -> tool to manage cluster like creating containers/destroying etc
+# Kubectl -> CLI
+# kubeadm -> to create/configure cluster
+
 Test the configuration ::
 
 kubectl get pods --all-namespaces
 
+
+[root@ip-172-31-11-76 ~]# kubectl get pods --all-namespaces
+NAMESPACE     NAME                                                                  READY   STATUS              RESTARTS   AGE
+kube-system   calico-kube-controllers-7f6768fdfb-9xvz8                              0/1     ContainerCreating   0          46s
+kube-system   calico-node-pvh89                                                     0/1     PodInitializing     0          46s
+kube-system   coredns-558bd4d5db-97hjb                                              0/1     ContainerCreating   0          5m48s
+kube-system   coredns-558bd4d5db-whkv9                                              0/1     Pending             0          5m48s
+kube-system   etcd-ip-172-31-11-76.ap-south-1.compute.internal                      1/1     Running             0          6m1s
+kube-system   kube-apiserver-ip-172-31-11-76.ap-south-1.compute.internal            1/1     Running             0          6m1s
+kube-system   kube-controller-manager-ip-172-31-11-76.ap-south-1.compute.internal   1/1     Running             0          6m1s
+kube-system   kube-proxy-jvsd2                                                      1/1     Running             0          5m49s
+kube-system   kube-scheduler-ip-172-31-11-76.ap-south-1.compute.internal            1/1     Running             0          6m1s
+
+
 kubectl get nodes
 
-kubectl describe nodes
+[root@ip-172-31-11-76 ~]# kubectl get nodes
+NAME                                          STATUS   ROLES                  AGE     VERSION
+ip-172-31-11-76.ap-south-1.compute.internal   Ready    control-plane,master   6m23s   v1.21.3
+
+
+kubectl describe nodes  # to see the deatiled view about nodes
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Execute the below commmand in Worker Nodes, to join all the worker nodes with Master :
