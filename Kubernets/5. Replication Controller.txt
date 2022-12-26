@@ -1,4 +1,8 @@
 *******************************************************************
+High Availability
+outdated: we have Replicaset as latest
+uses Equality base operator -> only one value can be passed
+====================================================================
 
 1. Replication Controller YAML file
 
@@ -20,7 +24,7 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
-  selector:     ---> one to one mapping only allowed , Repliation happens based on Selector's only!!
+  selector:                 # one to one mapping only allowed- disadvantage, Repliation happens based on Selector's only!!
     app: nginx-app
 
 
@@ -38,10 +42,10 @@ kubectl describe rc nginx-rc
 
 #stop any running worker node 
 
-kubectl get po -o wide --watch
+kubectl get pod -o wide --watch
 kubectl get pod <your pod name> -w
 
-kubectl get po -o wide
+kubectl get pod -o wide
 kubectl get nodes
 
 *******************************************************************
