@@ -32,7 +32,7 @@ Collection of variable and injecting them to POD
 echo -n 'Non-sensitive data inside file-1' > file-1.txt  
 echo -n 'Non-sensitive data inside file-2' > file-2.txt
 
-kubectl create configmap nginx-configmap-vol --from-file=file-1.txt --from-file=file-2.txt
+kubectl create configmap nginx-configmap-vol --from-file=file-1.txt --from-file=file-2.txt  # imperative
 # rm -f file-1 file-2
 
 kubectl get configmaps  or kubectl get cm
