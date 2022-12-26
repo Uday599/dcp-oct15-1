@@ -1,5 +1,3 @@
-*************************************************************************************************************************************************
-
 Overview:
 ---------
 
@@ -53,9 +51,11 @@ Annotations:  <none>
 
 Data
 ====
+
 file-1.txt:
 ----
 Non-sensitive data inside file-1
+
 file-2.txt:
 ----
 Non-sensitive data inside file-2
@@ -68,6 +68,7 @@ Events:  <none>
 ---------------------------------------------------------------------------
 
 #nginx-pod-configmap-vol.yaml
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -80,10 +81,10 @@ spec:
     - name: test-vol
       mountPath: "/etc/non-sensitive-data"
       readOnly: true
-  volumes:       --> here we are mapping config file from host to containers through volumes
+  volumes:       # here we are mapping config file from host to containers through volumes
     - name: test-vol
       configMap:
-        name: nginx-configmap-vol   --> name of the configmap created and in configmap we use files to transfer , we use folder/directory in hostpath under volumes
+        name: nginx-configmap-vol   # name of the configmap created and in configmap we use files to transfer , we use folder/directory in hostpath under volumes
         items:
         - key: file-1.txt
           path: file-a.txt
@@ -143,12 +144,38 @@ kubectl get configmaps
 
 
 *************************************************************************************************************************************************
-Udemy
+Udemy # Refer official documentation
 -----
+# to store files and configuration in one place
+# to store variables in one place
 
 
-# Create COnfig Map
-vim samplecm.yaml
+# refer official doc
+# Create COnfig Map  # here we have 4 keys
+vi game-demo.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  player_initial_lives: "3"                                                   # property-like keys; each key maps to a simple value
+  ui_properties_file_name: "user-interface.properties"
+  game.properties: |                                                          # file-like keys
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true
+
+
+kubectl apply -f game-demo.yml
+kubectl get cm
+
+vim readcmpod.yaml
+
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -158,10 +185,9 @@ spec:
     - name: demo
       image: alpine
       command: ["sleep", "3600"]
-      env:
-        # Define the environment variable
-        - name: PLAYER_INITIAL_LIVES # Notice that the case is different here
-                                     # from the key name in the ConfigMap.
+      env:           # Define the environment variable
+        - name: PLAYER_INITIAL_LIVES # Notice that the case is different here from the key name in the ConfigMap.
+                                 
           valueFrom:
             configMapKeyRef:
               name: game-demo           # The ConfigMap this value comes from.
@@ -172,14 +198,14 @@ spec:
               name: game-demo
               key: ui_properties_file_name
       volumeMounts:
-      - name: config
+      - name: config  # volume name
         mountPath: "/config"
         readOnly: true
   volumes:
     # You set volumes at the Pod level, then mount them into containers inside that Pod
     - name: config
-      configMap:
-        # Provide the name of the ConfigMap you want to mount.
+      configMap:                                # Provide the name of the ConfigMap you want to mount.
+                                                               
         name: game-demo
         # An array of keys from the ConfigMap to create as files
         items:
@@ -190,39 +216,20 @@ spec:
 
 
 
-kubectl apply -f samplecm.yaml
-kubectl get cm
-clear
-kubectl get cm
-kubectl get cm game-demo -o yaml
-clear
-kubectl get cm
-
-# Create Pod that reads ConfigMap
-vim readcmpod.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: mypod
-spec:
-  containers:
-  - name: mypod
-    image: redis
-    volumeMounts:
-    - name: foo
-      mountPath: "/etc/foo"
-      readOnly: true
-  volumes:
-  - name: foo
-    configMap:
-      name: myconfigmap
-
-
-
 kubectl apply -f readcmpod.yaml
+
 kubectl get pod
 
-# Login to Pod and check variables & files
-kubectl exec --stdin --tty configmap-demo-pod -- /bin/sh
+kubectl exec --stdin --tty configmap-demo-pod -- /bin/sh  # alpine is shell so /bin/sh
+
+cd /config/
+ls # you can view the variables/keys along with values , injecting values through volume -> config maps
+
+echo $PLAYER_INITIAL_LIVES
+echo $PLAYER_INITIAL_LIVES
+
+exit
+
+=========================================
 
 
