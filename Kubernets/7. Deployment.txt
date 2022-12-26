@@ -48,12 +48,14 @@ kubectl get rs -l app=nginx-app   -> rs -> replication set -> deployement set in
 NAME                      DESIRED   CURRENT   READY   AGE
 nginx-deploy-5878ddd45b   3         3         3       3m30s
 
-kubectl get po -l app=nginx-app
+kubectl get pod -l app=nginx-app
 
 NAME                            READY   STATUS    RESTARTS   AGE
 nginx-deploy-5878ddd45b-bwmvr   1/1     Running   0          3m44s
 nginx-deploy-5878ddd45b-ghljm   1/1     Running   0          3m44s
 nginx-deploy-5878ddd45b-gkwzp   1/1     Running   0          3m44s
+
+kubectl get pod =l app=nginx-app -o wide
 
 kubectl describe deploy nginx-deploy
 
@@ -64,7 +66,7 @@ Labels:                 app=nginx-app
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=nginx-app
 Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
-StrategyType:           RollingUpdate   -> rolling update one by one
+StrategyType:           RollingUpdate   # rolling update one by one
 MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
 -------------------------------------------
@@ -99,12 +101,13 @@ Events:
 # 3. Testing: Rollback update 
 
 kubectl set image deploy nginx-deploy nginx-container=nginx:1.91 --record
+# --record will save history of changes
 
 kubectl rollout status deployment/nginx-deploy
->Waiting for deployment "nginx-deploy" rollout to finish: 1 out of 3 new replicas have been updated...
+> Waiting for deployment "nginx-deploy" rollout to finish: 1 out of 3 new replicas have been updated...
 
 kubectl rollout history deployment/nginx-deploy
-> REVISION  CHANGE-CAUSE
+REVISION  CHANGE-CAUSE
 1         <none>
 2         kubectl set image deploy nginx-deploy nginx-container=nginx:1.91 --record=true
 
@@ -124,7 +127,7 @@ Syntax : kubectl <action> <object> <object_name>
 
 kubectl set image deploy nginx-deploy nginx-container=nginx:1.9.1
 # or
-kubectl edit deploy nginx-deploy   -> we can edit through VI from this
+kubectl edit deploy nginx-deploy   # we can edit through VI from this
 kubectl rollout status deployment/nginx-deploy
 kubectl get deploy
 kubectl get rs
