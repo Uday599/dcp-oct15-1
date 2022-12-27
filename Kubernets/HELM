@@ -119,3 +119,20 @@ https://3.111.218.48:30945/
 
 https://65.0.183.168:31625/
 *******************************************************
+
+
+Once after restarting the instace try to lauch k8-dashboard:
+if not
+
+try below commands:
+
+
+[root@ip-172-31-11-76 ~]# helm list
+NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+kubernetes-dashboard    default         1               2022-12-27 08:35:19.020451653 +0000 UTC deployed        kubernetes-dashboard-6.0.0      2.7.0
+
+
+[root@ip-172-31-11-76 ~]# helm delete kubernetes-dashboard
+release "kubernetes-dashboard" uninstalled
+
+https://3.7.69.43:31345/
