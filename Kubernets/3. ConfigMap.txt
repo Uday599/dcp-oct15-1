@@ -7,8 +7,15 @@ Collection of variable and injecting them to POD
 > files from volume
 > there are 4 differecnt ways to move variables/confi_files to inside container
 
+There are four different ways that you can use a ConfigMap to configure a container inside a Pod:
+
+  >  Inside a container command and args
+  >  Environment variables for a container
+  >  Add a file in read-only volume, for the application to read
+  >  Write code to run inside the Pod that uses the Kubernetes API to read a ConfigMap
 
 
+=======================================================================================================
 
 1. Creating Configmap from "multiple files" & Consuming it inside Pod from "volumes" 
 
@@ -97,7 +104,7 @@ spec:
   volumes:       # here we are mapping config file from host to containers through volumes
     - name: test-vol
       configMap:
-        name: nginx-configmap-vol   # name of the configmap created and in configmap we use files to transfer , we use folder/directory in hostpath under volumes
+        name: nginx-configmap-vol   # name of the configmap created and in configmap we use files to transfer , we use folder/directory in hostpath under                                          # volumes
         items:
         - key: file-1.txt
           path: file-a.txt
