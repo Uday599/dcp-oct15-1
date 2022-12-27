@@ -65,11 +65,11 @@ helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard   ->
 
 kubectl get svc  -- by default installed kubernetes-dashboard creats cluster IP
 
-#choose kubernetes-dashboard service 
+#choose kubernetes-dashboard service , we have to change service to Nodeport
 
 kubectl edit svc kubernetes-dashboard
 
-#goto type: key && Change ClusterIP to NodePort & save the file
+#goto type: parameter && Change ClusterIP to NodePort & save the file
 
 #Now check the service, it should show you, NortPort with Nodeport IP
 
@@ -81,9 +81,9 @@ Website:
 https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 
 
-kubectl create serviceaccount dashboard -n default
+kubectl create serviceaccount dashboard -n default  # creating service account -dashboard
 
-or --->
+OR - other way to create service account
 
 kubectl apply -f - <<EOF
 apiVersion: v1
@@ -92,13 +92,13 @@ metadata:
   name: dashboard
 EOF
 
-kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
+kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard    # giving admin access to dashboard account
 
-kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
+kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode  # will create secrets
 
 copy the above generated secret key and paste in in token
 
-https://15.207.114.100:31290/
+https://15.207.114.100:31290/  # use HTTPS
 https://MasterNodeIP:Nodeport
 
 https://65.1.130.134:30107/
