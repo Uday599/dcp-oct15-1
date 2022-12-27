@@ -27,6 +27,11 @@ spec:        #  this will specify the container defination details
 > kubectl describe  -f <file_name>  -> gives data about containers , where it is executed and other details
 > kubectl get pods <pod_name>   -> gives the status of the pods
 > kubectl exec nginx-pod -- printenv  # to view environment varibles
+
+> [root@ip-172-31-11-76 PODS]# kubectl exec --stdin --tty nginx-pod -- /bin/sh
+# echo $DEM0_GREETING
+Hello from the environment
+
 [root@ip-172-31-11-76 PODS]# kubectl exec nginx-pod -- printenv
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
