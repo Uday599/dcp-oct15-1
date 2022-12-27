@@ -3,6 +3,7 @@ DaemonSet : to deploy pod on allworker node
 if you see we dont have replica option defined
 how many worker node we have that many pods will be deployed
 
+this will be helpfull where we want one container/process to execute in every node like monitorring tool etc.
 
 WE DONT HAVE OPTION TO STOP/PAUSE THE PODS IN KUBERNETS
 instead we can do it by making --replicas-0
