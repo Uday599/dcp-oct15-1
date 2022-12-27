@@ -50,8 +50,8 @@ source ~/.bash_profile
 #run helm
 helm
 
-#Install Kubernetes Dashboard using Helm for UI
------------------------------------------------
+#Install Kubernetes Dashboard using Helm for UI : Make sure that worker nodes should be in "READY" State in cluster
+------------------------------------------------------------------------------------------------------------------
 
 website: https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
 
