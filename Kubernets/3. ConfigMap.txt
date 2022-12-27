@@ -33,7 +33,8 @@ echo -n 'Non-sensitive data inside file-1' > file-1.txt
 echo -n 'Non-sensitive data inside file-2' > file-2.txt
 
 kubectl create configmap nginx-configmap-vol --from-file=file-1.txt --from-file=file-2.txt  # imperative
-# rm -f file-1 file-2
+configmap/nginx-configmap-vol created
+
 
 kubectl get configmaps  or kubectl get cm
 
@@ -43,8 +44,20 @@ nginx-configmap-vol   2      31s
 
 kubectl get cm <config_map_name> -o yaml
 
-kubectl describe configmaps nginx-configmap-vol
+apiVersion: v1
+data:
+  file-1.txt: Non-sensitive data inside file-1
+  file-2.txt: Non-sensitive data inside file-2
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2022-12-27T07:01:12Z"
+  name: nginx-configmap-vol
+  namespace: default
+  resourceVersion: "11548"
+  uid: 911f7632-7370-4249-a174-01065343d5d0
 
+
+kubectl describe configmaps nginx-configmap-vol
 
 Name:         nginx-configmap-vol
 Namespace:    default
@@ -53,11 +66,9 @@ Annotations:  <none>
 
 Data
 ====
-
 file-1.txt:
 ----
 Non-sensitive data inside file-1
-
 file-2.txt:
 ----
 Non-sensitive data inside file-2
