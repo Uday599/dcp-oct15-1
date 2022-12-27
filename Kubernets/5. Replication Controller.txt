@@ -34,16 +34,63 @@ spec:
 kubectl create -f nginx-rc.yaml
 kubectl get po -o wide
 kubectl get po -l app=nginx-app
+
+[root@ip-172-31-11-76 replica-controller]# kubectl get pod -l app=nginx-app -o wide
+NAME             READY   STATUS    RESTARTS   AGE    IP                NODE      NOMINATED NODE   READINESS GATES
+nginx-rc-4spdw   1/1     Running   0          3m6s   192.168.235.133   worker1   <none>           <none>
+nginx-rc-mp2d5   1/1     Running   0          3m6s   192.168.189.66    worker2   <none>           <none>
+nginx-rc-ptvt5   1/1     Running   0          3m6s   192.168.189.65    worker2   <none>           <none>
+
 kubectl get rc nginx-rc
+[root@ip-172-31-11-76 replica-controller]# kubectl get rc nginx-rc
+NAME       DESIRED   CURRENT   READY   AGE
+nginx-rc   3         3         3       3m56s
+
 kubectl describe rc nginx-rc
+
+Name:         nginx-rc
+Namespace:    default
+Selector:     app=nginx-app
+Labels:       app=nginx-app
+Annotations:  <none>
+Replicas:     3 current / 3 desired
+Pods Status:  3 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  app=nginx-app
+  Containers:
+   nginx-container:
+    Image:        nginx
+    Port:         80/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age    From                    Message
+  ----    ------            ----   ----                    -------
+  Normal  SuccessfulCreate  4m14s  replication-controller  Created pod: nginx-rc-ptvt5
+  Normal  SuccessfulCreate  4m14s  replication-controller  Created pod: nginx-rc-mp2d5
+  Normal  SuccessfulCreate  4m14s  replication-controller  Created pod: nginx-rc-4spdw
+
 
 *******************************************************************
 # 3. Reschedule
 
-#stop any running worker node 
+#stop any running worker node, Once you turn of any instance, same thing will reflect here will take time.
 
 kubectl get pod -o wide --watch
+[root@ip-172-31-11-76 replica-controller]# kubectl get pod -o wide --watch
+NAME                                    READY   STATUS    RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+kubernetes-dashboard-76849b5669-7cqvk   1/1     Running   1          100m    192.168.235.131   worker1   <none>           <none>
+nginx-rc-4spdw                          1/1     Running   0          9m59s   192.168.235.133   worker1   <none>           <none>
+nginx-rc-mp2d5                          1/1     Running   0          9m59s   192.168.189.66    worker2   <none>           <none>
+nginx-rc-ptvt5                          1/1     Running   0          9m59s   192.168.189.65    worker2   <none>           <none>
+
 kubectl get pod <your pod name> -w
+[root@ip-172-31-11-76 replica-controller]# kubectl get pod nginx-rc-mp2d5 -w
+NAME             READY   STATUS    RESTARTS   AGE
+nginx-rc-mp2d5   1/1     Running   0          10m
+
 
 kubectl get pod -o wide
 kubectl get nodes
