@@ -1,6 +1,12 @@
 *******************************************************************
 # 1. https://labs.play-with-k8s.com/
 
+# kubectl version --short # to check kubernetes version
+
+# kubectl run redis --image=redis --dry-run=client > redis.yaml
+# kubectl create -f redis.yaml
+# kubectl get pods
+
 # kubectl run nginx --image nginx
 
 
