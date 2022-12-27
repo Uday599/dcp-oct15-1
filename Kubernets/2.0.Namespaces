@@ -18,6 +18,10 @@ kubectl create ns kubekart
 kubectl run nginx1 --image=nginx -n kubekart   --imperative - Ahoc command
 kubectl run nginx1 --image=nginx -n kubekart
 
+kubectl get pods -n kubekart
+
+# By deafult it shows in default namespace
+
 vim pod1.yaml
 
 cat pod1.yaml
