@@ -146,7 +146,146 @@ flag is optional
 name is name of the object
 
 
-
-
-
 > kubectl get pods --all-namespace
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# HOW DO WE SET A STATIC HOSTNAME TO A SERVER IN AWS
+-----------------------------------------------------
+
+[root@ip-172-31-11-68 ~]# hostnamectl
+   Static hostname: ip-172-31-11-68.ap-south-1.compute.internal
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: 365783bc4b04418fa2831c895c890a6a
+           Boot ID: 953e0c98f4f148aabb96a0ba1f911989
+    Virtualization: xen
+  Operating System: Amazon Linux 2
+       CPE OS Name: cpe:2.3:o:amazon:amazon_linux:2
+            Kernel: Linux 5.10.157-139.675.amzn2.x86_64
+      Architecture: x86-64
+      
+[root@ip-172-31-11-68 ~]# sudo hostnamectl set-hostname --static Worker1
+
+[root@ip-172-31-11-68 ~]# sudo vi /etc/cloud/cloud.cfg
+
+# /etc/cloud/cloud.cfg.d
+
+users:
+ - default
+
+disable_root: true
+ssh_pwauth:   false
+
+mount_default_fields: [~, ~, 'auto', 'defaults,nofail', '0', '2']
+resize_rootfs: noblock
+resize_rootfs_tmp: /dev
+ssh_deletekeys:   true
+ssh_genkeytypes:  ~
+syslog_fix_perms: ~
+
+datasource_list: [ Ec2, None ]
+repo_upgrade: security
+repo_upgrade_exclude:
+ - kernel
+ - nvidia*
+ - cuda*
+
+# Might interfere with ec2-net-utils
+network:
+  config: disabled
+
+cloud_init_modules:
+ - migrator
+ - bootcmd
+ - write-files
+ - write-metadata
+ - amazonlinux_repo_https
+ - growpart
+ - resizefs
+ - set-hostname
+ - update-hostname
+ - update-etc-hosts
+ - rsyslog
+ - users-groups
+ - ssh
+ - resolv-conf
+
+cloud_config_modules:
+ - disk_setup
+ - mounts
+ - locale
+ - set-passwords
+ - yum-configure
+ - yum-add-repo
+ - package-update-upgrade-install
+ - timezone
+ - disable-ec2-metadata
+ - runcmd
+
+cloud_final_modules:
+ - scripts-per-once
+ - scripts-per-boot
+ - scripts-per-instance
+ - scripts-user
+ - ssh-authkey-fingerprints
+ - keys-to-console
+ - phone-home
+ - final-message
+ - power-state-change
+
+system_info:
+  # This will affect which distro class gets used
+  distro: amazon
+  distro_short: amzn
+  default_user:
+    name: ec2-user
+    lock_passwd: true
+    gecos: EC2 Default User
+    groups: [wheel, adm, systemd-journal]
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+  paths:
+    cloud_dir: /var/lib/cloud
+    templates_dir: /etc/cloud/templates
+  ssh_svcname: sshd
+
+mounts:
+ - [ ephemeral0, /media/ephemeral0 ]
+ - [ swap, none, swap, sw, "0", "0" ]
+# vim:syntax=yaml
+
+preserve_hostname: true					# set this parameter
+
+
+
+[root@ip-172-31-11-68 ~]# hostname
+Worker1
+
+[root@ip-172-31-11-68 ~]# exit
+logout
+
+[ec2-user@ip-172-31-11-68 ~]$ sudo -i
+[root@Worker1 ~]#
+
+this will keep your server hostname to Worker1 even after you restart your instance
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# to delete pod forcefully
+=========================-
+ kubectl delete pod --force <pod_name>
+
+# To remove worker node from cluster , do this in master first:
+
+  1.  kubectl get nodes
+  2.  kubectl drain < node-name > --ignore-daemonsets
+  3.  kubectl delete node < node-name >
+  
+
+# kubeadm reset -> Run this in worker node if your facing any issue in connecting to cluster
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+
+
+
+
