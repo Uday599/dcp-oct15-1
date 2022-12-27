@@ -26,6 +26,33 @@ spec:        #  this will specify the container defination details
 > kubectl apply -f  <file_name>  -> incremental changes on existing POD/file
 > kubectl describe  -f <file_name>  -> gives data about containers , where it is executed and other details
 > kubectl get pods <pod_name>   -> gives the status of the pods
+> kubectl exec nginx-pod -- printenv  # to view environment varibles
+[root@ip-172-31-11-76 PODS]# kubectl exec nginx-pod -- printenv
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=nginx-pod
+DEM0_GREETING=Hello from the environment
+KUBERNETES_DASHBOARD_PORT_443_TCP_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT_443_TCP=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_PORT=443
+KUBERNETES_DASHBOARD_SERVICE_HOST=10.106.141.54
+KUBERNETES_DASHBOARD_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.96.0.1:443
+KUBERNETES_PORT_443_TCP_ADDR=10.96.0.1
+KUBERNETES_DASHBOARD_PORT_443_TCP_PROTO=tcp
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_DASHBOARD_SERVICE_PORT=443
+KUBERNETES_DASHBOARD_PORT_443_TCP=tcp://10.106.141.54:443
+KUBERNETES_DASHBOARD_PORT_443_TCP_ADDR=10.106.141.54
+KUBERNETES_SERVICE_HOST=10.96.0.1
+KUBERNETES_DASHBOARD_PORT=tcp://10.106.141.54:443
+NGINX_VERSION=1.23.3
+NJS_VERSION=0.7.9
+PKG_RELEASE=1~bullseye
+HOME=/root
+
 
 Status of PODS:
 Pending  -> when api server is examining the manifest file
