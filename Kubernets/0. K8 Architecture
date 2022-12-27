@@ -35,7 +35,7 @@ KUBCTL -> command line to intract with master
 
 Cluster -> collection of worker node
 Inside worker node :
-KUBELET -> it will receives request from controller and perform almost all weightlifting tasks like downloaing image etc..
+KUBELET -> it will receives request from controller and perform almost all weightlifting tasks like downloaing image etc.., we will have this in every worker node
 Container Runtime engine Docker -> verifies the images and gets into dockerhub and then deploy it to containers/pods
 kube Proxy -> allows pods to expose to outside world -> takes care of complete networking 
 PODS -> collection of containers / single unit of work
