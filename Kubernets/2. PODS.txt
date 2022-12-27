@@ -22,6 +22,7 @@ spec:        #  this will specify the container defination details
 
 
 > kubectl create -f <file_name>  -> first time
+> kubectl create -f .           # if file exists in same directory
 > kubectl apply -f  <file_name>  -> incremental changes on existing POD/file
 > kubectl describe  -f <file_name>  -> gives data about containers , where it is executed and other details
 > kubectl get pods <pod_name>   -> gives the status of the pods
