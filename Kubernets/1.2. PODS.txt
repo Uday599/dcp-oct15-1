@@ -1,6 +1,9 @@
 *******************************************************************
 # 1. https://labs.play-with-k8s.com/
 
+# kubectl run nginx --image nginx
+
+
 # nginx-pod.yamlc    # manifest file like docker-compose file in docker
 apiVersion: v1  # GROUP_NAME/VERSIOn 
 kind: Pod   # what object you want 
