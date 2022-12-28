@@ -10,11 +10,11 @@ NODEPORT
 > to expose pod to internet
 > NodePort range - 30000 - 32767
 
-internet -> node ip:<nodeport> -> SERVICE (lable selector) -> routes to POD equals to lable selector -> container
+internet -> node ip:<nodeport> -> SERVICE (lable selector) -> routes to POD equals to lable selector (same port as target port) -> container
 
 nodeport : is the external node to access internal node (service node)
 
-say x.x.x.x:30001  => mapped to  => SERVICE IP and internal port/backend port
+say x.x.x.x:30001  => mapped to  => SERVICE IP and port(service)   => mapped to backend port or target port
 internal port will be container image/container port
 for nginx -> 80
 for tomcat -> 8080
@@ -26,6 +26,7 @@ for tomcat -> 8080
 apiVersion: v1
 kind: Pod
 metadata:
+#namespace: uday-demo
  name: nginx-data
  labels:
    app: nginx-data1
@@ -48,29 +49,28 @@ kind: Service    -> kind is service
 metadata:
   name: helloworld-service
 spec:
-  ports:
-    - port: 8090     -> internal front end port no need to worry
-      nodePort: 30001    -> external front end nodeport to access from internet
-      targetPort: nginx-port  -> very important target node , should be same as container port, we used port name here
-      protocol: TCP
-  selector:
-    app: nginx-data1     -> selector -> POD
   type: NodePort
-
+  ports:
+  - port: 8090              # Mandatory field   # internal front end port , if we didn't mention target port -> this Port number will be directly used 
+    targetPort: nginx-port  # very important target node , should be same as container port, we used port name here
+    nodePort: 30001         # external front end nodeport to access from internet, valid range (30000 -32767),if didnt mention it will be automatically assigned
+  #  protocol: TCP
+  selector:
+    app: nginx-data1        # selector to connect service to POD
+  
+# Working:
+ nodeip:30001  ->  service_internal_ip:8090  ->  containerport:80
 
  kubectl create -f nginx-nodeport.yaml
  
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-
 [root@ip-172-31-12-224 services]# kubectl get svc
 
 NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 helloworld-service   NodePort    10.101.194.171   <none>        8090:30001/TCP   3m31s   -> the one we created 
 kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP          5d1h
 
- 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+kubectl service <service_name> --url   
 
 [root@ip-172-31-12-224 services]# kubectl describe svc helloworld-service
 
@@ -91,7 +91,6 @@ Endpoints:                192.168.7.86:80     -> this is the conainer Ip with Po
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
-
     
 [root@ip-172-31-12-224 services]# kubectl describe pod | grep IP
 
@@ -113,7 +112,7 @@ To delete service:
 
 kubectl delete svc helloworld-service
 
-
+========================================================================
 
 CLUSTER IP
 ----------
@@ -122,7 +121,9 @@ CLUSTER IP
 
 > default one created for a cluster
 
-Cluster IP yamlfile
+#cluster-ip.yaml
+
+# if we dint mention type, by default Cluster IP will be created
 
 apiVersion: v1
 kind: Service
@@ -137,6 +138,7 @@ spec:
 selector:
  app: backend
 
+=========================================================================
 
 LOAD BALANCER
 -------------
@@ -152,15 +154,16 @@ LOAD BALANCER
 apiVersion: v1
 kind: Service
 metadata:
-  name: helloworld-lbservice   -> name should be lower case
+  name: helloworld-lbservice   # name should be lower case
 spec:
+  type: LoadBalancer
   ports:
-    - port: 80    ->?load balancer external port
-      targetPort: nginx-port   -> targer port name
-      protocol: TCP
+  - port: 80                              # load balancer external port
+    targetPort: nginx-port                # targer port name
+   #  protocol: TCP
   selector:
     app: nginx-data1
-  type: LoadBalancer   -> type name
+     
   
   
  kubectl create -f nginx-LB.yaml
