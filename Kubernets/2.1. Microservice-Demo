@@ -1,0 +1,260 @@
+# Udemy -kubernetes for begineers
+----------------------------------
+
+# THis order should be maintained 
+ ---------------------------------
+
+
+voting-app
+voting-app service
+
+redis
+redis service
+
+postgres
+postgress service
+
+workernode
+
+result
+result service
+
+
+==========================================================
+
+# we will use deployment now:
+
+github: https://github.com/Uday599/example-voting-app-kubernetes-v2.git
+
+[root@ip-172-31-11-76 pr0ject-k8]# git clone https://github.com/Uday599/example-voting-app-kubernetes-v2.git
+Cloning into 'example-voting-app-kubernetes-v2'...
+remote: Enumerating objects: 27, done.
+remote: Counting objects: 100% (15/15), done.
+remote: Compressing objects: 100% (9/9), done.
+remote: Total 27 (delta 9), reused 7 (delta 6), pack-reused 12
+Receiving objects: 100% (27/27), 5.02 KiB | 1.67 MiB/s, done.
+Resolving deltas: 100% (13/13), done.
+[root@ip-172-31-11-76 pr0ject-k8]# ls
+example-voting-app-kubernetes-v2
+[root@ip-172-31-11-76 pr0ject-k8]# cd example-voting-app-kubernetes-v2
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# ls
+postgres-deployment.yml  README.md             redis-service.yml          result-app-service.yml     voting-app-service.yml
+postgres-service.yml     redis-deployment.yml  result-app-deployment.yml  voting-app-deployment.yml  worker-app-deployment.yml
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+kubernetes-dashboard-76849b5669-cc44b   1/1     Running   2          22h
+
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get svc
+NAME                   TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+kubernetes             ClusterIP   10.96.0.1       <none>        443/TCP         2d4h
+kubernetes-dashboard   NodePort    10.97.225.221   <none>        443:30226/TCP   27h
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# ls
+postgres-deployment.yml  README.md             redis-service.yml          result-app-service.yml     voting-app-service.yml
+postgres-service.yml     redis-deployment.yml  result-app-deployment.yml  voting-app-deployment.yml  worker-app-deployment.yml
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f voting-app-deployment.yml
+deployment.apps/voting-app-deployment created
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get deployment
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+kubernetes-dashboard    1/1     1            1           27h
+nginx-deploy            0/0     0            0           24h
+voting-app-deployment   2/3     3            2           6s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods
+NAME                                     READY   STATUS    RESTARTS   AGE
+kubernetes-dashboard-76849b5669-cc44b    1/1     Running   2          22h
+voting-app-deployment-547678ccc7-2bjzj   1/1     Running   0          22s
+voting-app-deployment-547678ccc7-gw5d5   1/1     Running   0          22s
+voting-app-deployment-547678ccc7-v4ck6   1/1     Running   0          22s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods -o wide
+NAME                                     READY   STATUS    RESTARTS   AGE   IP                NODE      NOMINATED NODE   READINESS GATES
+kubernetes-dashboard-76849b5669-cc44b    1/1     Running   2          22h   192.168.189.83    worker2   <none>           <none>
+voting-app-deployment-547678ccc7-2bjzj   1/1     Running   0          39s   192.168.235.157   worker1   <none>           <none>
+voting-app-deployment-547678ccc7-gw5d5   1/1     Running   0          39s   192.168.189.89    worker2   <none>           <none>
+voting-app-deployment-547678ccc7-v4ck6   1/1     Running   0          39s   192.168.189.88    worker2   <none>           <none>
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f voting-app-service.yml
+service/voting-service created
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get svc
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         2d4h
+kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   27h
+voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    8s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f redis-deployment.yml
+deployment.apps/redis-deployment created
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f redis-service.yml
+service/redis created
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods,svc
+NAME                                         READY   STATUS    RESTARTS   AGE
+pod/kubernetes-dashboard-76849b5669-cc44b    1/1     Running   2          22h
+pod/redis-deployment-5d7988b4bb-gn7ps        1/1     Running   0          16s
+pod/voting-app-deployment-547678ccc7-2bjzj   1/1     Running   0          3m17s
+pod/voting-app-deployment-547678ccc7-gw5d5   1/1     Running   0          3m17s
+pod/voting-app-deployment-547678ccc7-v4ck6   1/1     Running   0          3m17s
+
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+service/kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         2d4h
+service/kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   27h
+service/redis                  ClusterIP      10.109.11.114   <none>        6379/TCP        8s
+service/voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    2m14s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f postgres-deployment.yml
+deployment.apps/postgres-deployment created
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f postgres-service.yml
+service/db created
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods,svc
+NAME                                         READY   STATUS    RESTARTS   AGE
+pod/kubernetes-dashboard-76849b5669-cc44b    1/1     Running   2          22h
+pod/postgres-deployment-549b8f57df-2wzcj     1/1     Running   0          12s
+pod/redis-deployment-5d7988b4bb-gn7ps        1/1     Running   0          64s
+pod/voting-app-deployment-547678ccc7-2bjzj   1/1     Running   0          4m5s
+pod/voting-app-deployment-547678ccc7-gw5d5   1/1     Running   0          4m5s
+pod/voting-app-deployment-547678ccc7-v4ck6   1/1     Running   0          4m5s
+
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+service/db                     ClusterIP      10.106.79.195   <none>        5432/TCP        2s
+service/kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         2d4h
+service/kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   27h
+service/redis                  ClusterIP      10.109.11.114   <none>        6379/TCP        56s
+service/voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    3m2s
+
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f worker-app-deployment.yml
+deployment.apps/worker-app-deployment created
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods,svc
+NAME                                         READY   STATUS              RESTARTS   AGE
+pod/kubernetes-dashboard-76849b5669-cc44b    1/1     Running             2          22h
+pod/postgres-deployment-549b8f57df-2wzcj     1/1     Running             0          45s
+pod/redis-deployment-5d7988b4bb-gn7ps        1/1     Running             0          97s
+pod/voting-app-deployment-547678ccc7-2bjzj   1/1     Running             0          4m38s
+pod/voting-app-deployment-547678ccc7-gw5d5   1/1     Running             0          4m38s
+pod/voting-app-deployment-547678ccc7-v4ck6   1/1     Running             0          4m38s
+pod/worker-app-deployment-767d5b67ff-c7x44   0/1     ContainerCreating   0          2s
+pod/worker-app-deployment-767d5b67ff-drdch   0/1     ContainerCreating   0          2s
+pod/worker-app-deployment-767d5b67ff-h5nb4   0/1     ContainerCreating   0          2s
+
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+service/db                     ClusterIP      10.106.79.195   <none>        5432/TCP        35s
+service/kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         2d4h
+service/kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   27h
+service/redis                  ClusterIP      10.109.11.114   <none>        6379/TCP        89s
+service/voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    3m35s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods,svc
+NAME                                         READY   STATUS              RESTARTS   AGE
+pod/kubernetes-dashboard-76849b5669-cc44b    1/1     Running             2          22h
+pod/postgres-deployment-549b8f57df-2wzcj     1/1     Running             0          53s
+pod/redis-deployment-5d7988b4bb-gn7ps        1/1     Running             0          105s
+pod/voting-app-deployment-547678ccc7-2bjzj   1/1     Running             0          4m46s
+pod/voting-app-deployment-547678ccc7-gw5d5   1/1     Running             0          4m46s
+pod/voting-app-deployment-547678ccc7-v4ck6   1/1     Running             0          4m46s
+pod/worker-app-deployment-767d5b67ff-c7x44   0/1     ContainerCreating   0          10s
+pod/worker-app-deployment-767d5b67ff-drdch   0/1     ContainerCreating   0          10s
+pod/worker-app-deployment-767d5b67ff-h5nb4   0/1     ContainerCreating   0          10s
+
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+service/db                     ClusterIP      10.106.79.195   <none>        5432/TCP        43s
+service/kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         2d4h
+service/kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   27h
+service/redis                  ClusterIP      10.109.11.114   <none>        6379/TCP        97s
+service/voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    3m43s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods,svc
+NAME                                         READY   STATUS    RESTARTS   AGE
+pod/kubernetes-dashboard-76849b5669-cc44b    1/1     Running   2          22h
+pod/postgres-deployment-549b8f57df-2wzcj     1/1     Running   0          62s
+pod/redis-deployment-5d7988b4bb-gn7ps        1/1     Running   0          114s
+pod/voting-app-deployment-547678ccc7-2bjzj   1/1     Running   0          4m55s
+pod/voting-app-deployment-547678ccc7-gw5d5   1/1     Running   0          4m55s
+pod/voting-app-deployment-547678ccc7-v4ck6   1/1     Running   0          4m55s
+pod/worker-app-deployment-767d5b67ff-c7x44   1/1     Running   0          19s
+pod/worker-app-deployment-767d5b67ff-drdch   1/1     Running   0          19s
+pod/worker-app-deployment-767d5b67ff-h5nb4   1/1     Running   0          19s
+
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+service/db                     ClusterIP      10.106.79.195   <none>        5432/TCP        52s
+service/kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         2d4h
+service/kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   27h
+service/redis                  ClusterIP      10.109.11.114   <none>        6379/TCP        106s
+service/voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    3m52s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f result-app-deployment.yml
+deployment.apps/result-app-deployment created
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl create -f result-app-service.yml
+service/result-service created
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods,svc
+NAME                                         READY   STATUS    RESTARTS   AGE
+pod/kubernetes-dashboard-76849b5669-cc44b    1/1     Running   2          22h
+pod/postgres-deployment-549b8f57df-2wzcj     1/1     Running   0          2m17s
+pod/redis-deployment-5d7988b4bb-gn7ps        1/1     Running   0          3m9s
+pod/result-app-deployment-7cdc94dfcd-wbxc8   1/1     Running   0          14s
+pod/voting-app-deployment-547678ccc7-2bjzj   1/1     Running   0          6m10s
+pod/voting-app-deployment-547678ccc7-gw5d5   1/1     Running   0          6m10s
+pod/voting-app-deployment-547678ccc7-v4ck6   1/1     Running   0          6m10s
+pod/worker-app-deployment-767d5b67ff-c7x44   1/1     Running   0          94s
+pod/worker-app-deployment-767d5b67ff-drdch   1/1     Running   0          94s
+pod/worker-app-deployment-767d5b67ff-h5nb4   1/1     Running   0          94s
+
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+service/db                     ClusterIP      10.106.79.195   <none>        5432/TCP        2m7s
+service/kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         2d4h
+service/kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   27h
+service/redis                  ClusterIP      10.109.11.114   <none>        6379/TCP        3m1s
+service/result-service         LoadBalancer   10.96.144.181   <pending>     80:32254/TCP    3s
+service/voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    5m7s
+
+
+[root@ip-172-31-11-76 example-voting-app-kubernetes-v2]# kubectl get pods -o wide
+NAME                                     READY   STATUS    RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+kubernetes-dashboard-76849b5669-cc44b    1/1     Running   2          22h     192.168.189.83    worker2   <none>           <none>
+postgres-deployment-549b8f57df-2wzcj     1/1     Running   0          2m51s   192.168.235.158   worker1   <none>           <none>
+redis-deployment-5d7988b4bb-gn7ps        1/1     Running   0          3m43s   192.168.189.90    worker2   <none>           <none>
+result-app-deployment-7cdc94dfcd-wbxc8   1/1     Running   0          48s     192.168.235.160   worker1   <none>           <none>
+voting-app-deployment-547678ccc7-2bjzj   1/1     Running   0          6m44s   192.168.235.157   worker1   <none>           <none>
+voting-app-deployment-547678ccc7-gw5d5   1/1     Running   0          6m44s   192.168.189.89    worker2   <none>           <none>
+voting-app-deployment-547678ccc7-v4ck6   1/1     Running   0          6m44s   192.168.189.88    worker2   <none>           <none>
+worker-app-deployment-767d5b67ff-c7x44   1/1     Running   0          2m8s    192.168.235.159   worker1   <none>           <none>
+worker-app-deployment-767d5b67ff-drdch   1/1     Running   0          2m8s    192.168.189.92    worker2   <none>           <none>
+worker-app-deployment-767d5b67ff-h5nb4   1/1     Running   0          2m8s    192.168.189.91    worker2   <none>           <none>
+
+
+# voting app : workernode_IP:32684
+# Result app: workermode_IP:32254
+
+
