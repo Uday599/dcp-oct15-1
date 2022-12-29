@@ -20,8 +20,8 @@ PROMOTHEUS ARCHITECTURE:
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#Install Prometheus & Grafana :
------------------------------
+#Install Prometheus:
+-------------------
 
 ### Goto https://prometheus.io/download/
 
@@ -29,6 +29,7 @@ wget https://github.com/prometheus/prometheus/releases/download/v2.38.0/promethe
 
 tar -zxvf prometheus-2.38.0.linux-amd64.tar.gz
 
+# Prometheus should run as a service so we will create a service now
 ###===> Create following file:
 
 All services will have to run in /etc/systemd/system only
@@ -45,17 +46,19 @@ After=network-online.target
 User=root
 Restart=on-failure
 
-ExecStart=/root/prometheus-2.38.0.linux-amd64/prometheus --config.file=/root/prometheus-2.38.0.linux-amd64/prometheus.yml  -> here we are allowing prometheus                                                                                                                               service to use prometheus.yml                                                                                                                                 file
+ExecStart=/root/prometheus-2.38.0.linux-amd64/prometheus --config.file=/root/prometheus-2.38.0.linux-amd64/prometheus.yml  # here we are allowing prometheus                                                                                                                            #   service to use prometheus.yml                                                                                                                            #    file
 
 [Install]
 WantedBy=multi-user.target
 
 #-------------------------------------------------------------------------
 
-
+Installation process:
+---------------------
 
 [root@ip-172-31-35-24 ~]# ls
 prometheus-2.38.0.linux-amd64  prometheus-2.38.0.linux-amd64.tar.gz
+
 [root@ip-172-31-35-24 ~]# cd prometheus-2.38.0.linux-amd64
 
 [root@ip-172-31-35-24 prometheus-2.38.0.linux-amd64]# ls
@@ -67,7 +70,7 @@ console_libraries  consoles  LICENSE  NOTICE  prometheus  prometheus.yml  promto
 
 [root@ip-172-31-35-24 prometheus-2.38.0.linux-amd64]# pwd
 /root/prometheus-2.38.0.linux-amd64
-[root@ip-172-31-35-24 prometheus-2.38.0.linux-amd64]#
+
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 > man systemctl  -> gives complete details
@@ -83,9 +86,11 @@ sudo systemctl daemon-reload
 ----------------------
 sudo systemctl status prometheus
 sudo systemctl start prometheus
+sudo systemctl enable prometheus
 
 <prometheus-external-ip>:9090  -> prometheus runs on port 9090
 http://13.232.146.141:9090/
+
 
 ####***********************************************************************
 
@@ -122,7 +127,7 @@ After=network-online.target
 User=root
 Restart=on-failure
 
-ExecStart=/root/node_exporter-1.4.0-rc.0.linux-amd64/node_exporter
+ExecStart=/root/node_exporter-1.4.0-rc.0.linux-amd64/node_exporter  # node exporter is the executable file
 
 [Install]
 WantedBy=multi-user.target
@@ -162,9 +167,9 @@ Hint: Some lines were ellipsized, use -l to show in full.
 we have to use this port in out prometheus.yml file as target
 
 
-hostname
+hostname     
 
-hostname -i
+hostname -i  # to get private IP
 
 ### copy the IP Address of the server you wish to monitor  -> 172.31.35.146(private ip of target/server we wish to monitor)
 
@@ -176,7 +181,7 @@ cd /root/prometheus-2.38.0.linux-amd64
 vi prometheus.yml
 ## Add the target with valid node_exporter port as mentioned below:
 
-- targets: ["172.31.7.193:9100"]
+- targets: ["172.31.7.193:9100"]  # add this carefully, else service won't run
 
 
 ## Restart Prometheus:
@@ -190,6 +195,24 @@ sudo systemctl status prometheus
 http://13.232.146.141:9090/
 
 ## in the query field type "up" and click on execute to see the list of servers up for monitoring
+
+
+Test in Prometheus-server query 
+------------------------------
+
+
+Website: https://prometheus.io/docs/prometheus/latest/querying/examples/   # refer this for sample query
+
+sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
+
+sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
+
+Goto grafana and cl
+
+time() - node_boot_time_seconds{}
+
+100 * (1 - ((avg_over_time(node_memory_MemFree_bytes[10m]) + avg_over_time(node_memory_Cached_bytes[10m]) + avg_over_time(node_memory_Buffers_bytes[10m])) / avg_over_time(node_memory_MemTotal_bytes[10m])))
+
 
 
 ##*******************************************************************************************************
@@ -225,10 +248,6 @@ http://13.232.146.141:3000/
 
 default user name & password : admin & admin
 
-http://3.110.30.83/:9090
-
-"AppDynamics" -> meant for app monitoring -> iMportant source tool - web app  -> top in market -> learn 
-"Prometheous" -> meant for infra monitoring 
 
 ###*********************************************************************
 
@@ -249,23 +268,7 @@ Click on Save & Test --- for Data Source is working
 Click on Back Button
 See the Prometheus Data Source Created 
 
-
-Test in Prometheus-server query 
-------------------------------
-
-
-Website: https://prometheus.io/docs/prometheus/latest/querying/examples/  -> refer this for sample query
-
-sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
-
-sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
-
-Goto grafana and cl
-
-time() - node_boot_time_seconds{}
-
-100 * (1 - ((avg_over_time(node_memory_MemFree_bytes[10m]) + avg_over_time(node_memory_Cached_bytes[10m]) + avg_over_time(node_memory_Buffers_bytes[10m])) / avg_over_time(node_memory_MemTotal_bytes[10m])))
+"AppDynamics" -> meant for app monitoring -> iMportant source tool - web app  -> top in market -> learn 
+"Prometheous" -> meant for infra monitoring 
 
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
