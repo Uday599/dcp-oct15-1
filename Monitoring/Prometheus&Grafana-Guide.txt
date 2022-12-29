@@ -183,6 +183,8 @@ Hint: Some lines were ellipsized, use -l to show in full.
 > 9100 is the port of node_exporter
 we have to use this port in out prometheus.yml file as target
 
+# Dont forget to allow this Port:9100 in SG of target host, else it will marked as down in prometheus
+
 
 hostname     
 
@@ -222,7 +224,6 @@ Website: https://prometheus.io/docs/prometheus/latest/querying/examples/   # ref
 
 sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
 
-sum by(mode)(irate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0
 
 Goto grafana and cl
 
@@ -289,4 +290,49 @@ See the Prometheus Data Source Created
 "AppDynamics" -> meant for app monitoring -> iMportant source tool - web app  -> top in market -> learn 
 "Prometheous" -> meant for infra monitoring 
 
+=======================================================================================================
+
+
+
+
+prometheus.yml
+--------------
+
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+        #      - targets: ["172.31.9.168:9100"]
+
+  - job_name: 'cAdvisor'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["172.31.9.168:8087"]    # what ever metrics we want to pull we can mention that port here 
+~
+~
 
