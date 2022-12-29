@@ -1,0 +1,144 @@
+# this is similar to Deployment, however advantage is that it maintains the statefullness of the application.
+# usefull in databases application
+# each statefullness - object should have separate PVs
+
+
+Demo:
+=====
+vi pv.yml
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: nginx-pv
+  labels:
+    type: local
+    app: nginx
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/home/edureka/data"
+    
+Create the volumes using create command:
+kubectl create -f pv.yml
+    
+ vi pv1.yml
+ ---------
+ 
+ 
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: nginx-pv1
+  labels:
+    type: local
+    app: nginx
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: "/home/edureka/data1"
+    
+Create the volumes using create command:
+kubectl create -f pv1.yml
+    
+    
+    
+kubectl get pv
+
+
+
+# create service required to access statefiullset object:
+
+vi state.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+  name: web
+  clusterIP: None
+  selector:
+    app: nginx
+    
+kubectl create -f state.yml
+
+# Create statefullset :
+
+vi ss.yml
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+  spec:
+    containers:
+    - name: nginx
+      image: k8s.gcr.io/nginx-slim:0.8
+      ports:
+      - containerPort: 80
+        name: web
+      volumeMounts:
+      - name: www
+      mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+    name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+          
+          
+kubectl create -f ss.yml
+
+We can check if the statefulset, service and the pods associated are creates successfully
+
+Syntax: kubectl get statefulset
+kubectl get svc
+kubectl get pods
+    
+    
+# You can notice that pods are created sequentially and are given unique ID’s which are retained
+even after multiple restarts
+
+
+# Now to test if the statefulset is working as expected we will check the details of one of the pods,
+delete and wait for it to get rescheduled
+
+
+kubectl describe pods web-1
+
+Now, delete the pod and wait for it to redeploy
+
+kubectl delete pods web-1
+
+
+# We can check the details to see that the pod as retained its identity
+
+
+# Refer Edureka-Demo
+    
