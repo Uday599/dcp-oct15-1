@@ -7,6 +7,23 @@ Alerting tool: PagerDuty, servicenow, slack
 Metric storage:: splunk, aws, infuxdb
 Vizualization tool: Grafana
 
+Quiz:
+
+1. Monitoring tools determines the root cause of any issue related to local host or remote servers with the help of different plugins which they support such as NRPE and NSclient++.
+
+2. Prometheus includes a custom local time series database for storage but can also integrate with remote storage systems.
+
+3. Prometheus provides a functional query language called PromQL (Prometheus Query Language) that lets the user select and aggregate time series data in real time.
+
+4. Gauges only records values that go up and down.
+
+5. Along with data visualization, grafana also offers an alerting mechanism for monitoring alerts.
+
+6. Grafana Dashboard can visualize OS level statistics like CPU usage, Disk Space, Memory usage, Top Processes,etc.
+
+7.Data from different servers can be visualized and comapred together using Grafana.
+
+8. The systemctl command can be used to check if the grafana-server service is running or not.
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -221,6 +238,7 @@ time() - node_boot_time_seconds{}
 GRAFANA
 -------
 
+Grafana Dashboard can visualize OS level statistics like CPU usage, Disk Space, Memory usage, Top Processes,etc.
 
 #Install Grafana :
 ------------------
