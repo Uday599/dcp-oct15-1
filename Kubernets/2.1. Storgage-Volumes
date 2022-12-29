@@ -46,6 +46,110 @@ kubectl delete pod dbpod
 2.Persistanct Volume and Persistant Volume Claim
 ------------------------------------------------
 
+2.a : example:1
+
+Step:1 : Create Persistent Volume
+
+# vi pv.yml
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: test-vp
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteMany
+  hostPath:
+    path: "/home/ubuntu/data"
+    
+
+# Create PV
+kubectl create -f pv.yml
+
+kubectl get pv
+
+Step:2: Create Persistent Volume Claim
+
+vi pvc.yml
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-vpc
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+      
+
+kubectl create -f pvc.yml
+
+kubectl get pvc
+
+
+Step 3: Create deployment object and map it to PVC
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd
+template:
+  metadata:
+    labels:
+      app: httpd
+spec:
+  volumes:
+  - name: test
+  persistentVolumeClaim:
+    claimName: test-vpc
+  containers:
+  - name: httpd
+    image: httpd
+    ports:
+    - containerPort: 80
+    
+
+# Create the deployment and curl the IP address of the pod created
+
+
+# Create Deployment object
+
+kubectl get deploy
+
+kubectl get pods
+
+Now change the index.html file inside /usr/local/apache2/htdocs by accessing the container
+kubectl exec -it <pod> bash
+
+echo "Happy Learning!" > index.html
+
+If we curl the container from outside we can see that it writes the new message
+
+
+Now to verify, delete the current pod and let the deployment generate a new pod. Then curl the IP
+address of the new pod
+    
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\
+
+2.b - incomplete
+
 
 Pod definition:
 --------------
