@@ -1,7 +1,8 @@
-Persistanct Volume and Persistant Volume Claim
---------------------------------------------
+# By default "emptyDir" will be allocated
+# this volumet will be allocated at POD level and available at entire cluster, in DOcker its in container level
 
-
+1. HostPath:
+--------------
 
 vim mysqlpod.yaml
 
@@ -20,11 +21,13 @@ spec:
   - name: dbvol
     hostPath:
       # directory location on host
-      path: /data     -> mapping this volume to /var/lib/mysql from container
+      path: /data                                           # mapping this volume to /var/lib/mysql from container
       # this field is optional
-      type: DirectoryOrCreate    -> if directory not exit, then create
+      type: DirectoryOrCreate                               # if directory not exit, then create
 
 
+
+# load files and check
 
 kubectl apply -f mysqlpod.yaml
 kubectl get pod
@@ -37,3 +40,30 @@ kubectl apply -f mysqlpod.yaml
 kubectl describe pod dbpod
 clear
 kubectl delete pod dbpod
+
+===========================================================================
+
+2.Persistanct Volume and Persistant Volume Claim
+------------------------------------------------
+
+
+Pod definition:
+--------------
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: mypod
+    spec:
+      containers:
+        - name: myfrontend
+          image: nginx
+          volumeMounts:
+          - mountPath: "/var/www/html"
+            name: mypd
+      volumes:
+        - name: mypd
+          persistentVolumeClaim:
+            claimName: myclaim
+            
+# The same is true for ReplicaSets or Deployments. Add this to the pod template section of a Deployment on ReplicaSet.
