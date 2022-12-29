@@ -21,6 +21,7 @@ for tomcat -> 8080
 
 > lable selector
 
+1.
 
 [root@ip-172-31-12-224 services]# cat nginx-pod.yaml
 apiVersion: v1
@@ -40,7 +41,7 @@ spec:
 
 kubectl create -f <object name>
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [root@ip-172-31-12-224 services]# cat nginx-nodeport.yaml
 
@@ -111,6 +112,65 @@ To access from internet
 To delete service:
 
 kubectl delete svc helloworld-service
+
+
+2.
+
+[root@ip-172-31-11-76 ~]# kubectl create deployment nginx1 --image=nginx
+deployment.apps/nginx1 created
+
+[root@ip-172-31-11-76 ~]# kubectl get deploy
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+kubernetes-dashboard    1/1     1            1           46h
+nginx1                  1/1     1            1           9s
+postgres-deployment     0/0     0            0           19h
+redis-deployment        0/0     0            0           19h
+result-app-deployment   0/0     0            0           19h
+worker-app-deployment   0/0     0            0           19h
+
+
+
+[root@ip-172-31-11-76 ~]# kubectl expose deploy nginx1 --type=NodePort --port=80
+service/nginx1 exposed
+
+[root@ip-172-31-11-76 ~]# kubectl get svc
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)         AGE
+db                     ClusterIP      10.106.79.195   <none>        5432/TCP        19h
+kubernetes             ClusterIP      10.96.0.1       <none>        443/TCP         3d
+kubernetes-dashboard   NodePort       10.97.225.221   <none>        443:30226/TCP   46h
+nginx1                 NodePort       10.100.145.32   <none>        80:30547/TCP    7s # this one
+redis                  ClusterIP      10.109.11.114   <none>        6379/TCP        19h
+result-service         LoadBalancer   10.96.144.181   <pending>     80:32254/TCP    19h
+service                NodePort       10.103.58.221   <none>        80:30003/TCP    16h
+voting-service         LoadBalancer   10.96.6.83      <pending>     80:32684/TCP    19h
+
+
+[root@ip-172-31-11-76 ~]# kubectl get pods -o wide
+NAME                                    READY   STATUS    RESTARTS   AGE   IP                NODE      NOMINATED NODE   READINESS GATES
+kubernetes-dashboard-76849b5669-mfbpx   1/1     Running   1          19h   192.168.189.100   worker2   <none>           <none>
+nginx1-b97c459f7-ht7xh                  1/1     Running   0          93s   192.168.235.177   worker1   <none>           <none>
+
+# access through nodeport
+
+[root@ip-172-31-11-76 ~]# kubectl describe svc nginx1
+Name:                     nginx1
+Namespace:                default
+Labels:                   app=nginx1
+Annotations:              <none>
+Selector:                 app=nginx1
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.100.145.32
+IPs:                      10.100.145.32
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  30547/TCP
+Endpoints:                192.168.235.177:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
 
 ========================================================================
 
