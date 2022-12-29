@@ -57,6 +57,10 @@ kubectl get pv
 
 # create service required to access statefiullset object:
 
+
+A StatefulSet provides a unique identity to the Pods that they manage. StatefulSet s are particularly useful when your application requires a unique 
+network identifier or persistence storage across Pod (re)scheduling or when your application needs some guarantee about the ordering of deployment and scaling.
+
 vi state.yml
 
 apiVersion: v1
