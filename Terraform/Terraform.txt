@@ -17,6 +17,20 @@ C-Integration
     Destroy all the test servers
     
 C-Delivery/Deployment
+==========================================================
+
+Quiz:
+
+1. Terrafrom is Iac
+2. Terraform is written in Golang
+3. this uses -Providers to interact with remote nodes
+4. Terraform uses declarative configuration to define there state list
+5. Terraform supports almost all providers
+6. Terraform is Cloud Agnostic? Yes, Terraform is cloud agnostic, in the sense that it can be used to run on almost every cloud provider there is.
+7. configuration file will be in .tf extension
+8. What flag can be used with the destroy command to delete a selected resource? -target
+9. What is the purpose of the Terraform state file? Records all changes made by configuration to the state
+10. What is the purpose of the terraform init command? Initialize the provider required to run configurations in curent directory
 
 ---------------------------
 Declarative:
