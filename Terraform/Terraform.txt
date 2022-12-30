@@ -40,6 +40,67 @@ for windows use chocolaty
 website: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
 
 Install Terraform --> Local Windows Machine!!!
+Set env variable for Terraform to run terraform from CLI
+
+> choco install awscli
+> Create IAM Uer with Adminsitrator access, get access key and Secrets key
+> in Powershell, run aws configure
+> Provide access key and Secrets key generated
+> And we are done :)
+> you can create Config.tf file in VS Code and save the file in desired path, and run the config file from Powershell.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+test.tf
+-------
+
+provider "aws" {                                                 # provider is important
+  region     = "ap-south-1"
+      # Account -> security crendentials -> secret key -> create -> download .csv
+}
+
+# Create AWS Instance
+
+resource "aws_instance" "dev_server1" {     # resource "type of resource" "name of resource"
+  ami           = "ami-0cca134ec43cf708f"   # AMI Id
+  instance_type = "t2.micro"                # type
+  key_name      = "Dec5"            # key name
+  vpc_security_group_ids = ["sg-0c2e1a30f04dfe09c"]
+  tags = {
+    Name = "TerraformDemoServer1"           # Tag , Also name of resource
+  }
+}
+
+
+> Navigate to file path in Power shell
+
+PS C:\Users\udayp\Desktop> cd Terraform-exercise
+PS C:\Users\udayp\Desktop\Terraform-exercise> ls
+
+
+    Directory: C:\Users\udayp\Desktop\Terraform-exercise
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        30-12-2022  12:59 PM              0 first.tf
+
+> terraform init            # can run in gitbash aswell, we are currently running in terraform
+> terraform validate
+> terrafrom  fmt
+> terraform plan
+> terraform apply 
+> can check instance created in AWS
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        30-12-2022  01:04 PM                .terraform
+-a----        30-12-2022  01:04 PM           1377 .terraform.lock.hcl
+-a----        30-12-2022  01:06 PM            596 first.tf
+-a----        30-12-2022  01:09 PM           4480 terraform.tfstate        # this as all state related to Instance
+
+> terraform destroy
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
 
 How to access terraform installed:
 ---------------------------------
@@ -47,10 +108,11 @@ How to access terraform installed:
 
 1. Use Command prompt to run Terraform commands like : terraform init, terraform plan, terraform apply, etc..
 
-Create the Config file ?
+
 
 2. Visual Studio Code  to create or develop Terraform Config files! i.e., *.tf files  (recommended)
   Place or create file -> save in particular folder -> click on terminal -> navigate to file path -> execute teraform commands
+  But while using VS COde , we should have provide - Access Key and Secrets , which is not safe, we already suffered.
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -68,21 +130,21 @@ Very important ready format for config file : https://registry.terraform.io/prov
 =================
 
 
-provider "aws" {                                               -> provider is important
+provider "aws" {                                                 # provider is important
   region     = "ap-south-1"
-  access_key = "AKIAXWCBTXTUAU5HPIPU"                            -> access key and secret key generated from IAM AWS Console
-  secret_key = "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"        -> Account -> security crendentials -> secret key -> create -> download .csv
+  access_key = "AKIAXWCBTXTUAU5HPIPU"                            # access key and secret key generated from IAM AWS Console
+  secret_key = "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"        # Account -> security crendentials -> secret key -> create -> download .csv
 }
 
 # Create AWS Instance
 
-resource "aws_instance" "dev_server1" {    -> resource "type of resource" "name of resource"
-  ami           = "ami-074dc0a6f6c764218"   -> AMI Id
-  instance_type = "t2.micro"                -> type
-  key_name      = "uday-aws-key"             -> key name
+resource "aws_instance" "dev_server1" {     # resource "type of resource" "name of resource"
+  ami           = "ami-074dc0a6f6c764218"   # AMI Id
+  instance_type = "t2.micro"                # type
+  key_name      = "uday-aws-key"            # key name
 
   tags = {
-    Name = "TerraformDemoServer1"           -> Tag , Also name of resource?
+    Name = "TerraformDemoServer1"           # Tag , Also name of resource
   }
 }
 
@@ -116,7 +178,7 @@ Success! The configuration is valid.
 
 3. terraform fmt  -> will properly format the terraform file
 
-3. terraform plan   -> it will verify syntax other things in config.tf file
+3. terraform plan   -> to check what its config file going to do?
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  
@@ -380,8 +442,8 @@ terraform apply
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-3. exercise 3 - Variable
-========================
+3. exercise 3 - Variable -Udemy
+===============================
 
 Crete a folder ,  push all this related files into one folder and then use terraform command
 
@@ -395,15 +457,13 @@ provider.tf
 
 provider "aws" {
   region = var.REGION
-  access_key = "AKIAXWCBTXTUAG44N36E"
-  secret_key = "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"
 }
 
 excerciee.tf
 -------------
 
 resource "aws_instance" "dove-inst" {
-  ami                    = var.AMIS[var.REGION]    -> like AMIS[REGION] will be pulled
+  ami                    = var.AMIS[var.REGION]    # like AMIS[REGION] will be pulled
   instance_type          = "t2.micro"
   availability_zone      = var.ZONE1
   key_name               = "uday-aws-key"
@@ -413,16 +473,6 @@ resource "aws_instance" "dove-inst" {
     Project = "Dove"
   }
 }
-
-
-variable AMIS {
-  type = map
-  default = {
-    ap-south-2 = "ami-074f102f7cbc99d2f"
-    ap-south-1 = "ami-074dc0a6f6c764218"
-  }
-}
-
 
 
 var.tf
@@ -451,14 +501,18 @@ aws_instance.dove-inst
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
 
-4. Excercise4 - Provisioner
-===========================
+4. Excercise4 - Provisioner - udemy
+===================================
+
+> use provisioner to setup softeares and files like file uploads and remote execution
+> provisioner requires Connection details.
+> we have more provisioners, we used file and remote-exec in our example
 
 
 login to powershell
 install aws-cli
 commands:
-aws configure -> only enter
+aws configure -> newdovekey
 ssh-keygen -> provide file name
 public and private key files will be stored in local machine , this keys will be used for instance,
 
@@ -468,8 +522,6 @@ Provider.tf
 
 provider "aws" {
   region = var.REGION
-  access_key = "AKIAXWCBTXTUAG44N36E"
-  secret_key = "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"
 }
 
 
@@ -516,30 +568,28 @@ systemctl restart httpd
 Instance.tf and keypair creation
 --------------------------------
 
-
-
-resource "aws_key_pair" "dove-key" {     -> we are creating a new key pair "newdovekey"
+resource "aws_key_pair" "dove-key" {                            # we are creating a new key pair "newdovekey"
   key_name   = "newdovekey"
-  public_key = file("newdovekey.pub")      -> passing public key through file, we can hardcode aswell
+  public_key = file("newdovekey.pub")                           # passing public key through file, we can hardcode paste aswell
 }
 
 resource "aws_instance" "dove-inst" {
   ami                    = var.AMIS[var.REGION]
   instance_type          = "t2.micro"
   availability_zone      = var.ZONE1
-  key_name               = aws_key_pair.dove-key.key_name
-  vpc_security_group_ids = ["sg-079caf48f071e10e3"]            -> this SC should have SSH -> port 22 and HTTP -> port 80
+  key_name               = aws_key_pair.dove-key.key_name        #  Resource_Type.Resource_Name.Attribute_Name
+  vpc_security_group_ids = ["sg-079caf48f071e10e3"]              #  this SG should have SSH -> port 22 and HTTP -> port 80
   tags = {
     Name    = "Dove-Instance"
     Project = "Dove"
   }
 
-  provisioner "file" {    -> calling  web.ssh file using "provisioner"
+  provisioner "file" {                                            # calling  web.ssh file using "provisioner"
     source      = "web.sh"
     destination = "/tmp/web.sh"   
   }
 
-  provisioner "remote-exec" {    -> remote login and execution to our intance using "provisioner"
+  provisioner "remote-exec" {                                     # remote login and execution to our intance using "provisioner"
 
     inline = [
       "chmod +x /tmp/web.sh",
@@ -547,18 +597,22 @@ resource "aws_instance" "dove-inst" {
     ]
   }
 
-  connection {                          -> remote login with user name , private key and public ip
+  connection {                                                     # remote login with user name , private key and public ip
     user        = var.USER
     private_key = file("newdovekey")
     host        = self.public_ip
   }
-}                                 --> Instance defination ends here
+}                                                                 #  Instance defination ends here
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 EXCERCISE-4-udemy - Output
 ==========================
+
+> to print attribute to console
+> data is pulled from state file
+
 
 provider.tf
 -----------
@@ -645,8 +699,8 @@ resource "aws_instance" "dove-inst" {
     host        = self.public_ip
   }
 } 
-output "PublicIP" {                                         -> Output is used to print required key value to console
-  value = aws_instance.dove-inst.public_ip                  -> resource_type.resource_name.key/parameter
+output "PublicIP" {                                         # Output is used to print required key value to console
+  value = aws_instance.dove-inst.public_ip                  # resource_type.resource_name.Attribute(key/parameter)
 }
 
 output "PrivateIP" {
@@ -678,11 +732,9 @@ backend.tf
 
 terraform {
   backend "s3" {
-    bucket = "terra-stove-dove"     -> name 
-    key    = "terraform/backend"       -> path where state file will be pushed
-    region = "us-east-2"                -> region where you created S3 earlier
-      access_key = "AKIAXWCBTXTUAG44N36E"
-  secret_key = "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"
+    bucket = "terra-stove-dove"                     # bucket name 
+    key    = "terraform/backend"                    # path where state file will be pushed, its a folder inside buncket
+    region = "us-east-2"                            # region where you created S3 earlier
   }
 }
 
@@ -692,8 +744,6 @@ Provider.tf
 
 provider "aws" {
   region = var.REGION
-  access_key = "AKIAXWCBTXTUAG44N36E"
-  secret_key = "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"
 }
 
 
@@ -818,15 +868,298 @@ AWS_Resource_Type.Resource_Name.key/Parameter
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+Excersie-6 = udemy - Multi Resource
+-----------------------------------
 
-Another example is there , excercise 6 from udemy, can practice later
+Create a folder and add below files:
+
+1. provider.tf
+--------------
+
+
+provider "aws" {
+  region = var.REGION
+}
+
+
+2.vpc.tf
+-------
+# Refer official documentation
+
+
+resource "aws_vpc" "dove" {
+  cidr_block           = "10.0.0.0/16"
+  instance_tenancy     = "default"
+  enable_dns_support   = "true"
+  enable_dns_hostnames = "true"
+  tags = {
+    Name = "dove-vpc"
+  }
+}
+
+resource "aws_subnet" "dove-pub-1" {
+  vpc_id                  = aws_vpc.dove.id
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = "true"
+  availability_zone       = var.ZONE1
+  tags = {
+    Name = "dove-pub-1"
+  }
+}
+
+resource "aws_subnet" "dove-pub-2" {
+  vpc_id                  = aws_vpc.dove.id
+  cidr_block              = "10.0.2.0/24"
+  map_public_ip_on_launch = "true"
+  availability_zone       = var.ZONE2
+  tags = {
+    Name = "dove-pub-2"
+  }
+}
+
+
+resource "aws_subnet" "dove-pub-3" {
+  vpc_id                  = aws_vpc.dove.id
+  cidr_block              = "10.0.3.0/24"
+  map_public_ip_on_launch = "true"
+  availability_zone       = var.ZONE3
+  tags = {
+    Name = "dove-pub-3"
+  }
+}
+
+
+resource "aws_subnet" "dove-priv-1" {
+  vpc_id                  = aws_vpc.dove.id
+  cidr_block              = "10.0.4.0/24"
+  map_public_ip_on_launch = "true"
+  availability_zone       = var.ZONE1
+  tags = {
+    Name = "dove-priv-1"
+  }
+}
+
+
+resource "aws_subnet" "dove-priv-2" {
+  vpc_id                  = aws_vpc.dove.id
+  cidr_block              = "10.0.5.0/24"
+  map_public_ip_on_launch = "true"
+  availability_zone       = var.ZONE2
+  tags = {
+    Name = "dove-priv-2"
+  }
+}
+
+
+resource "aws_subnet" "dove-priv-3" {
+  vpc_id                  = aws_vpc.dove.id
+  cidr_block              = "10.0.6.0/24"
+  map_public_ip_on_launch = "true"
+  availability_zone       = var.ZONE3
+  tags = {
+    Name = "dove-priv-3"
+  }
+}
+
+resource "aws_internet_gateway" "dove-IGW" {
+  vpc_id = aws_vpc.dove.id
+  tags = {
+    Name = "dove-IGW"
+  }
+}
+
+resource "aws_route_table" "dove-pub-RT" {
+  vpc_id = aws_vpc.dove.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.dove-IGW.id
+  }
+
+  tags = {
+    Name = "dove-pub-RT"
+  }
+}
+
+
+resource "aws_route_table_association" "dove-pub-1-a" {
+  subnet_id      = aws_subnet.dove-pub-1.id
+  route_table_id = aws_route_table.dove-pub-RT.id
+}
+
+resource "aws_route_table_association" "dove-pub-2-a" {
+  subnet_id      = aws_subnet.dove-pub-2.id
+  route_table_id = aws_route_table.dove-pub-RT.id
+}
+resource "aws_route_table_association" "dove-pub-3-a" {
+  subnet_id      = aws_subnet.dove-pub-3.id
+  route_table_id = aws_route_table.dove-pub-RT.id
+}
 
 
 
 
+3. var.tf
+ ---------
+ 
+ variable REGION {
+  default = "us-east-2"
+}
+
+variable ZONE1 {
+  default = "us-east-2a"
+}
+
+variable ZONE2 {
+  default = "us-east-2b"
+}
+
+variable ZONE3 {
+  default = "us-east-2c"
+}
+
+variable AMIS {
+  type = map
+  default = {
+    us-east-2 = "ami-03657b56516ab7912"
+    us-east-1 = "ami-0947d2ba12ee1ff75"
+  }
+}
+
+variable USER {
+  default = "ec2-user"
+}
+
+variable PUB_KEY {
+  default = "dovekey.pub"
+}
+
+variable PRIV_KEY {
+  default = "dovekey"
+}
+
+variable MYIP {
+  default = "183.83.67.89/32"
+}
 
 
 
+> plan and apply
+> check VPC is created in AWS
+
+
+3. Creating SG - SG-tf
+---------------------
+
+resource "aws_security_group" "dove_stack_sg" {
+  vpc_id      = aws_vpc.dove.id
+  name        = "dove-stack-sg"
+  description = "Sec Grp for dove ssh"
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.MYIP]
+  }
+  tags = {
+    Name = "allow-ssh"
+  }
+}
+
+> terraform plan # to check and confirm
+> terraform apply # deploy
+> check in AWS
+
+
+4. Creating Backed state to store all config related data
+---------------------------------------------------------
+
+backend.tf
+----------
+
+terraform {
+  backend "s3" {
+    bucket = "terra-state-dove"
+    key    = "terraform/backend_exercise6"
+    region = "us-east-2"
+  }
+}
+
+5. web.sh file
+--------------
+
+web.tf
+------
+
+#!/bin/bash
+yum install wget unzip httpd -y
+systemctl start httpd
+systemctl enable httpd
+wget https://www.tooplate.com/zip-templates/2117_infinite_loop.zip
+unzip -o 2117_infinite_loop.zip
+cp -r 2117_infinite_loop/* /var/www/html/
+systemctl restart httpd
+
+
+
+4. Creating an Instance
+------------------------
+
+instance.tf
+-----------
+
+
+resource "aws_key_pair" "dove-key" {                # make sure you have public and private keys in this folder, else create it and add it here
+  key_name   = "dovekey"
+  public_key = file(var.PUB_KEY)
+}
+
+resource "aws_instance" "dove-web" {
+  ami                    = var.AMIS[var.REGION]
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.dove-pub-1.id
+  key_name               = aws_key_pair.dove-key.key_name
+  vpc_security_group_ids = [aws_security_group.dove_stack_sg.id]
+  tags = {
+    Name = "my-dove"
+  }
+}
+
+resource "aws_ebs_volume" "vol_4_dove" {
+  availability_zone = var.ZONE1
+  size              = 3
+  tags = {
+    Name = "extr-vol-4-dove"
+  }
+}
+
+resource "aws_volume_attachment" "atch_vol_dove" {
+  device_name = "/dev/xvdh"
+  volume_id   = aws_ebs_volume.vol_4_dove.id
+  instance_id = aws_instance.dove-web.id      # Resource_Type.Resource_Name.Attribute(key/name/id)
+}
+
+output "PublicIP" {
+  value = aws_instance.dove-web.public_ip
+}
+
+
+> terraform validate
+> terraform plan
+> terraform apply
+> check in AWS 
+
+
+# clean-up
+
+> terraform destroy :)
 
 
 
