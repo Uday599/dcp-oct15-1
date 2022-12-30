@@ -14,7 +14,7 @@ https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html
 ----------------------
 
 Resources:
-  MyInstanc:    --> logical id
+  MyInstanc:                          # logical id
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
@@ -34,7 +34,7 @@ Resources:
       InstanceType: t2.micro
       ImageId: ami-074dc0a6f6c764218
       Tags: 
-        - Key: "Name"                      -> take care about notation and cases
+        - Key: "Name"                      # take care about notation and cases
           Value: "MyFirstInstance"
           
           
@@ -81,7 +81,8 @@ Resources:
         - Key: "Name"
           Value: !Join ["-",[lets,see,changeset]]
       
-Now we will create change set:
+Now we will create change set: change the value:
+> go to stack > update > replace current file > upload > create
 
 Resources:
   MyInstance:
@@ -94,6 +95,7 @@ Resources:
           Value: "ChangeSet"
 
 
+> View chnage set to know the details about changes
 Check for Replacement status in change set -> which will be either True or false
 -> if true -> will delete existing resource and creates new
 
@@ -117,8 +119,9 @@ Resources:
           Value: !Join
             - " "
             - - "My instance in"
-              - !Ref AWS::Region    ->  Psedo Parameter :
-                                                          https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html
+              - !Ref AWS::Region                       #  Psedo Parameter :
+                                                       # Refer this for more Parameters: 
+                                                       # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html                                     
               
 
 Resource created:
@@ -142,9 +145,9 @@ Resources:
         - Key: "Name"
           Value: !Join ["-",[my,instance,from,cloudFormation,with,SG]]
       SecurityGroups:
-        - !Ref VprofileSG       - referecing SG resource from here
+        - !Ref VprofileSG       # referecing SG resource from here
 
-  VprofileSG:                                     -- name of resource : refer : https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-
+  VprofileSG:                                     # name of resource : refer : https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-
                                                                                properties-ec2-security-group-rule.html#cfn-ec2-security-group-rule-ipprotocol
     Type: AWS::EC2::SecurityGroup
     Properties: 
@@ -222,20 +225,20 @@ Resources:
  
  
  Parameters:
-  NameofService:  #Logical Id
+  NameofService:                                #Logical Id
     Description: "The name of the service this stack is used for."
     Type: String
-  InstanceTypeParameter:  # Logical Id
+  InstanceTypeParameter:                        # Logical Id
     Type: String
     Default: t2.micro
-    AllowedValues:   # gives list
+    AllowedValues:                              # gives list
       - t2.micro
       - m1.small
       - m1.large
     Description: Enter t2.micro, m1.small, or m1.large. Default is t2.micro.
-  KeyName:                    # Logical ID
+  KeyName:                                           # Logical ID
     Description: Name of EC2 loginkey
-    Type: AWS::EC2::KeyPair::KeyName   # using Psedo parameter as a list
+    Type: AWS::EC2::KeyPair::KeyName              # using Psedo parameter as a list
 
 
 
@@ -349,10 +352,10 @@ Resources:
        CidrIp: 49.37.241.38/32
 
 Outputs:
-  PrintingInfo:   # logical id
-    Value: !GetAtt   # this functions holds only 1 parameter?
-        - MyInstance   # Logical ID
-        - PublicDnsName   # and its paramater we want to print.
+  PrintingInfo:                     # logical id
+    Value: !GetAtt                  # this functions holds only 1 parameter?
+        - MyInstance                # Logical ID
+        - PublicDnsName             # and its paramater we want to print.
         # we can get the attribute name here:  https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html
         # search with attribute you want to print
       #  - PublicIp
