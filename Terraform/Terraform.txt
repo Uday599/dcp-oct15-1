@@ -56,10 +56,10 @@ website: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/ins
 Install Terraform --> Local Windows Machine!!!
 Set env variable for Terraform to run terraform from CLI
 
-> choco install awscli
+> choco install awscli or download from https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 > Create IAM Uer with Adminsitrator access, get access key and Secrets key
 > in Powershell, run aws configure
-> Provide access key and Secrets key generated
+> Provide access key and Secrets key generated : ssh-keygen
 > And we are done :)
 > you can create Config.tf file in VS Code and save the file in desired path, and run the config file from Powershell.
 
