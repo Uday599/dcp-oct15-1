@@ -137,7 +137,9 @@ Sample:
 
 kubeadm join 172.31.13.1:6443 --token db44h7.mld38h3otcgpgs6s --discovery-token-ca-cert-hash sha256:35e4c6d99284116035840e1900712cf00c1850ceaac8318c78164f3ea9183c86
 
-
+##########################
+Make sure to allow all traffic
+##########################
 
 
 Where will Namespace come into picture - cluster?
