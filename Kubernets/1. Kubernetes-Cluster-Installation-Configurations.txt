@@ -8,6 +8,15 @@ WE ARE SETTING UP KUBERNETES USING - KUBEADM
 	
 Add Port: 0 - 65535  -- Open this posts in inbound rule of security group 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To change the Hostname simply do,
+--------------------------------
+
+
+vi /etc/hostname
+# give a name
+run init 6 # to reboot
+
 On Both Master and Worker Nodes:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -56,7 +65,7 @@ systemctl start kubelet
 Only on Master Node:
 ~~~~~~~~~~~~~~~~~~~~~
 
-sudo kubeadm init --apiserver-advertise-address=172.31.12.224 --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
+sudo kubeadm init --apiserver-advertise-address=172.31.33.228 --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
 
 Above command : here we are initializing out one of the VM as Master - Private IP , POD CIDR is defined , ignore is to neglect any runtime error like CPU error and Memory and treat them as warning
 
@@ -151,6 +160,14 @@ name is name of the object
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # HOW DO WE SET A STATIC HOSTNAME TO A SERVER IN AWS
 -----------------------------------------------------
+
+1. Other way- simple:
+```
+  vi /etc/hostname # chnage the hostname
+  init 6	   # reboot
+```
+
+
 
 [root@ip-172-31-11-68 ~]# hostnamectl
    Static hostname: ip-172-31-11-68.ap-south-1.compute.internal
