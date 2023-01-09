@@ -1,0 +1,111 @@
+1. Given a sample puppet DSL file with a resource to Configure the NTP package on a server. Update the value of ensure attribute to set it to "present"
+
+    vi puppet-ntp-config.yml
+
+package { 'ntp':
+  ensure => present
+}
+
+
+2.  Add a new resource - file to modify the file /etc/ntp.conf. In this step only add the file resource to modify /etc/ntp.conf. 
+    In the next step we will add the attributes to modify the file
+    
+    vi puppet-ntp-config.yml
+    
+package { 'ntp':
+  ensure => "present"
+}
+
+file { '/etc/ntp.conf':
+
+}
+
+
+3. Add two attributes to the file resource. 
+
+    ensure => "present" : This is to instruct Puppet to ensure that the given line is present in the file 
+    content => "server 0.centos.pool.ntp.org iburst\n" : This is the line to be added to the config file
+    
+   vi puppet-ntp-config.yml
+   
+   
+package { 'ntp':
+  ensure => "present"
+}
+
+file { "/etc/ntp.conf":
+  ensure => "present",
+  content => "server 0.centos.pool.ntp.org iburst\n",
+
+}
+
+
+4. Introduction: We will now add a new resource to start the NTPD service on the system 
+
+Instruction: Add a new resource - service and configure it to start the ntpd service. Ensure the service is running.
+
+
+vi puppet-ntp-config.yml
+
+    package { "ntp":
+      ensure => "present"
+    }
+    file { "/etc/ntp.conf":
+      ensure  => "present",
+      content => "server 0.centos.pool.ntp.org iburst\n"
+    }
+    service { "ntpd":
+      ensure => "running"
+    }
+    
+    
+    
+==============================================
+PUPPET CLASSES
+==============================================
+
+1.Introduction: In this coding exercise we will get familiar with Puppet Classes. Given the file we created in the previous exercise to configure NTP. 
+
+Instruction: Encapsulate the given Puppet code into a class named ntpdemo.
+
+vi puppet-config-class.yml
+
+    class ntpdemo{
+      package { 'ntp':
+        ensure => "present"
+      }
+     
+      file { "/etc/ntp.conf":
+        ensure  => "present",
+        content => "server 0.centos.pool.ntp.org iburst\n"
+      }
+     
+      service { "ntpd":
+        ensure  => "running"
+      }
+    }
+    
+    
+    2. Introduction: We have now created a class with the ntp configuration resources.  Let us now use it by declaring the class 
+
+Instruction: Declare the ntpdemo class which was defined in the last exercises in the same code using "include" Puppet keyword
+
+
+vi puppet-config-class.yml
+
+    class ntpdemo{
+      package { 'ntp':
+        ensure => "present"
+      }
+     
+      file { "/etc/ntp.conf":
+        ensure  => "present",
+        content => "server 0.centos.pool.ntp.org iburst\n"
+      }
+     
+      service { "ntpd":
+        ensure  => "running"
+      }
+    }
+     
+    include ntpdemo
