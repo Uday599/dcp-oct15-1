@@ -1,0 +1,59 @@
+prerequired:
+------------
+reference: https://linuxize.com/post/how-to-install-gradle-on-centos-8/
+
+sudo yum install java-1.8.0-openjdk-devel
+java -version
+
+
+Documentation : https://gradle.org/install/
+
+manual install -> binary only -> new page will open -> copy DIRECT Link
+
+wget <copied_link>
+
+$ mkdir /opt/gradle
+$ unzip -d /opt/gradle gradle-7.6-bin.zip
+$ ls /opt/gradle/gradle-7.6
+LICENSE  NOTICE  bin  getting-started.html  init.d  lib  media
+
+
+set the env varibale in .bash_profile
+
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/bin
+
+export PATH
+export PATH=$PATH:/opt/gradle/gradle-7.6/bin
+~
+~
+~
+
+source ~/.bash_profile
+
+gradle -v
+
+
+[root@ip-172-31-34-196 ~]# gradle -v
+
+------------------------------------------------------------
+Gradle 7.6
+------------------------------------------------------------
+
+Build time:   2022-11-25 13:35:10 UTC
+Revision:     daece9dbc5b79370cc8e4fd6fe4b2cd400e150a8
+
+Kotlin:       1.7.10
+Groovy:       3.0.13
+Ant:          Apache Ant(TM) version 1.10.11 compiled on July 10 2021
+JVM:          1.8.0_342 (Red Hat, Inc. 25.342-b07)
+OS:           Linux 5.10.157-139.675.amzn2.x86_64 amd64
+
