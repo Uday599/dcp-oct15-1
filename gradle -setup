@@ -2,15 +2,24 @@ prerequired:
 ------------
 reference: https://linuxize.com/post/how-to-install-gradle-on-centos-8/
 
-amazon-linux-extras install openjdk-11
+# amazon-linux-extras install java-openjdk11
+yum install java-1.8.0-openjdk-devel
 java -version
 
-
+======================================================
+Reference:
+----------
 Documentation : https://gradle.org/install/
 
 manual install -> binary only -> new page will open -> copy DIRECT Link
 
 wget <copied_link>
+
+=========================================================
+
+Path : https://distfiles.macports.org/gradle                                    # gradle-6.8.3-bin.zip
+
+GO to above path and download relvent gradle version and do wget 
 
 $ mkdir /opt/gradle
 $ unzip -d /opt/gradle gradle-7.6-bin.zip
@@ -57,9 +66,11 @@ Ant:          Apache Ant(TM) version 1.10.11 compiled on July 10 2021
 JVM:          1.8.0_342 (Red Hat, Inc. 25.342-b07)
 OS:           Linux 5.10.157-139.675.amzn2.x86_64 amd64
 
-
-
 ======================================================
+We have build.gradle in Gradle , as same as Pom.xml in Maven
+======================================================
+
+
 To connect slave node to Jenkins Master:
 --------------------------------------
 
