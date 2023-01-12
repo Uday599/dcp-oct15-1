@@ -41,7 +41,7 @@ fi
 PATH=$PATH:$HOME/bin
 
 export PATH
-export PATH=$PATH:/opt/gradle/gradle-7.6/bin
+export PATH=$PATH:/opt/gradle/gradle-6.8.3/bin
 ~
 ~
 ~
@@ -65,6 +65,15 @@ Groovy:       3.0.13
 Ant:          Apache Ant(TM) version 1.10.11 compiled on July 10 2021
 JVM:          1.8.0_342 (Red Hat, Inc. 25.342-b07)
 OS:           Linux 5.10.157-139.675.amzn2.x86_64 amd64
+
+
+============================================ inside project directory 
+gradle wrapper --gradle-version=5.1.1
+==========================================
+
+
+
+
 
 ======================================================
 We have build.gradle in Gradle , as same as Pom.xml in Maven
