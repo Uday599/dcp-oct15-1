@@ -126,7 +126,7 @@ How to access terraform installed:
 
 2. Visual Studio Code  to create or develop Terraform Config files! i.e., *.tf files  (recommended)
   Place or create file -> save in particular folder -> click on terminal -> navigate to file path -> execute teraform commands
-  But while using VS COde , we should have provide - Access Key and Secrets , which is not safe, we already suffered.
+  But while using VS COde , we should have provide - Access Key and Secrets , which is not safe,
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
