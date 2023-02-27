@@ -65,13 +65,17 @@ systemctl start kubelet
 Only on Master Node:
 ~~~~~~~~~~~~~~~~~~~~~
 
-sudo kubeadm init --apiserver-advertise-address=172.31.12.246 --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
-
-Above command : here we are initializing out one of the VM as Master - Private IP , POD CIDR is defined , ignore is to neglect any runtime error like CPU error and Memory and treat them as warning
+sudo kubeadm init --apiserver-advertise-address=172.31.12.164 --pod-network-cidr=192.168.1.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem
+						-------------
+						
+Above command : here we are initializing out one of the VM as Master - <Private IP> , POD CIDR is defined , ignore is to neglect any runtime error like CPU error and Memory and treat them as warning
 
 [WARNING NumCPU]: the number of available CPUs 1 is less than the required 2
 [WARNING Mem]: the system RAM (964 MB) is less than the minimum 1700 MB
 
+-----------
+kubeadm reset
+----------
 
 --------------------------------# this can be seen in welcome page only
 
