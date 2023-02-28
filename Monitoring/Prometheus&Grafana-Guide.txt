@@ -42,6 +42,10 @@ PROMOTHEUS ARCHITECTURE:
 
 ### Goto https://prometheus.io/download/
 
+prometheus file:
+
+Copy link,
+
 wget https://github.com/prometheus/prometheus/releases/download/v2.38.0/prometheus-2.38.0.linux-amd64.tar.gz
 
 tar -zxvf prometheus-2.38.0.linux-amd64.tar.gz
@@ -63,7 +67,7 @@ After=network-online.target
 User=root
 Restart=on-failure
 
-ExecStart=/root/prometheus-2.38.0.linux-amd64/prometheus --config.file=/root/prometheus-2.38.0.linux-amd64/prometheus.yml  # here we are allowing prometheus                                                                                                                            #   service to use prometheus.yml                                                                                                                            #    file
+ExecStart=/root/prometheus-2.42.0.linux-amd64/prometheus --config.file=/root/prometheus-2.42.0.linux-amd64/prometheus.yml  # here we are allowing prometheus                                                                                                                            #   service to use prometheus.yml                                                                                                                            #    file
 
 [Install]
 WantedBy=multi-user.target
@@ -124,6 +128,7 @@ http://13.232.146.141:9090/
 
 
 ###Goto the server you wish to monitor and install Node Exporter :
+-----------------------------------------------------------------
 
 wget https://github.com/prometheus/node_exporter/releases/download/v1.4.0-rc.0/node_exporter-1.4.0-rc.0.linux-amd64.tar.gz
 
@@ -181,9 +186,9 @@ Nov 23 08:29:21 ip-172-31-35-146.ap-south-1.compute.internal node_exporter[3459]
 Hint: Some lines were ellipsized, use -l to show in full.
 
 > 9100 is the port of node_exporter
-we have to use this port in out prometheus.yml file as target
+we have to use this port in our prometheus.yml file as target
 
-# Dont forget to allow this Port:9100 in SG of target host, else it will marked as down in prometheus
+# Don't forget to allow this Port:9100 in SG of target host, else it will marked as down in prometheus
 
 
 hostname     
@@ -200,7 +205,10 @@ cd /root/prometheus-2.38.0.linux-amd64
 vi prometheus.yml
 ## Add the target with valid node_exporter port as mentioned below:
 
-- targets: ["172.31.7.193:9100"]  # add this carefully, else service won't run
+- job_name: 'node_exporter'
+  scrape_insterval: 5s
+  static_configs:
+    - targets: ["172.31.7.193:9100"]  # add this carefully, else service won't run
 
 
 ## Restart Prometheus:
