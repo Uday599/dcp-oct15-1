@@ -600,13 +600,13 @@ resource "aws_instance" "dove-inst" {
 
   provisioner "file" {                                            # calling  web.ssh file using "provisioner"
     source      = "web.sh"
-    destination = "/tmp/web.sh"   
+    destination = "/tmp/web.sh"                                 # https://developer.hashicorp.com/terraform/language/resources/provisioners/file
   }
 
   provisioner "remote-exec" {                                     # remote login and execution to our intance using "provisioner"
 
     inline = [
-      "chmod +x /tmp/web.sh",
+      "chmod +x /tmp/web.sh",                           # https://developer.hashicorp.com/terraform/language/resources/provisioners/remote-exec
       "sudo /tmp/web.sh"
     ]
   }
