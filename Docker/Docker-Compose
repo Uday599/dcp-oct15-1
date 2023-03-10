@@ -357,3 +357,33 @@ networks:
 volumes:
   redis-data:
   db-data:
+
+
+
+------------------------------------------------------------------------
+
+5. 
+
+version: '3'
+services:
+  web:
+    build: .   # this will take a dockerfile in present directory
+    ports: 
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+      
+      
+ 6. 
+ version: '3'
+ services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+       - /app/node_modules
+       - .:/app
