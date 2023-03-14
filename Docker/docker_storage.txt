@@ -18,6 +18,8 @@ Types of Mounting:
 -------------
 #  here we are mapping directory structure, it mounts directory structure any location from Host
 
+docker run -v /data/mysql:/var/lib/mysql mysql  # binding directory structure
+
 
 # --mount is latest fashion.
 docker run  --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql  
@@ -40,15 +42,17 @@ so to preserve that current state, we will use volume and mapps to container, wh
 #-v uses soource_path:destination_path
 # even if we have not created "mydbdata" before running contianer, it will create at run time and then mount it
 
+# Bind Mount:
 
 docker run --name db2 -d -e MYSQL_ROOT_PASSWORD=passwd -p 3030:3306 -v /root/vproddata:/var/lib/mysql mysql  
 # -v uses soource_path:destination_path
 
 
 # latest fashion
->>>   docker run -it --mount source=<volume_name>,destination=</container_volume_path> <image>
-# --mount uses key value pair seperared by , source=<>,destination=<>
+-----------------
 
+docker run  --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql  # latest
+# --mount uses key value pair seperared by , source=<>,destination=<>
 
 
 
