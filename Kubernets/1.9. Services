@@ -41,6 +41,8 @@ spec:
 
 kubectl create -f <object name>
 
+kubectl apply -f nginx-pod.yaml
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [root@ip-172-31-12-224 services]# cat nginx-nodeport.yaml
