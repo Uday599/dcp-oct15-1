@@ -1,0 +1,29 @@
+
+remote repo
+working copy
+staging
+local reposiroty
+
+1. checking configuration
+
+git configure --list
+
+2. cloning remote repository
+
+git clone <remote_repo_url>
+if private repo, give creds and login,
+
+
+3. adding files in working directory
+
+git add .
+git add -all
+git add <file_name>
+
+4. commtting changes to local repository
+
+git commit -m "commited message"
+
+5. pushing changes to remote repo
+
+git push 
