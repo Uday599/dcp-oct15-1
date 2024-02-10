@@ -1,0 +1,15 @@
+
+
+git clone < remote_repo_url>
+
+edit/add file in local repo
+
+git add .
+git add --all
+git add <file_name>
+
+git commit -m <commit_message>
+git commit -a -m <commit_message>  # add to stage and commit at a timre
+
+git pull
+
