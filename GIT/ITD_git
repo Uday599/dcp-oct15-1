@@ -1,5 +1,12 @@
 
 
+workflow
+
+remote repo -> working directort -> staging/index area -> local repository
+
+==========================================================================
+
+
 git clone < remote_repo_url>
 
 edit/add file in local repo
