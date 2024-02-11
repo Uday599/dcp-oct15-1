@@ -4,10 +4,13 @@ workflow
 
 remote repo -> working directort -> staging/index area -> local repository
 
+git tracks files only on staging
+
+git save credentials
 ==========================================================================
 
 
-git clone < remote_repo_url>
+git clone < remote_repo_url>  # only once
 
 edit/add file in local repo
 
@@ -20,3 +23,41 @@ git commit -a -m <commit_message>  # add to stage and commit at a timre
 
 git pull
 
+git push
+
+
+# to move file from staged to working directory
+
+git restore --staged <file_name>
+
+git restore <file_name> # remove file from working dir
+
+# to configure username and email
+
+git configure --name
+
+
+
+====================================
+
+git log
+git log –oneline
+git log -2 # gives latest 2 commits
+git log --pretty=%h
+
+====================================
+# show all details of commit id
+git show <commit_id>
+git show --name-only <commit_id>
+
+====================================
+
+to undo
+
+# Revert and Reset
+
+git revert <commit id>  #this will create new commit upon commit id mentioned, keeping existance commit safe
+
+
+git reset  --hard <commit_id> # whatever commit above this commit id , it ill be removed
+git push --force
