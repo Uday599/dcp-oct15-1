@@ -62,7 +62,26 @@ git revert <commit id>  #this will create new commit upon commit id mentioned, k
 git reset  --hard <commit_id> # whatever commit above this commit id , it ill be removed
 git push --force
 =======================================
+12-02-2024
 
 -> if readme file is not created while creating remote repo , then branch will not be created (1st commit)
 -> if readme option is not created while creating remote repo, then we should manually create , then commit
 -> branch is created only after 1st commit.
+
+git branch  # to list branch.
+
+git branch <branch_name> # to create a branch
+
+--------------------
+
+default branch - Master 
+
+git push --all # to push changes from all branch
+git remote -v # details about origin
+git push origin
+git push origin <new_branch>
+
+-------------
+# to switch between other branches
+
+git checkout <other_branch>
