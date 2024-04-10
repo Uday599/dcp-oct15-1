@@ -42,6 +42,8 @@ chown -R ansibleadmin /home/ansibleadmin/.ssh
 chmod 600 /home/ansibleadmin/.ssh/authorized_keys
 chmod 700 /home/ansibleadmin/.ssh
 
+exit 
+
 #As a root user edit below file:
 
 $ visudo
