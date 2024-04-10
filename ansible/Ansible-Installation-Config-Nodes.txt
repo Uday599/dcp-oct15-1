@@ -46,11 +46,11 @@ chmod 700 /home/ansibleadmin/.ssh
 
 $ visudo
 
-# when you do sudo -i, for root you will be directed to root without password, that is because in this file we defined that :)
-# similary to switch amaong ansibleadmin , weare defining that no password is required
+#  allows <user> to run sudo command without having to type in the password.
+
 
 add the below mentioned line in the file and save it.
-ansibleadmin ALL=(ALL) NOPASSWD: ALL
+ansibleadmin ALL=(ALL) NOPASSWD: ALL 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #Login to Ansible Controller:
