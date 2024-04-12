@@ -185,8 +185,7 @@ Docker Compose version v2.14.2
 2a. old way:
 -------------
 
-# this versionis 1. 
-services: 
+# this versionis 1.  # service tag is not mentioned!
   redis:
     image: redis
 
