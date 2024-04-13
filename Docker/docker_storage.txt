@@ -25,38 +25,39 @@ docker run -v /data/mysql:/var/lib/mysql mysql  # binding directory structure
 docker run  --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql  
 
 docker run -it --mount source=./centos,target=/var/lib/centos centos bash  # Check this.
-                                                                         
-Use case: 
-1. when you want to mount specific location instead var/lib/docker , we go for bind mount.
-2.Assume you installed and configured Jenkins instance , however if you stop/restart the container, all configuration will be erased out
-so to preserve that current state, we will use volume and mapps to container, whenever we install new Jenkins and use this volume, it will started from where we saved last :)
-
-2. Volume Mount:
----------------
-# here we will create a volume and mount it to container, volume from, host will have it data under : var/lib/docker/volumes path
-
->>>  docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql
-#-v uses soource_path:destination_path
-# even if we have not created "mydbdata" before running contianer, it will create at run time and then mount it
 
 # Bind Mount:
 
 docker run --name db2 -d -e MYSQL_ROOT_PASSWORD=passwd -p 3030:3306 -v /root/vproddata:/var/lib/mysql mysql  
 # -v uses soource_path:destination_path
 
-
 # latest fashion
 -----------------
 
 docker run  --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql  # latest
 # --mount uses key value pair seperared by , source=<>,destination=<>
+                                                                         
+
+
+2. Volume Mount:
+---------------
+# here we will create a volume and mount it to container, volume from, host will have it data under : var/lib/docker/volumes path
+
+docker volume create my_vol
+docker volume ls
+
+docker volume prune
+
+>>>  docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql
+
+# here give volume name instead of host directory path.
+#-v uses soource_path:destination_path
+# even if we have not created "mydbdata" before running contianer, it will create at run time and then mount it
 
 
 
 docker volumes:
 ---------------
-
-
 > Stateless application
 > statefull application
 
@@ -72,15 +73,15 @@ docker volume ls
 docker volume inspect <volume_name>  --- to check the mount point of volume
 
 docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p 3031:3306 -v <volume_name_created>:/var/lib/mysql <image_name/mysql>
-                                                                                  <source_path>:<destination_path>
+                                                                                  <volume:container_path>
 docker run --name proddb_volume -d -e MYSQL_ROOT_PASSWORD=passwd -p  3031:3306 -v mydbdata:/var/lib/mysql mysql 
 
 volume directory in host :
 --------------------------
 
-cd /var/lib/docker/volumes/mydbdata/_data -> this will create data from containers to host machine
+cd /var/lib/docker/volumes/mydbdata/_data -> volumes are created here, and mounted to a container
 
-> we can re-attach it to other containers aswll in docker volume
+> we can re-attach it to other containers aswell in docker volume
 
  "HostConfig": {
             "Binds": [ 
@@ -116,8 +117,6 @@ docker run -it --name=testvol1 --mount source=v1,destination=/v1 bash
 # can be used to send some data- secrets aswell into container storage
 # Once container work is done, we can detach/remove volume - stateless
 # storage size is dynamic
-
-docker run -it --mount source=nov12vol1,destination=/nov12vol1 centos bash
 
 #stateless & Stateful Appln.
 
