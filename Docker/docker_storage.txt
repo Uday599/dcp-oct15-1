@@ -14,25 +14,22 @@ file system:
 Types of Mounting:
 ------------------
 
-1. Bind Mount: 
--------------
-#  here we are mapping directory structure, it mounts directory structure any location from Host
+1. Bind Mount / host-directory:Container-directory : 
+---------------------------------------------------
+
+#  here we are mapping directory structure from host to container :
 
 docker run -v /data/mysql:/var/lib/mysql mysql  # binding directory structure
-
 
 # --mount is latest fashion.
 docker run  --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql  
 
-docker run -it --mount source=centos,target=/var/lib/centos centos bash  # this creates volume under /var/lib/docker/volume/_data in host machine, because we should 
-                                                                         # mention type=bind in mount command for bind mount
-
+docker run -it --mount source=./centos,target=/var/lib/centos centos bash  # Check this.
+                                                                         
 Use case: 
 1. when you want to mount specific location instead var/lib/docker , we go for bind mount.
 2.Assume you installed and configured Jenkins instance , however if you stop/restart the container, all configuration will be erased out
 so to preserve that current state, we will use volume and mapps to container, whenever we install new Jenkins and use this volume, it will started from where we saved last :)
-
-> we are attaching vproddata directory from host sysem to containers directory
 
 2. Volume Mount:
 ---------------
