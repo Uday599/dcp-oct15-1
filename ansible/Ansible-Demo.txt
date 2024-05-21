@@ -1138,7 +1138,7 @@ Playbook:
 
 # Dry run
 
-Ansible-playbook -c <playbook.yml>
+Ansible-playbook -c <playbook.yml> --check
 
 > ansible-playbook <playbook name> -k --step   # to execute playbook in interactive mode
 
