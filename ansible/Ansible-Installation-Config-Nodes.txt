@@ -48,7 +48,8 @@ exit
 
 $ visudo
 
-#  allows <user> to run sudo command without having to type in the password.
+#  when working as root, if su - ansibleadmin ---> switches fine
+# when working as ansibleadmin -> if sudo -i  -> it will prompt for password -> to disable this enter below command in visudo file.
 
 
 add the below mentioned line in the file and save it.
